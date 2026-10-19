@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getPathMatch } from "next/dist/shared/lib/router/utils/path-match";
-import nextConfig from "../next.config";
+import nextConfig from "../next.config.mjs";
 
 async function cacheControlFor(pathname: string) {
   const rules = (await nextConfig.headers?.()) ?? [];

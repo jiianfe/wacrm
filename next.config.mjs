@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import path from "node:path";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
@@ -61,17 +61,28 @@ const SECURITY_HEADERS = [
       "form-action 'self'",
     ].join("; "),
   },
-] as const;
+];
 
 const APP_LOCALE = ["en", "pt", "es", "ko"].includes(process.env.NEXT_PUBLIC_APP_LOCALE ?? "")
-  ? (process.env.NEXT_PUBLIC_APP_LOCALE as string)
+  ? process.env.NEXT_PUBLIC_APP_LOCALE
   : "en";
 
-const nextConfig: NextConfig = {
+/** @type {import("next").NextConfig} */
+const nextConfig = {
   turbopack: {
     resolveAlias: {
       "@app-messages": `./messages/${APP_LOCALE}.json`,
     },
+  },
+  // Same alias for `next build --webpack`. Hosts whose glibc is too old
+  // for the native SWC binary (e.g. Hostinger shared hosting) can't run
+  // Turbopack, so the production build uses webpack instead.
+  webpack: (config) => {
+    config.resolve.alias["@app-messages"] = path.resolve(
+      process.cwd(),
+      `messages/${APP_LOCALE}.json`,
+    );
+    return config;
   },
   // Emit a self-contained server bundle (.next/standalone) so the
   // Docker image can run without node_modules or the Next CLI.
