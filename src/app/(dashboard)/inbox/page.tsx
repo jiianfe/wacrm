@@ -76,6 +76,34 @@ function InboxPageInner() {
    * below reconciles to the stored value right after mount instead.
    */
   const [contactPanelOpen, setContactPanelOpen] = useState(true);
+
+  // E-mail: while the inbox is open, ask the server to pull new mail once
+  // a minute (new messages then arrive through the usual realtime events).
+  // The server throttles, and answers `none` when no mailbox is connected,
+  // which stops the polling until the next visit.
+  useEffect(() => {
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const tick = async () => {
+      if (stopped) return;
+      if (document.visibilityState === "visible") {
+        try {
+          const res = await fetch("/api/email/sync", { method: "POST" });
+          const body = (await res.json().catch(() => null)) as { status?: string } | null;
+          if (body?.status === "none") return;
+        } catch {
+          // Offline or a transient error: try again on the next tick.
+        }
+      }
+      timer = setTimeout(tick, 60_000);
+    };
+    tick();
+    return () => {
+      stopped = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
   useEffect(() => {
     try {
       const stored = localStorage.getItem(CONTACT_PANEL_STORAGE_KEY);

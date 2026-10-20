@@ -12,6 +12,7 @@ import { ProfileForm } from '@/components/settings/profile-form';
 import { SecurityPanel } from '@/components/settings/security-panel';
 import { AppearancePanel } from '@/components/settings/appearance-panel';
 import { CompanySettings } from '@/components/settings/company-settings';
+import { EmailSettings } from '@/components/settings/email-settings';
 import { WhatsAppConfig } from '@/components/settings/whatsapp-config';
 import { TemplateManager } from '@/components/settings/template-manager';
 import { QuickRepliesManager } from '@/components/settings/quick-replies-manager';
@@ -78,6 +79,7 @@ function SettingsPageInner() {
     appearance: <AppearancePanel />,
     company: <CompanySettings />,
     whatsapp: <WhatsAppConfig />,
+    email: <EmailSettings />,
     templates: <TemplateManager />,
     'quick-replies': <QuickRepliesManager />,
     fields: <FieldsAndTagsPanel />,

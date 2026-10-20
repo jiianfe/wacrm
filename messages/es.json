@@ -387,7 +387,8 @@
       "assignmentUpdateFailed": "Error al actualizar la asignación",
       "networkError": "error de red",
       "documentFallback": "Documento",
-      "you": "Tú"
+      "you": "Tú",
+      "emailOnlyNotice": "Este contacto solo tiene correo electrónico, por lo que una respuesta por WhatsApp no se entregaría. La respuesta por correo llega en la próxima fase."
     },
     "sessionTimer": {
       "expired": "Expirada",
@@ -458,7 +459,8 @@
       "downloadFailed": "No se pudo descargar el adjunto",
       "viewImage": "Ver imagen",
       "expandVideo": "Ampliar video",
-      "imageAlt": "Imagen compartida"
+      "imageAlt": "Imagen compartida",
+      "emailBadge": "Correo"
     },
     "mediaViewer": {
       "counter": "{index} de {total}",
@@ -1973,7 +1975,8 @@
       "inbox": "Bandeja de entrada",
       "members": "Miembros del equipo",
       "api": "Claves de API",
-      "company": "Empresa"
+      "company": "Empresa",
+      "email": "Correo"
     },
     "groups": {
       "account": "Cuenta",
@@ -2268,6 +2271,58 @@
       "zipInvalid": "El código postal debe tener 8 dígitos.",
       "emailInvalid": "Correo electrónico no válido.",
       "loadFailed": "No se pudieron cargar los datos de la empresa"
+    },
+    "email": {
+      "title": "Correo electrónico",
+      "description": "Conecta el buzón de la empresa para que los correos recibidos aparezcan en la Bandeja de entrada junto a WhatsApp.",
+      "adminOnly": "Solo los administradores de la cuenta pueden gestionar el buzón.",
+      "loading": "Cargando...",
+      "connectTitle": "Conectar un buzón",
+      "editTitle": "Configuración del buzón",
+      "connectDesc": "El inicio de sesión se prueba antes de guardar. La contraseña se guarda cifrada y no se vuelve a mostrar.",
+      "address": "Dirección de correo",
+      "username": "Usuario",
+      "usernamePlaceholder": "Igual que la dirección de correo",
+      "usernameHint": "Normalmente es la propia dirección de correo. Déjalo vacío para usarla.",
+      "password": "Contraseña",
+      "passwordKeep": "Déjalo vacío para mantener la contraseña guardada",
+      "passwordHint": "La contraseña de este buzón (definida en tu proveedor de correo).",
+      "incomingTitle": "Entrada (IMAP)",
+      "outgoingTitle": "Salida (SMTP)",
+      "host": "Servidor",
+      "port": "Puerto",
+      "enabled": "Sincronización activada",
+      "hostingerHint": "Buzones de Hostinger: IMAP imap.hostinger.com puerto 993, SMTP smtp.hostinger.com puerto 465. Ambos usan SSL/TLS.",
+      "connect": "Probar y conectar",
+      "update": "Probar y guardar",
+      "saving": "Probando...",
+      "saved": "Buzón conectado",
+      "removed": "Buzón desconectado",
+      "remove": "Desconectar",
+      "confirmRemove": "Sí, desconectar",
+      "cancel": "Cancelar",
+      "lastSync": "Última sincronización: {when}",
+      "neverSynced": "Aún no se ha sincronizado. La primera sincronización importa los últimos 14 días.",
+      "syncNow": "Sincronizar ahora",
+      "syncing": "Sincronizando...",
+      "syncImported": "Correos nuevos importados: {count}",
+      "syncNothing": "No hay correos nuevos",
+      "syncBusy": "Ya hay una sincronización en curso",
+      "cronTitle": "Sincronización automática",
+      "cronDesc": "La Bandeja de entrada busca correos nuevos sola mientras está abierta. Para sincronizar también cuando nadie esté conectado, crea una tarea programada en el panel de Hostinger (Avanzado, Cron Jobs) cada 5 minutos:",
+      "cronNote": "Reemplaza YOUR_SECRET por el EMAIL_CRON_SECRET (o AUTOMATION_CRON_SECRET) definido en el entorno del servidor.",
+      "receiveOnlyNote": "Por ahora los correos solo se reciben. La respuesta por correo llega en la próxima fase.",
+      "errors": {
+        "auth": "El servidor de correo rechazó el inicio de sesión. Revisa la dirección y la contraseña.",
+        "connect": "No se pudo acceder al servidor de correo. Revisa el servidor y el puerto.",
+        "host": "Esta dirección de servidor no está permitida o no existe.",
+        "invalid_address": "Dirección de correo no válida.",
+        "invalid_host": "Indica los servidores IMAP y SMTP.",
+        "invalid_port": "Los puertos deben ser números entre 1 y 65535.",
+        "password_required": "Indica la contraseña del buzón.",
+        "internal": "Algo salió mal. Inténtalo de nuevo.",
+        "tls": "El certificado del servidor de correo no es de confianza. Un antivirus o proxy de red puede estar interceptando la conexión (común en un PC con protección de correo activada). Prueba desde el sitio publicado o excluye el servidor de correo del análisis del antivirus."
+      }
     }
   },
   "SignupPage": {

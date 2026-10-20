@@ -252,6 +252,12 @@ export interface Message {
   message_id?: string;
   status: MessageStatus;
   created_at: string;
+  /** 'whatsapp' (default) or 'email' (migration 064). E-mail messages
+   *  carry their subject and addresses; `message_id` is `email:<id>`. */
+  channel?: 'whatsapp' | 'email';
+  email_subject?: string | null;
+  email_from?: string | null;
+  email_to?: string | null;
   reply_to_message_id?: string;
   /**
    * Only set when `content_type === 'interactive'` — the stable id of

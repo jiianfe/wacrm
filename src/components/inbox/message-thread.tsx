@@ -27,6 +27,7 @@ import {
   RefreshCw,
   PanelRightOpen,
   PanelRightClose,
+  Mail,
 } from "lucide-react";
 import { format, isToday, isYesterday, differenceInHours } from "date-fns";
 import { useTranslations } from "next-intl";
@@ -1281,6 +1282,15 @@ export function MessageThread({
           }
         }}
       />
+
+      {/* A contact that only ever wrote by e-mail has no WhatsApp number, so
+          a reply typed below could not be delivered. */}
+      {contact && !contact.phone && !contact.wa_user_id && (
+        <div className="flex shrink-0 items-center gap-2 border-t border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-400">
+          <Mail className="h-4 w-4 shrink-0" />
+          {t("emailOnlyNotice")}
+        </div>
+      )}
 
       {/* Composer */}
       <MessageComposer

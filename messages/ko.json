@@ -387,7 +387,8 @@
       "assignmentUpdateFailed": "담당자 변경에 실패했습니다",
       "networkError": "네트워크 오류",
       "documentFallback": "문서",
-      "you": "나"
+      "you": "나",
+      "emailOnlyNotice": "이 연락처는 이메일 주소만 있어 WhatsApp 답장을 전달할 수 없습니다. 이메일 답장은 다음 단계에서 제공됩니다."
     },
     "sessionTimer": {
       "expired": "만료됨",
@@ -458,7 +459,8 @@
       "downloadFailed": "첨부파일을 다운로드할 수 없습니다",
       "viewImage": "이미지 보기",
       "expandVideo": "동영상 확대",
-      "imageAlt": "공유된 이미지"
+      "imageAlt": "공유된 이미지",
+      "emailBadge": "이메일"
     },
     "mediaViewer": {
       "counter": "{total}개 중 {index}번째",
@@ -1973,7 +1975,8 @@
       "inbox": "인박스",
       "members": "팀원",
       "api": "API 키",
-      "company": "회사"
+      "company": "회사",
+      "email": "이메일"
     },
     "groups": {
       "account": "계정",
@@ -2268,6 +2271,58 @@
       "zipInvalid": "우편번호는 8자리여야 합니다.",
       "emailInvalid": "유효하지 않은 이메일 주소입니다.",
       "loadFailed": "회사 정보를 불러오지 못했습니다"
+    },
+    "email": {
+      "title": "이메일",
+      "description": "회사 메일함을 연결하면 받은 이메일이 WhatsApp와 함께 받은편지함에 표시됩니다.",
+      "adminOnly": "계정 관리자만 메일함을 관리할 수 있습니다.",
+      "loading": "불러오는 중...",
+      "connectTitle": "메일함 연결",
+      "editTitle": "메일함 설정",
+      "connectDesc": "저장하기 전에 로그인을 테스트합니다. 비밀번호는 암호화되어 저장되며 다시 표시되지 않습니다.",
+      "address": "이메일 주소",
+      "username": "사용자 이름",
+      "usernamePlaceholder": "이메일 주소와 동일",
+      "usernameHint": "보통 이메일 주소와 같습니다. 비워 두면 이메일 주소를 사용합니다.",
+      "password": "비밀번호",
+      "passwordKeep": "저장된 비밀번호를 유지하려면 비워 두세요",
+      "passwordHint": "이 메일함의 비밀번호(이메일 제공업체에서 설정).",
+      "incomingTitle": "수신 (IMAP)",
+      "outgoingTitle": "발신 (SMTP)",
+      "host": "서버",
+      "port": "포트",
+      "enabled": "동기화 사용",
+      "hostingerHint": "Hostinger 메일함: IMAP imap.hostinger.com 포트 993, SMTP smtp.hostinger.com 포트 465. 둘 다 SSL/TLS를 사용합니다.",
+      "connect": "테스트 및 연결",
+      "update": "테스트 및 저장",
+      "saving": "테스트 중...",
+      "saved": "메일함이 연결되었습니다",
+      "removed": "메일함 연결이 해제되었습니다",
+      "remove": "연결 해제",
+      "confirmRemove": "네, 연결 해제",
+      "cancel": "취소",
+      "lastSync": "마지막 동기화: {when}",
+      "neverSynced": "아직 동기화하지 않았습니다. 첫 동기화는 최근 14일을 가져옵니다.",
+      "syncNow": "지금 동기화",
+      "syncing": "동기화 중...",
+      "syncImported": "가져온 새 이메일: {count}",
+      "syncNothing": "새 이메일 없음",
+      "syncBusy": "이미 동기화가 진행 중입니다",
+      "cronTitle": "자동 동기화",
+      "cronDesc": "받은편지함이 열려 있는 동안 새 이메일을 자동으로 가져옵니다. 아무도 접속하지 않을 때도 동기화하려면 Hostinger 패널(고급, Cron Jobs)에서 5분마다 실행되는 작업을 만드세요:",
+      "cronNote": "YOUR_SECRET을 서버 환경에 설정된 EMAIL_CRON_SECRET(또는 AUTOMATION_CRON_SECRET)으로 바꾸세요.",
+      "receiveOnlyNote": "현재는 이메일 수신만 지원합니다. 이메일 답장은 다음 단계에서 제공됩니다.",
+      "errors": {
+        "auth": "메일 서버가 로그인을 거부했습니다. 이메일 주소와 비밀번호를 확인하세요.",
+        "connect": "메일 서버에 연결할 수 없습니다. 서버와 포트를 확인하세요.",
+        "host": "허용되지 않거나 존재하지 않는 서버 주소입니다.",
+        "invalid_address": "유효하지 않은 이메일 주소입니다.",
+        "invalid_host": "IMAP 및 SMTP 서버를 입력하세요.",
+        "invalid_port": "포트는 1에서 65535 사이의 숫자여야 합니다.",
+        "password_required": "메일함 비밀번호를 입력하세요.",
+        "internal": "문제가 발생했습니다. 다시 시도하세요.",
+        "tls": "메일 서버 인증서를 신뢰할 수 없습니다. 백신이나 네트워크 프록시가 연결을 가로채고 있을 수 있습니다(메일 보호가 켜진 PC에서 흔함). 게시된 사이트에서 시도하거나 메일 서버를 백신 검사에서 제외하세요."
+      }
     }
   },
   "SignupPage": {

@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Phone,
   Copy,
+  Mail,
   type LucideIcon,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -399,6 +400,22 @@ export function MessageBubble({
             preview={reply.preview}
             onPrimary={isAgent}
           />
+        )}
+        {message.channel === "email" && (
+          <div className="mb-1.5 border-b border-current/15 pb-1.5">
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide opacity-70">
+              <Mail className="h-3 w-3" />
+              {t("emailBadge")}
+            </span>
+            {message.email_subject && (
+              <p className="mt-0.5 break-words text-sm font-semibold">
+                {message.email_subject}
+              </p>
+            )}
+            {message.email_from && (
+              <p className="truncate text-[11px] opacity-70">{message.email_from}</p>
+            )}
+          </div>
         )}
         <MessageContent
           message={message}

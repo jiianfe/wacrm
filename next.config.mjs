@@ -88,6 +88,8 @@ const nextConfig = {
   // Docker image can run without node_modules or the Next CLI.
   // Harmless outside Docker: `next start` keeps working as before.
   output: "standalone",
+  // Node-only mail libraries: load them at runtime instead of bundling.
+  serverExternalPackages: ["imapflow", "mailparser"],
   experimental: {
     turbopackPluginRuntimeStrategy: "workerThreads",
   },

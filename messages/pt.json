@@ -387,7 +387,8 @@
       "assignmentUpdateFailed": "Falha ao atualizar a atribuição",
       "networkError": "erro de rede",
       "documentFallback": "Documento",
-      "you": "Você"
+      "you": "Você",
+      "emailOnlyNotice": "Este contato só tem e-mail, então uma resposta pelo WhatsApp não seria entregue. A resposta por e-mail vem na próxima fase."
     },
     "sessionTimer": {
       "expired": "Expirada",
@@ -458,7 +459,8 @@
       "downloadFailed": "Não foi possível baixar o anexo",
       "viewImage": "Ver imagem",
       "expandVideo": "Expandir vídeo",
-      "imageAlt": "Imagem compartilhada"
+      "imageAlt": "Imagem compartilhada",
+      "emailBadge": "E-mail"
     },
     "mediaViewer": {
       "counter": "{index} de {total}",
@@ -1973,7 +1975,8 @@
       "inbox": "Caixa de entrada",
       "members": "Membros da equipe",
       "api": "Chaves de API",
-      "company": "Empresa"
+      "company": "Empresa",
+      "email": "E-mail"
     },
     "groups": {
       "account": "Conta",
@@ -2268,6 +2271,58 @@
       "zipInvalid": "O CEP deve ter 8 dígitos.",
       "emailInvalid": "E-mail inválido.",
       "loadFailed": "Não foi possível carregar os dados da empresa"
+    },
+    "email": {
+      "title": "E-mail",
+      "description": "Conecte a caixa de e-mail da empresa para que os e-mails recebidos apareçam na Caixa de entrada, junto com o WhatsApp.",
+      "adminOnly": "Somente administradores da conta podem gerenciar a caixa de e-mail.",
+      "loading": "Carregando...",
+      "connectTitle": "Conectar uma caixa de e-mail",
+      "editTitle": "Configurações da caixa de e-mail",
+      "connectDesc": "O login é testado antes de salvar. A senha é guardada criptografada e nunca é exibida de novo.",
+      "address": "Endereço de e-mail",
+      "username": "Usuário",
+      "usernamePlaceholder": "Igual ao endereço de e-mail",
+      "usernameHint": "Normalmente é o próprio endereço de e-mail. Deixe em branco para usá-lo.",
+      "password": "Senha",
+      "passwordKeep": "Deixe em branco para manter a senha salva",
+      "passwordHint": "A senha desta caixa de e-mail (definida no seu provedor de e-mail).",
+      "incomingTitle": "Entrada (IMAP)",
+      "outgoingTitle": "Saída (SMTP)",
+      "host": "Servidor",
+      "port": "Porta",
+      "enabled": "Sincronização ativada",
+      "hostingerHint": "Caixas da Hostinger: IMAP imap.hostinger.com porta 993, SMTP smtp.hostinger.com porta 465. Ambos usam SSL/TLS.",
+      "connect": "Testar e conectar",
+      "update": "Testar e salvar",
+      "saving": "Testando...",
+      "saved": "Caixa de e-mail conectada",
+      "removed": "Caixa de e-mail desconectada",
+      "remove": "Desconectar",
+      "confirmRemove": "Sim, desconectar",
+      "cancel": "Cancelar",
+      "lastSync": "Última sincronização: {when}",
+      "neverSynced": "Ainda não sincronizou. A primeira sincronização importa os últimos 14 dias.",
+      "syncNow": "Sincronizar agora",
+      "syncing": "Sincronizando...",
+      "syncImported": "Novos e-mails importados: {count}",
+      "syncNothing": "Nenhum e-mail novo",
+      "syncBusy": "Já existe uma sincronização em andamento",
+      "cronTitle": "Sincronização automática",
+      "cronDesc": "A Caixa de entrada busca e-mails novos sozinha enquanto está aberta. Para sincronizar também quando ninguém estiver online, crie uma tarefa agendada no painel da Hostinger (Avançado, Cron Jobs) rodando a cada 5 minutos:",
+      "cronNote": "Troque YOUR_SECRET pelo EMAIL_CRON_SECRET (ou AUTOMATION_CRON_SECRET) definido no ambiente do servidor.",
+      "receiveOnlyNote": "Por enquanto os e-mails só são recebidos. A resposta por e-mail vem na próxima fase.",
+      "errors": {
+        "auth": "O servidor de e-mail recusou o login. Confira o endereço e a senha.",
+        "connect": "Não foi possível acessar o servidor de e-mail. Confira o servidor e a porta.",
+        "host": "Este endereço de servidor não é permitido ou não existe.",
+        "invalid_address": "Endereço de e-mail inválido.",
+        "invalid_host": "Informe os servidores IMAP e SMTP.",
+        "invalid_port": "As portas devem ser números entre 1 e 65535.",
+        "password_required": "Informe a senha da caixa de e-mail.",
+        "internal": "Algo deu errado. Tente novamente.",
+        "tls": "O certificado do servidor de e-mail não é confiável. Um antivírus ou proxy de rede pode estar interceptando a conexão (comum em PC com proteção de e-mail ligada). Tente pelo site publicado, ou exclua o servidor de e-mail da verificação do antivírus."
+      }
     }
   },
   "SignupPage": {

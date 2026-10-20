@@ -387,7 +387,8 @@
       "assignmentUpdateFailed": "Failed to update assignment",
       "networkError": "network error",
       "documentFallback": "Document",
-      "you": "You"
+      "you": "You",
+      "emailOnlyNotice": "This contact only has an e-mail address, so a WhatsApp reply cannot be delivered. Replying by e-mail comes in the next phase."
     },
     "sessionTimer": {
       "expired": "Expired",
@@ -458,7 +459,8 @@
       "downloadFailed": "Couldn't download the attachment",
       "viewImage": "View image",
       "expandVideo": "Expand video",
-      "imageAlt": "Shared image"
+      "imageAlt": "Shared image",
+      "emailBadge": "E-mail"
     },
     "mediaViewer": {
       "counter": "{index} of {total}",
@@ -1973,7 +1975,8 @@
       "inbox": "Inbox",
       "members": "Team members",
       "api": "API keys",
-      "company": "Company"
+      "company": "Company",
+      "email": "E-mail"
     },
     "groups": {
       "account": "Account",
@@ -2268,6 +2271,58 @@
       "zipInvalid": "The ZIP code must have 8 digits.",
       "emailInvalid": "Invalid e-mail address.",
       "loadFailed": "Failed to load company details"
+    },
+    "email": {
+      "title": "E-mail",
+      "description": "Connect the company mailbox so incoming e-mails show up in the Inbox next to WhatsApp.",
+      "adminOnly": "Only account admins can manage the mailbox.",
+      "loading": "Loading...",
+      "connectTitle": "Connect a mailbox",
+      "editTitle": "Mailbox settings",
+      "connectDesc": "The login is tested before anything is saved. The password is stored encrypted and never shown again.",
+      "address": "E-mail address",
+      "username": "Username",
+      "usernamePlaceholder": "Same as the e-mail address",
+      "usernameHint": "Usually the same as the e-mail address. Leave empty to use it.",
+      "password": "Password",
+      "passwordKeep": "Leave empty to keep the saved password",
+      "passwordHint": "The password of this mailbox (set in your e-mail provider).",
+      "incomingTitle": "Incoming (IMAP)",
+      "outgoingTitle": "Outgoing (SMTP)",
+      "host": "Server",
+      "port": "Port",
+      "enabled": "Sync enabled",
+      "hostingerHint": "Hostinger mailboxes: IMAP imap.hostinger.com port 993, SMTP smtp.hostinger.com port 465. Both use SSL/TLS.",
+      "connect": "Test and connect",
+      "update": "Test and save",
+      "saving": "Testing...",
+      "saved": "Mailbox connected",
+      "removed": "Mailbox disconnected",
+      "remove": "Disconnect",
+      "confirmRemove": "Yes, disconnect",
+      "cancel": "Cancel",
+      "lastSync": "Last sync: {when}",
+      "neverSynced": "Not synced yet. The first sync imports the last 14 days.",
+      "syncNow": "Sync now",
+      "syncing": "Syncing...",
+      "syncImported": "New e-mails imported: {count}",
+      "syncNothing": "No new e-mails",
+      "syncBusy": "A sync is already running",
+      "cronTitle": "Automatic sync",
+      "cronDesc": "The Inbox pulls new e-mail by itself while it is open. To also sync when nobody is online, create a cron job in the Hostinger panel (Advanced, Cron Jobs) that runs every 5 minutes:",
+      "cronNote": "Replace YOUR_SECRET with the EMAIL_CRON_SECRET (or AUTOMATION_CRON_SECRET) set in the server environment.",
+      "receiveOnlyNote": "For now e-mails are received only. Replying by e-mail comes in the next phase.",
+      "errors": {
+        "auth": "The mail server rejected the login. Check the e-mail address and password.",
+        "connect": "Could not reach the mail server. Check the server and port.",
+        "host": "This server address is not allowed or does not exist.",
+        "invalid_address": "Invalid e-mail address.",
+        "invalid_host": "Enter the IMAP and SMTP servers.",
+        "invalid_port": "Ports must be numbers between 1 and 65535.",
+        "password_required": "Enter the mailbox password.",
+        "internal": "Something went wrong. Try again.",
+        "tls": "The mail server certificate is not trusted. An antivirus or network proxy may be intercepting the connection (common on a PC with mail protection turned on). Try from the hosted site, or exclude the mail server from the antivirus scan."
+      }
     }
   },
   "SignupPage": {
