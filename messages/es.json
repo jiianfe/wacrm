@@ -41,7 +41,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Perfil",
     "menuSettings": "Configuración",
-    "menuSignOut": "Cerrar sesión"
+    "menuSignOut": "Cerrar sesión",
+    "companies": "Empresas"
   },
   "Header": {
     "dashboard": "Panel",
@@ -58,7 +59,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Perfil",
     "menuSettings": "Configuración",
-    "menuSignOut": "Cerrar sesión"
+    "menuSignOut": "Cerrar sesión",
+    "companies": "Empresas"
   },
   "ModeToggle": {
     "switchMode": "Cambiar al modo {mode}"
@@ -590,7 +592,7 @@
       "phoneHint": "Incluye el código de país, p. ej. +52 para México",
       "emailLabel": "Correo electrónico",
       "emailPlaceholder": "maria@example.com",
-      "companyLabel": "Empresa",
+      "companyLabel": "Empresas",
       "companyPlaceholder": "Acme S.A.",
       "tagsLabel": "Etiquetas",
       "tagsPlaceholder": "Selecciona etiquetas...",
@@ -612,7 +614,9 @@
       "phoneRequired": "El número de teléfono es obligatorio",
       "phoneNeedsCountryCode": "Incluye el código de país — el número debe empezar con + (p. ej. +5215512345678)",
       "notAuthenticated": "No autenticado",
-      "notLinkedToAccount": "Tu perfil no está vinculado a una cuenta."
+      "notLinkedToAccount": "Tu perfil no está vinculado a una cuenta.",
+      "companyHint": "Vincula una o más empresas registradas, o déjalo vacío. Registra empresas en Empresas.",
+      "companyLegacyHint": "Texto actual: {name}. Elige una empresa registrada para vincularla."
     },
     "detailView": {
       "tabs": {
@@ -637,7 +641,7 @@
       "name": "Nombre",
       "phone": "Teléfono",
       "email": "Correo electrónico",
-      "company": "Empresa",
+      "company": "Empresas",
       "createdAt": "Fecha de creación",
       "customFields": "Campos personalizados",
       "noCustomFields": "No hay campos personalizados definidos. Créalos en Configuración.",
@@ -787,7 +791,10 @@
     "card": {
       "noContact": "Sin contacto",
       "won": "Ganado",
-      "lost": "Perdido"
+      "lost": "Perdido",
+      "assignee": "Responsable: {name}",
+      "contact": "Contacto: {name}",
+      "company": "Empresa: {name}"
     },
     "form": {
       "editDeal": "Editar negocio",
@@ -829,7 +836,8 @@
       "toastMarkedLost": "Marcado como perdido",
       "toastReopened": "Negocio reabierto",
       "toastFailedDelete": "Error al eliminar el negocio",
-      "toastDeleted": "Negocio eliminado"
+      "toastDeleted": "Negocio eliminado",
+      "company": "Empresa"
     },
     "settings": {
       "managePipeline": "Administrar pipeline",
@@ -1689,11 +1697,11 @@
     },
     "tagsAndFields": {
       "title": "Campos y etiquetas",
-      "description": "Dos formas de organizar contactos: etiquetas de colores para agrupar rápido y campos personalizados para datos estructurados.",
+      "description": "Dos formas de organizar empresas: etiquetas de colores para agruparlas rápidamente y campos personalizados para datos estructurados.",
       "tagsTitle": "Etiquetas",
-      "tagsDesc": "Rótulos de colores para agrupar y filtrar contactos.",
+      "tagsDesc": "Etiquetas de colores para agrupar y filtrar empresas.",
       "fieldsTitle": "Campos personalizados",
-      "fieldsDesc": "Campos adicionales para los contactos (p. ej. código postal, origen del lead). Aparecen en todos los contactos y en la acción de automatización “Actualizar campo del contacto”.",
+      "fieldsDesc": "Campos adicionales para las empresas (ej.: origen del lead, segmento). Aparecen en todas las empresas.",
       "adminRole": "Administrador",
       "failedToLoadTags": "Error al cargar las etiquetas",
       "nameRequired": "El nombre de la etiqueta es obligatorio",
@@ -1964,7 +1972,8 @@
       "deals": "Negocios y moneda",
       "inbox": "Bandeja de entrada",
       "members": "Miembros del equipo",
-      "api": "Claves de API"
+      "api": "Claves de API",
+      "company": "Empresa"
     },
     "groups": {
       "account": "Cuenta",
@@ -2222,6 +2231,43 @@
       "textPlaceholder": "El texto del mensaje que se insertará",
       "cancel": "Cancelar",
       "save": "Guardar"
+    },
+    "company": {
+      "title": "Empresa",
+      "description": "Los datos de registro de tu empresa, reunidos en un solo lugar.",
+      "loading": "Cargando...",
+      "identityTitle": "Identificación",
+      "identityDesc": "Razón social, CNPJ y registros.",
+      "legalName": "Razón social",
+      "tradeName": "Nombre comercial",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Se aceptan letras: los CNPJ emitidos desde julio de 2026 pueden ser alfanuméricos.",
+      "stateRegistration": "Inscripción estatal (IE)",
+      "municipalRegistration": "Inscripción municipal (IM)",
+      "contactTitle": "Contacto",
+      "contactDesc": "Cómo los clientes y proveedores se comunican con la empresa.",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "addressTitle": "Dirección",
+      "addressDesc": "Dirección registrada o principal.",
+      "zip": "Código postal (CEP)",
+      "street": "Calle",
+      "number": "Número",
+      "complement": "Complemento",
+      "district": "Barrio",
+      "city": "Ciudad",
+      "state": "Estado",
+      "stateSelect": "—",
+      "adminOnlyHint": "Solo los administradores de la cuenta pueden editar los datos de la empresa.",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "saveFailed": "No se pudieron guardar los datos de la empresa",
+      "saveSuccess": "Datos de la empresa guardados",
+      "cnpjInvalid": "CNPJ no válido. Revisa los dígitos.",
+      "zipInvalid": "El código postal debe tener 8 dígitos.",
+      "emailInvalid": "Correo electrónico no válido.",
+      "loadFailed": "No se pudieron cargar los datos de la empresa"
     }
   },
   "SignupPage": {
@@ -2401,7 +2447,8 @@
       "createFlows": "crear flujos",
       "createPipelines": "crear pipelines",
       "createDeals": "crear negocios",
-      "sendMessages": "enviar mensajes"
+      "sendMessages": "enviar mensajes",
+      "manageCompanies": "gestionar empresas"
     }
   },
   "Metadata": {
@@ -2922,6 +2969,107 @@
       "submitFailed": "Error al enviar la plantilla.",
       "metaApiStatus": "Error de la API de Meta: {status}",
       "syncFailed": "Error al sincronizar las plantillas"
+    }
+  },
+  "Companies": {
+    "select": {
+      "none": "Sin empresa",
+      "add": "Agregar empresa...",
+      "addAnother": "Agregar otra empresa...",
+      "unknown": "Empresa",
+      "remove": "Quitar {name}"
+    },
+    "page": {
+      "title": "Empresas",
+      "subtitle": "{count} registradas",
+      "subtitleZero": "Registra las empresas a las que vendes.",
+      "addBtn": "Nueva empresa",
+      "searchPlaceholder": "Buscar por nombre, CNPJ o ciudad...",
+      "loading": "Cargando empresas...",
+      "noneYet": "Aún no hay empresas registradas.",
+      "noMatch": "Ninguna empresa coincide con la búsqueda.",
+      "addFirst": "Registrar la primera empresa",
+      "columns": {
+        "name": "Empresa",
+        "cnpj": "CNPJ",
+        "city": "Ciudad",
+        "phone": "Teléfono",
+        "tags": "Etiquetas"
+      },
+      "editAction": "Editar",
+      "deleteAction": "Eliminar",
+      "deleteTitle": "¿Eliminar empresa?",
+      "deleteDesc": "Esto elimina {name}. Los contactos y negocios vinculados se conservan, solo sin vínculo con la empresa.",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "deleting": "Eliminando...",
+      "toastFailedLoad": "No se pudieron cargar las empresas",
+      "toastDeleted": "Empresa eliminada",
+      "toastFailedDelete": "No se pudo eliminar la empresa",
+      "showingPagination": "Mostrando {start}–{end} de {total}",
+      "pageCount": "Página {page} de {total}",
+      "filterByTag": "Filtrar por etiqueta",
+      "allTags": "Todas las etiquetas"
+    },
+    "form": {
+      "titleAdd": "Nueva empresa",
+      "titleEdit": "Editar empresa",
+      "descAdd": "Registra una empresa cliente con su CNPJ y dirección.",
+      "descEdit": "Actualiza los datos de registro de esta empresa.",
+      "identity": "Identificación",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Escribe el CNPJ y haz clic en Buscar para completar el registro con los datos públicos de la Receita Federal.",
+      "lookupBtn": "Buscar",
+      "lookingUp": "Buscando...",
+      "lookupFilled": "Datos completados desde el CNPJ. Revisa antes de guardar.",
+      "lookupNotFound": "CNPJ no encontrado en el registro público.",
+      "lookupUnavailable": "No se pudo consultar el CNPJ ahora. Inténtalo de nuevo en un momento.",
+      "lookupInactive": "Situación cadastral: {situation}. Revisa antes de usar.",
+      "legalName": "Razón social",
+      "tradeName": "Nombre comercial",
+      "stateRegistration": "Inscripción estatal (IE)",
+      "municipalRegistration": "Inscripción municipal (IM)",
+      "contact": "Contacto",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "website": "Sitio web",
+      "address": "Dirección",
+      "zip": "Código postal (CEP)",
+      "street": "Calle",
+      "number": "Número",
+      "complement": "Complemento",
+      "district": "Barrio",
+      "city": "Ciudad",
+      "state": "Estado",
+      "stateSelect": "—",
+      "notes": "Notas",
+      "notesPlaceholder": "Cualquier dato útil sobre esta empresa...",
+      "linkedDeals": "Negocios ({count})",
+      "unnamed": "Sin nombre",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "nameRequired": "Indica la razón social o el nombre comercial.",
+      "cnpjInvalid": "CNPJ no válido. Revisa los dígitos.",
+      "zipInvalid": "El código postal debe tener 8 dígitos.",
+      "emailInvalid": "Correo electrónico no válido.",
+      "cnpjDuplicate": "Ya existe una empresa registrada con este CNPJ.",
+      "toastCreated": "Empresa registrada",
+      "toastUpdated": "Empresa actualizada",
+      "toastFailed": "No se pudo guardar la empresa",
+      "notAuthenticated": "No has iniciado sesión",
+      "notLinkedToAccount": "Tu perfil no está vinculado a una cuenta.",
+      "contactsTitle": "Contactos",
+      "addContactPlaceholder": "Busca un contacto por nombre o teléfono para agregar...",
+      "noContactsFound": "No se encontraron contactos.",
+      "noContactsLinked": "Aún no hay contactos vinculados a esta empresa. Un contacto puede pertenecer a más de una empresa.",
+      "jobTitle": "Cargo",
+      "jobTitlePlaceholder": "Cargo (ej.: comprador)",
+      "removeContact": "Quitar a {name} de esta empresa",
+      "tagsTitle": "Etiquetas",
+      "noTagsAvailable": "Aún no hay etiquetas. Créalas en Configuración, Campos y etiquetas.",
+      "customFieldsTitle": "Campos personalizados",
+      "noCustomFields": "Aún no hay campos personalizados. Créalos en Configuración, Campos y etiquetas."
     }
   }
 }

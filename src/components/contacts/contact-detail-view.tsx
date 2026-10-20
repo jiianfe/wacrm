@@ -40,9 +40,13 @@ import {
   DollarSign,
   LayoutTemplate,
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { contactHandle } from '@/lib/whatsapp/wa-identity';
 import { parseInternationalPhone } from '@/lib/whatsapp/phone-utils';
+import { loadContactCompanyIds, replaceContactCompanies } from '@/lib/company-links';
+import { CONTACT_CUSTOM_FIELDS_ENABLED, CONTACT_TAGS_ENABLED } from '@/lib/features';
+import { useCompanies } from '@/hooks/use-companies';
+import { CompanyMultiSelect } from '@/components/companies/company-multi-select';
 
 interface ContactDetailViewProps {
   open: boolean;
@@ -58,6 +62,7 @@ export function ContactDetailView({
   onUpdated,
 }: ContactDetailViewProps) {
   const t = useTranslations('Contacts.detailView');
+  const locale = useLocale();
   const supabase = createClient();
   const { accountId, defaultCurrency } = useAuth();
 
@@ -75,7 +80,8 @@ export function ContactDetailView({
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editEmail, setEditEmail] = useState('');
-  const [editCompany, setEditCompany] = useState('');
+  const [editCompanyIds, setEditCompanyIds] = useState<string[]>([]);
+  const { companies } = useCompanies(open);
   const [savingDetails, setSavingDetails] = useState(false);
 
   // Tags tab
@@ -114,7 +120,7 @@ export function ContactDetailView({
       setEditName(data.name ?? '');
       setEditPhone(data.phone);
       setEditEmail(data.email ?? '');
-      setEditCompany(data.company ?? '');
+      setEditCompanyIds(await loadContactCompanyIds(supabase, data.id));
     }
     setLoading(false);
   }, [contactId, supabase]);
@@ -216,16 +222,24 @@ export function ContactDetailView({
     }
 
     setSavingDetails(true);
-    const { error } = await supabase
+    let { error } = await supabase
       .from('contacts')
       .update({
         name: editName.trim() || null,
         phone: editPhone.trim(),
         email: editEmail.trim() || null,
-        company: editCompany.trim() || null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', contactId);
+
+    // Sync the linked companies (also refreshes the free-text company).
+    if (!error && accountId) {
+      try {
+        await replaceContactCompanies(supabase, accountId, contactId, editCompanyIds);
+      } catch (err) {
+        error = err as typeof error;
+      }
+    }
 
     if (error) {
       toast.error(t('toastUpdateFailed'));
@@ -470,24 +484,28 @@ export function ContactDetailView({
                 >
                   {t('tabs.details')}
                 </TabsTrigger>
+                {CONTACT_TAGS_ENABLED && (
                 <TabsTrigger
                   value="tags"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
                 >
                   {t('tabs.tags')}
                 </TabsTrigger>
+                )}
                 <TabsTrigger
                   value="notes"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
                 >
                   {t('tabs.notes')}
                 </TabsTrigger>
+                {CONTACT_CUSTOM_FIELDS_ENABLED && (
                 <TabsTrigger
                   value="custom"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
                 >
                   {t('tabs.custom')}
                 </TabsTrigger>
+                )}
                 <TabsTrigger
                   value="deals"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
@@ -527,10 +545,11 @@ export function ContactDetailView({
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-muted-foreground text-xs">{t('company')}</Label>
-                    <Input
-                      value={editCompany}
-                      onChange={(e) => setEditCompany(e.target.value)}
-                      className="bg-muted border-border text-foreground h-8 text-sm"
+                    <CompanyMultiSelect
+                      value={editCompanyIds}
+                      companies={companies}
+                      onChange={setEditCompanyIds}
+                      className="bg-muted border-border text-foreground h-8 w-full rounded-lg border px-2 text-sm outline-none focus:border-primary"
                     />
                   </div>
                   <Button
@@ -639,7 +658,7 @@ export function ContactDetailView({
                           </button>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1.5">
-                          {new Date(note.created_at).toLocaleDateString('en-US', {
+                          {new Date(note.created_at).toLocaleDateString(locale, {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',

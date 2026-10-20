@@ -56,7 +56,8 @@ import { ImportModal } from '@/components/contacts/import-modal';
 import { CustomFieldsManager } from '@/components/contacts/custom-fields-manager';
 import { useCan } from '@/hooks/use-can';
 import { GatedButton } from '@/components/ui/gated-button';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { CONTACT_CUSTOM_FIELDS_ENABLED, CONTACT_TAGS_ENABLED } from '@/lib/features';
 
 const PAGE_SIZE = 25;
 
@@ -66,6 +67,7 @@ interface ContactWithTags extends Contact {
 
 export default function ContactsPage() {
   const t = useTranslations('Contacts.page');
+  const locale = useLocale();
   const tGate = useTranslations('GatedButton');
   const supabase = createClient();
   const canEdit = useCan('send-messages');
@@ -351,7 +353,7 @@ export default function ContactsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {canEditSettings && (
+          {CONTACT_CUSTOM_FIELDS_ENABLED && canEditSettings && (
             <Button
               variant="outline"
               onClick={() => setCustomFieldsOpen(true)}
@@ -401,6 +403,7 @@ export default function ContactsPage() {
             />
           </div>
 
+          {CONTACT_TAGS_ENABLED && (
           <Popover>
             <PopoverTrigger
               render={
@@ -461,6 +464,7 @@ export default function ContactsPage() {
               )}
             </PopoverContent>
           </Popover>
+          )}
         </div>
 
         {/* Active tag-filter chips */}
@@ -546,7 +550,9 @@ export default function ContactsPage() {
               <TableHead className="text-muted-foreground">{t('tableColumns.phone')}</TableHead>
               <TableHead className="text-muted-foreground hidden md:table-cell">{t('tableColumns.email')}</TableHead>
               <TableHead className="text-muted-foreground hidden lg:table-cell">{t('tableColumns.company')}</TableHead>
-              <TableHead className="text-muted-foreground hidden md:table-cell">{t('tableColumns.tags')}</TableHead>
+              {CONTACT_TAGS_ENABLED && (
+                <TableHead className="text-muted-foreground hidden md:table-cell">{t('tableColumns.tags')}</TableHead>
+              )}
               <TableHead className="text-muted-foreground hidden lg:table-cell">{t('tableColumns.createdAt')}</TableHead>
               <TableHead className="text-muted-foreground w-12" />
             </TableRow>
@@ -613,6 +619,7 @@ export default function ContactsPage() {
                   <TableCell className="text-muted-foreground hidden lg:table-cell text-sm">
                     {contact.company || <span className="text-muted-foreground">-</span>}
                   </TableCell>
+                  {CONTACT_TAGS_ENABLED && (
                   <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {contact.tags && contact.tags.length > 0 ? (
@@ -638,8 +645,9 @@ export default function ContactsPage() {
                       )}
                     </div>
                   </TableCell>
+                  )}
                   <TableCell className="text-muted-foreground text-xs hidden lg:table-cell">
-                    {new Date(contact.created_at).toLocaleDateString('en-US', {
+                    {new Date(contact.created_at).toLocaleDateString(locale, {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',

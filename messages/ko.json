@@ -41,7 +41,8 @@
     "defaultAvatar": "아바타",
     "menuProfile": "프로필",
     "menuSettings": "설정",
-    "menuSignOut": "로그아웃"
+    "menuSignOut": "로그아웃",
+    "companies": "회사"
   },
   "Header": {
     "dashboard": "대시보드",
@@ -58,7 +59,8 @@
     "defaultAvatar": "아바타",
     "menuProfile": "프로필",
     "menuSettings": "설정",
-    "menuSignOut": "로그아웃"
+    "menuSignOut": "로그아웃",
+    "companies": "회사"
   },
   "ModeToggle": {
     "switchMode": "{mode} 모드로 전환"
@@ -612,7 +614,9 @@
       "phoneRequired": "전화번호는 필수입니다",
       "phoneNeedsCountryCode": "국가 코드를 포함하세요. 번호는 +로 시작해야 합니다 (예: +14155550123)",
       "notAuthenticated": "인증되지 않았습니다",
-      "notLinkedToAccount": "프로필이 계정에 연결되어 있지 않습니다."
+      "notLinkedToAccount": "프로필이 계정에 연결되어 있지 않습니다.",
+      "companyHint": "등록된 회사를 하나 이상 연결하거나 비워 두세요. 회사는 회사 메뉴에서 등록합니다.",
+      "companyLegacyHint": "현재 텍스트: {name}. 등록된 회사를 선택하면 연결됩니다."
     },
     "detailView": {
       "tabs": {
@@ -787,7 +791,10 @@
     "card": {
       "noContact": "연락처 없음",
       "won": "성사",
-      "lost": "실패"
+      "lost": "실패",
+      "assignee": "담당자: {name}",
+      "contact": "연락처: {name}",
+      "company": "회사: {name}"
     },
     "form": {
       "editDeal": "딜 수정",
@@ -829,7 +836,8 @@
       "toastMarkedLost": "실패로 표시했습니다",
       "toastReopened": "딜이 재개되었습니다",
       "toastFailedDelete": "딜을 삭제하지 못했습니다",
-      "toastDeleted": "딜이 삭제되었습니다"
+      "toastDeleted": "딜이 삭제되었습니다",
+      "company": "회사"
     },
     "settings": {
       "managePipeline": "파이프라인 관리",
@@ -1689,11 +1697,11 @@
     },
     "tagsAndFields": {
       "title": "필드 & 태그",
-      "description": "연락처를 정리하는 두 가지 방법: 빠른 그룹화를 위한 색상 태그와, 구조화된 데이터를 위한 커스텀 필드.",
+      "description": "회사를 정리하는 두 가지 방법: 빠르게 묶을 수 있는 색상 태그와 구조화된 데이터를 위한 사용자 정의 필드.",
       "tagsTitle": "태그",
-      "tagsDesc": "연락처를 그룹화하고 필터링하기 위한 색상 라벨입니다.",
+      "tagsDesc": "회사를 묶고 필터링하는 색상 라벨.",
       "fieldsTitle": "커스텀 필드",
-      "fieldsDesc": "추가 연락처 필드입니다 (예: 우편번호, 리드 출처). 모든 연락처와 \"연락처 필드 업데이트\" 자동화 액션에 표시됩니다.",
+      "fieldsDesc": "회사를 위한 추가 필드(예: 리드 출처, 업종). 모든 회사에 표시됩니다.",
       "adminRole": "관리자",
       "failedToLoadTags": "태그를 불러오지 못했습니다",
       "nameRequired": "태그 이름은 필수입니다",
@@ -1964,7 +1972,8 @@
       "deals": "딜 & 통화",
       "inbox": "인박스",
       "members": "팀원",
-      "api": "API 키"
+      "api": "API 키",
+      "company": "회사"
     },
     "groups": {
       "account": "계정",
@@ -2222,6 +2231,43 @@
       "textPlaceholder": "삽입할 메시지 텍스트",
       "cancel": "취소",
       "save": "저장"
+    },
+    "company": {
+      "title": "회사",
+      "description": "회사의 등록 정보를 한곳에 모아 관리합니다.",
+      "loading": "불러오는 중...",
+      "identityTitle": "기본 정보",
+      "identityDesc": "상호, CNPJ 및 등록 번호.",
+      "legalName": "법인명 (razão social)",
+      "tradeName": "상호 (nome fantasia)",
+      "cnpj": "CNPJ",
+      "cnpjHint": "문자도 입력할 수 있습니다. 2026년 7월부터 발급되는 CNPJ는 영숫자일 수 있습니다.",
+      "stateRegistration": "주 등록번호 (IE)",
+      "municipalRegistration": "시 등록번호 (IM)",
+      "contactTitle": "연락처",
+      "contactDesc": "고객과 거래처가 회사에 연락하는 방법.",
+      "phone": "전화번호",
+      "email": "이메일",
+      "website": "웹사이트",
+      "addressTitle": "주소",
+      "addressDesc": "등록 주소 또는 대표 주소.",
+      "zip": "우편번호 (CEP)",
+      "street": "도로명",
+      "number": "번호",
+      "complement": "상세 주소",
+      "district": "지구",
+      "city": "도시",
+      "state": "주",
+      "stateSelect": "—",
+      "adminOnlyHint": "계정 관리자만 회사 정보를 수정할 수 있습니다.",
+      "save": "저장",
+      "saving": "저장 중...",
+      "saveFailed": "회사 정보를 저장하지 못했습니다",
+      "saveSuccess": "회사 정보가 저장되었습니다",
+      "cnpjInvalid": "유효하지 않은 CNPJ입니다. 숫자를 확인하세요.",
+      "zipInvalid": "우편번호는 8자리여야 합니다.",
+      "emailInvalid": "유효하지 않은 이메일 주소입니다.",
+      "loadFailed": "회사 정보를 불러오지 못했습니다"
     }
   },
   "SignupPage": {
@@ -2401,7 +2447,8 @@
       "createFlows": "플로우를 만들",
       "createPipelines": "파이프라인을 만들",
       "createDeals": "거래를 만들",
-      "sendMessages": "메시지를 보낼"
+      "sendMessages": "메시지를 보낼",
+      "manageCompanies": "회사 관리"
     }
   },
   "Metadata": {
@@ -2922,6 +2969,107 @@
       "submitFailed": "템플릿을 제출하지 못했습니다.",
       "metaApiStatus": "Meta API 오류: {status}",
       "syncFailed": "템플릿을 동기화하지 못했습니다"
+    }
+  },
+  "Companies": {
+    "select": {
+      "none": "회사 없음",
+      "add": "회사 추가...",
+      "addAnother": "다른 회사 추가...",
+      "unknown": "회사",
+      "remove": "{name} 제거"
+    },
+    "page": {
+      "title": "회사",
+      "subtitle": "{count}개 등록됨",
+      "subtitleZero": "영업 대상 회사를 등록하세요.",
+      "addBtn": "회사 추가",
+      "searchPlaceholder": "이름, CNPJ 또는 도시로 검색...",
+      "loading": "회사를 불러오는 중...",
+      "noneYet": "아직 등록된 회사가 없습니다.",
+      "noMatch": "검색과 일치하는 회사가 없습니다.",
+      "addFirst": "첫 회사 등록",
+      "columns": {
+        "name": "회사",
+        "cnpj": "CNPJ",
+        "city": "도시",
+        "phone": "전화번호",
+        "tags": "태그"
+      },
+      "editAction": "수정",
+      "deleteAction": "삭제",
+      "deleteTitle": "회사를 삭제할까요?",
+      "deleteDesc": "{name}을(를) 삭제합니다. 연결된 연락처와 거래는 유지되며 회사 연결만 해제됩니다.",
+      "cancel": "취소",
+      "delete": "삭제",
+      "deleting": "삭제 중...",
+      "toastFailedLoad": "회사를 불러오지 못했습니다",
+      "toastDeleted": "회사가 삭제되었습니다",
+      "toastFailedDelete": "회사를 삭제하지 못했습니다",
+      "showingPagination": "{total}개 중 {start}–{end} 표시",
+      "pageCount": "{page} / {total} 페이지",
+      "filterByTag": "태그로 필터",
+      "allTags": "모든 태그"
+    },
+    "form": {
+      "titleAdd": "회사 추가",
+      "titleEdit": "회사 수정",
+      "descAdd": "CNPJ와 주소가 있는 고객 회사를 등록합니다.",
+      "descEdit": "이 회사의 등록 정보를 수정합니다.",
+      "identity": "기본 정보",
+      "cnpj": "CNPJ",
+      "cnpjHint": "CNPJ를 입력하고 검색을 누르면 연방 국세청의 공개 데이터로 등록 정보를 채웁니다.",
+      "lookupBtn": "검색",
+      "lookingUp": "검색 중...",
+      "lookupFilled": "CNPJ로 데이터를 채웠습니다. 저장하기 전에 확인하세요.",
+      "lookupNotFound": "공개 등록부에서 CNPJ를 찾을 수 없습니다.",
+      "lookupUnavailable": "지금은 CNPJ를 조회할 수 없습니다. 잠시 후 다시 시도하세요.",
+      "lookupInactive": "등록 상태: {situation}. 사용하기 전에 확인하세요.",
+      "legalName": "법인명 (razão social)",
+      "tradeName": "상호 (nome fantasia)",
+      "stateRegistration": "주 등록번호 (IE)",
+      "municipalRegistration": "시 등록번호 (IM)",
+      "contact": "연락처",
+      "phone": "전화번호",
+      "email": "이메일",
+      "website": "웹사이트",
+      "address": "주소",
+      "zip": "우편번호 (CEP)",
+      "street": "도로명",
+      "number": "번호",
+      "complement": "상세 주소",
+      "district": "지구",
+      "city": "도시",
+      "state": "주",
+      "stateSelect": "—",
+      "notes": "메모",
+      "notesPlaceholder": "이 회사에 대해 기억해 둘 내용...",
+      "linkedDeals": "거래 ({count})",
+      "unnamed": "이름 없음",
+      "cancel": "취소",
+      "save": "저장",
+      "saving": "저장 중...",
+      "nameRequired": "법인명 또는 상호를 입력하세요.",
+      "cnpjInvalid": "유효하지 않은 CNPJ입니다. 숫자를 확인하세요.",
+      "zipInvalid": "우편번호는 8자리여야 합니다.",
+      "emailInvalid": "유효하지 않은 이메일 주소입니다.",
+      "cnpjDuplicate": "이 CNPJ로 등록된 회사가 이미 있습니다.",
+      "toastCreated": "회사가 추가되었습니다",
+      "toastUpdated": "회사가 수정되었습니다",
+      "toastFailed": "회사를 저장하지 못했습니다",
+      "notAuthenticated": "로그인되어 있지 않습니다",
+      "notLinkedToAccount": "프로필이 계정에 연결되어 있지 않습니다.",
+      "contactsTitle": "연락처",
+      "addContactPlaceholder": "이름 또는 전화번호로 연락처를 검색해 추가...",
+      "noContactsFound": "연락처를 찾을 수 없습니다.",
+      "noContactsLinked": "이 회사에 연결된 연락처가 아직 없습니다. 한 연락처는 여러 회사에 속할 수 있습니다.",
+      "jobTitle": "직책",
+      "jobTitlePlaceholder": "직책 (예: 구매 담당)",
+      "removeContact": "이 회사에서 {name} 제거",
+      "tagsTitle": "태그",
+      "noTagsAvailable": "아직 태그가 없습니다. 설정의 필드 및 태그에서 만드세요.",
+      "customFieldsTitle": "사용자 정의 필드",
+      "noCustomFields": "아직 사용자 정의 필드가 없습니다. 설정의 필드 및 태그에서 만드세요."
     }
   }
 }

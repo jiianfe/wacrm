@@ -13,6 +13,10 @@ import {
   type ExistingContact,
 } from '@/lib/contacts/dedupe';
 import { parseInternationalPhone } from '@/lib/whatsapp/phone-utils';
+import { loadContactCompanyIds, replaceContactCompanies } from '@/lib/company-links';
+import { CONTACT_TAGS_ENABLED } from '@/lib/features';
+import { useCompanies } from '@/hooks/use-companies';
+import { CompanyMultiSelect } from '@/components/companies/company-multi-select';
 import {
   Dialog,
   DialogContent,
@@ -55,7 +59,11 @@ export function ContactForm({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
+  const [companyIds, setCompanyIds] = useState<string[]>([]);
+  // Companies the contact was linked to when the form opened — tells a
+  // contact with only a legacy free-text company apart from a linked one.
+  const [initialCompanyIds, setInitialCompanyIds] = useState<string[]>([]);
+  const { companies } = useCompanies(open);
   const [saving, setSaving] = useState(false);
 
   // Duplicate-phone detection for NEW contacts. `exact` (same digits)
@@ -76,7 +84,14 @@ export function ContactForm({
       setName(contact?.name ?? '');
       setPhone(contact?.phone ?? '');
       setEmail(contact?.email ?? '');
-      setCompany(contact?.company ?? '');
+      setCompanyIds([]);
+      setInitialCompanyIds([]);
+      if (contact) {
+        loadContactCompanyIds(supabase, contact.id).then((ids) => {
+          setCompanyIds(ids);
+          setInitialCompanyIds(ids);
+        });
+      }
       setSelectedTagIds(contactTags.map((ct) => ct.tag_id));
       setDupMatch(null);
       fetchTags();
@@ -169,7 +184,6 @@ export function ContactForm({
             name: name.trim() || null,
             phone: phone.trim(),
             email: email.trim() || null,
-            company: company.trim() || null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', contactId);
@@ -183,12 +197,16 @@ export function ContactForm({
             name: name.trim() || null,
             phone: phone.trim(),
             email: email.trim() || null,
-            company: company.trim() || null,
           })
           .select('id')
           .single();
         if (error) throw error;
         contactId = data.id;
+      }
+
+      // Sync the linked companies (also refreshes the free-text company).
+      if (contactId) {
+        await replaceContactCompanies(supabase, accountId, contactId, companyIds);
       }
 
       // Sync tags
@@ -327,15 +345,22 @@ export function ContactForm({
             <Label htmlFor="cf-company" className="text-muted-foreground">
               {t('companyLabel')}
             </Label>
-            <Input
+            <CompanyMultiSelect
               id="cf-company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              placeholder={t('companyPlaceholder')}
-              className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
+              value={companyIds}
+              companies={companies}
+              onChange={setCompanyIds}
             />
+            {companyIds.length === 0 && initialCompanyIds.length === 0 && contact?.company ? (
+              <p className="text-xs text-muted-foreground">
+                {t('companyLegacyHint', { name: contact.company })}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">{t('companyHint')}</p>
+            )}
           </div>
 
+          {CONTACT_TAGS_ENABLED && (
           <div className="space-y-2">
             <Label className="text-muted-foreground">{t('tagsLabel')}</Label>
             {loadingTags ? (
@@ -374,6 +399,7 @@ export function ContactForm({
               </div>
             )}
           </div>
+          )}
 
           <DialogFooter className="bg-popover border-border">
             <Button

@@ -41,7 +41,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Perfil",
     "menuSettings": "Configurações",
-    "menuSignOut": "Sair"
+    "menuSignOut": "Sair",
+    "companies": "Empresas"
   },
   "Header": {
     "dashboard": "Painel",
@@ -58,7 +59,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Perfil",
     "menuSettings": "Configurações",
-    "menuSignOut": "Sair"
+    "menuSignOut": "Sair",
+    "companies": "Empresas"
   },
   "ModeToggle": {
     "switchMode": "Mudar para o modo {mode}"
@@ -590,7 +592,7 @@
       "phoneHint": "Inclua o código do país, ex.: +55 para o Brasil",
       "emailLabel": "E-mail",
       "emailPlaceholder": "maria@example.com",
-      "companyLabel": "Empresa",
+      "companyLabel": "Empresas",
       "companyPlaceholder": "Acme Ltda.",
       "tagsLabel": "Tags",
       "tagsPlaceholder": "Selecione tags...",
@@ -612,7 +614,9 @@
       "phoneRequired": "O número de telefone é obrigatório",
       "phoneNeedsCountryCode": "Inclua o código do país — o número deve começar com + (ex.: +5511999990000)",
       "notAuthenticated": "Não autenticado",
-      "notLinkedToAccount": "Seu perfil não está vinculado a uma conta."
+      "notLinkedToAccount": "Seu perfil não está vinculado a uma conta.",
+      "companyHint": "Vincule uma ou mais empresas cadastradas, ou deixe em branco. Cadastre empresas em Empresas.",
+      "companyLegacyHint": "Texto atual: {name}. Escolha uma empresa cadastrada para vincular."
     },
     "detailView": {
       "tabs": {
@@ -637,7 +641,7 @@
       "name": "Nome",
       "phone": "Telefone",
       "email": "E-mail",
-      "company": "Empresa",
+      "company": "Empresas",
       "createdAt": "Criado em",
       "customFields": "Campos personalizados",
       "noCustomFields": "Nenhum campo personalizado definido. Crie-os em Configurações.",
@@ -787,7 +791,10 @@
     "card": {
       "noContact": "Sem contato",
       "won": "Ganho",
-      "lost": "Perdido"
+      "lost": "Perdido",
+      "assignee": "Responsável: {name}",
+      "contact": "Contato: {name}",
+      "company": "Empresa: {name}"
     },
     "form": {
       "editDeal": "Editar negócio",
@@ -829,7 +836,8 @@
       "toastMarkedLost": "Marcado como perdido",
       "toastReopened": "Negócio reaberto",
       "toastFailedDelete": "Falha ao excluir o negócio",
-      "toastDeleted": "Negócio excluído"
+      "toastDeleted": "Negócio excluído",
+      "company": "Empresa"
     },
     "settings": {
       "managePipeline": "Gerenciar pipeline",
@@ -1689,11 +1697,11 @@
     },
     "tagsAndFields": {
       "title": "Campos e tags",
-      "description": "Duas formas de organizar contatos: tags coloridas para agrupar rapidamente e campos personalizados para dados estruturados.",
+      "description": "Duas formas de organizar empresas: tags coloridas para agrupar rapidamente e campos personalizados para dados estruturados.",
       "tagsTitle": "Tags",
-      "tagsDesc": "Rótulos coloridos para agrupar e filtrar contatos.",
+      "tagsDesc": "Rótulos coloridos para agrupar e filtrar empresas.",
       "fieldsTitle": "Campos personalizados",
-      "fieldsDesc": "Campos extras para os contatos (ex.: CEP, origem do lead). Eles aparecem em todos os contatos e na ação de automação “Atualizar campo do contato”.",
+      "fieldsDesc": "Campos extras para as empresas (ex.: origem do lead, segmento). Eles aparecem em todas as empresas.",
       "adminRole": "Administrador",
       "failedToLoadTags": "Falha ao carregar as tags",
       "nameRequired": "O nome da tag é obrigatório",
@@ -1964,7 +1972,8 @@
       "deals": "Negócios e moeda",
       "inbox": "Caixa de entrada",
       "members": "Membros da equipe",
-      "api": "Chaves de API"
+      "api": "Chaves de API",
+      "company": "Empresa"
     },
     "groups": {
       "account": "Conta",
@@ -2222,6 +2231,43 @@
       "textPlaceholder": "O texto da mensagem a inserir",
       "cancel": "Cancelar",
       "save": "Salvar"
+    },
+    "company": {
+      "title": "Empresa",
+      "description": "Os dados cadastrais da sua empresa, reunidos em um só lugar.",
+      "loading": "Carregando...",
+      "identityTitle": "Identificação",
+      "identityDesc": "Razão social, CNPJ e inscrições.",
+      "legalName": "Razão social",
+      "tradeName": "Nome fantasia",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Aceita letras: CNPJs emitidos a partir de julho de 2026 podem ser alfanuméricos.",
+      "stateRegistration": "Inscrição estadual (IE)",
+      "municipalRegistration": "Inscrição municipal (IM)",
+      "contactTitle": "Contato",
+      "contactDesc": "Como clientes e fornecedores falam com a empresa.",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "website": "Site",
+      "addressTitle": "Endereço",
+      "addressDesc": "Endereço cadastrado ou principal.",
+      "zip": "CEP",
+      "street": "Rua",
+      "number": "Número",
+      "complement": "Complemento",
+      "district": "Bairro",
+      "city": "Cidade",
+      "state": "UF",
+      "stateSelect": "—",
+      "adminOnlyHint": "Somente administradores da conta podem editar os dados da empresa.",
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "saveFailed": "Não foi possível salvar os dados da empresa",
+      "saveSuccess": "Dados da empresa salvos",
+      "cnpjInvalid": "CNPJ inválido. Confira os dígitos.",
+      "zipInvalid": "O CEP deve ter 8 dígitos.",
+      "emailInvalid": "E-mail inválido.",
+      "loadFailed": "Não foi possível carregar os dados da empresa"
     }
   },
   "SignupPage": {
@@ -2401,7 +2447,8 @@
       "createFlows": "criar fluxos",
       "createPipelines": "criar pipelines",
       "createDeals": "criar negócios",
-      "sendMessages": "enviar mensagens"
+      "sendMessages": "enviar mensagens",
+      "manageCompanies": "gerenciar empresas"
     }
   },
   "Metadata": {
@@ -2922,6 +2969,107 @@
       "submitFailed": "Falha ao enviar o modelo.",
       "metaApiStatus": "Erro da API da Meta: {status}",
       "syncFailed": "Falha ao sincronizar os modelos"
+    }
+  },
+  "Companies": {
+    "select": {
+      "none": "Sem empresa",
+      "add": "Adicionar empresa...",
+      "addAnother": "Adicionar outra empresa...",
+      "unknown": "Empresa",
+      "remove": "Remover {name}"
+    },
+    "page": {
+      "title": "Empresas",
+      "subtitle": "{count} cadastradas",
+      "subtitleZero": "Cadastre as empresas para as quais você vende.",
+      "addBtn": "Nova empresa",
+      "searchPlaceholder": "Buscar por nome, CNPJ ou cidade...",
+      "loading": "Carregando empresas...",
+      "noneYet": "Nenhuma empresa cadastrada ainda.",
+      "noMatch": "Nenhuma empresa encontrada para essa busca.",
+      "addFirst": "Cadastrar a primeira empresa",
+      "columns": {
+        "name": "Empresa",
+        "cnpj": "CNPJ",
+        "city": "Cidade",
+        "phone": "Telefone",
+        "tags": "Tags"
+      },
+      "editAction": "Editar",
+      "deleteAction": "Excluir",
+      "deleteTitle": "Excluir empresa?",
+      "deleteDesc": "Isso remove {name}. Os contatos e negócios vinculados são mantidos, apenas sem vínculo com a empresa.",
+      "cancel": "Cancelar",
+      "delete": "Excluir",
+      "deleting": "Excluindo...",
+      "toastFailedLoad": "Não foi possível carregar as empresas",
+      "toastDeleted": "Empresa excluída",
+      "toastFailedDelete": "Não foi possível excluir a empresa",
+      "showingPagination": "Mostrando {start}–{end} de {total}",
+      "pageCount": "Página {page} de {total}",
+      "filterByTag": "Filtrar por tag",
+      "allTags": "Todas as tags"
+    },
+    "form": {
+      "titleAdd": "Nova empresa",
+      "titleEdit": "Editar empresa",
+      "descAdd": "Cadastre uma empresa cliente com CNPJ e endereço.",
+      "descEdit": "Atualize os dados cadastrais desta empresa.",
+      "identity": "Identificação",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Digite o CNPJ e clique em Buscar para preencher o cadastro com os dados públicos da Receita Federal.",
+      "lookupBtn": "Buscar",
+      "lookingUp": "Buscando...",
+      "lookupFilled": "Dados preenchidos pelo CNPJ. Confira antes de salvar.",
+      "lookupNotFound": "CNPJ não encontrado na base pública.",
+      "lookupUnavailable": "Não foi possível consultar o CNPJ agora. Tente novamente em instantes.",
+      "lookupInactive": "Situação cadastral: {situation}. Confira antes de usar.",
+      "legalName": "Razão social",
+      "tradeName": "Nome fantasia",
+      "stateRegistration": "Inscrição estadual (IE)",
+      "municipalRegistration": "Inscrição municipal (IM)",
+      "contact": "Contato",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "website": "Site",
+      "address": "Endereço",
+      "zip": "CEP",
+      "street": "Rua",
+      "number": "Número",
+      "complement": "Complemento",
+      "district": "Bairro",
+      "city": "Cidade",
+      "state": "UF",
+      "stateSelect": "—",
+      "notes": "Observações",
+      "notesPlaceholder": "Qualquer informação útil sobre esta empresa...",
+      "linkedDeals": "Negócios ({count})",
+      "unnamed": "Sem nome",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "nameRequired": "Informe a razão social ou o nome fantasia.",
+      "cnpjInvalid": "CNPJ inválido. Confira os dígitos.",
+      "zipInvalid": "O CEP deve ter 8 dígitos.",
+      "emailInvalid": "E-mail inválido.",
+      "cnpjDuplicate": "Já existe uma empresa cadastrada com este CNPJ.",
+      "toastCreated": "Empresa cadastrada",
+      "toastUpdated": "Empresa atualizada",
+      "toastFailed": "Não foi possível salvar a empresa",
+      "notAuthenticated": "Você não está conectado",
+      "notLinkedToAccount": "Seu perfil não está vinculado a uma conta.",
+      "contactsTitle": "Contatos",
+      "addContactPlaceholder": "Busque um contato por nome ou telefone para adicionar...",
+      "noContactsFound": "Nenhum contato encontrado.",
+      "noContactsLinked": "Nenhum contato vinculado a esta empresa ainda. Um contato pode pertencer a mais de uma empresa.",
+      "jobTitle": "Cargo",
+      "jobTitlePlaceholder": "Cargo (ex.: comprador)",
+      "removeContact": "Remover {name} desta empresa",
+      "tagsTitle": "Tags",
+      "noTagsAvailable": "Nenhuma tag criada. Crie em Configurações, Campos e tags.",
+      "customFieldsTitle": "Campos personalizados",
+      "noCustomFields": "Nenhum campo personalizado criado. Crie em Configurações, Campos e tags."
     }
   }
 }

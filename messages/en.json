@@ -41,7 +41,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Profile",
     "menuSettings": "Settings",
-    "menuSignOut": "Sign out"
+    "menuSignOut": "Sign out",
+    "companies": "Companies"
   },
   "Header": {
     "dashboard": "Dashboard",
@@ -58,7 +59,8 @@
     "defaultAvatar": "Avatar",
     "menuProfile": "Profile",
     "menuSettings": "Settings",
-    "menuSignOut": "Sign out"
+    "menuSignOut": "Sign out",
+    "companies": "Companies"
   },
   "ModeToggle": {
     "switchMode": "Switch to {mode} mode"
@@ -590,7 +592,7 @@
       "phoneHint": "Include country code, e.g. +1 for US",
       "emailLabel": "Email",
       "emailPlaceholder": "jane@example.com",
-      "companyLabel": "Company",
+      "companyLabel": "Companies",
       "companyPlaceholder": "Acme Corp",
       "tagsLabel": "Tags",
       "tagsPlaceholder": "Select tags...",
@@ -612,7 +614,9 @@
       "phoneRequired": "Phone number is required",
       "phoneNeedsCountryCode": "Include the country code — the number must start with + (e.g. +14155550123)",
       "notAuthenticated": "Not authenticated",
-      "notLinkedToAccount": "Your profile is not linked to an account."
+      "notLinkedToAccount": "Your profile is not linked to an account.",
+      "companyHint": "Link one or more registered companies, or leave empty. Register companies under Companies.",
+      "companyLegacyHint": "Current text: {name}. Pick a registered company to link it."
     },
     "detailView": {
       "tabs": {
@@ -637,7 +641,7 @@
       "name": "Name",
       "phone": "Phone",
       "email": "Email",
-      "company": "Company",
+      "company": "Companies",
       "createdAt": "Created At",
       "customFields": "Custom Fields",
       "noCustomFields": "No custom fields defined. Create them in Settings.",
@@ -787,7 +791,10 @@
     "card": {
       "noContact": "No contact",
       "won": "Won",
-      "lost": "Lost"
+      "lost": "Lost",
+      "assignee": "Assignee: {name}",
+      "contact": "Contact: {name}",
+      "company": "Company: {name}"
     },
     "form": {
       "editDeal": "Edit Deal",
@@ -829,7 +836,8 @@
       "toastMarkedLost": "Marked as lost",
       "toastReopened": "Deal reopened",
       "toastFailedDelete": "Failed to delete deal",
-      "toastDeleted": "Deal deleted"
+      "toastDeleted": "Deal deleted",
+      "company": "Company"
     },
     "settings": {
       "managePipeline": "Manage Pipeline",
@@ -1689,11 +1697,11 @@
     },
     "tagsAndFields": {
       "title": "Fields & tags",
-      "description": "Two ways to organize contacts: colour-coded tags for quick grouping, and custom fields for structured data.",
+      "description": "Two ways to organize companies: colored tags to group them quickly and custom fields for structured data.",
       "tagsTitle": "Tags",
-      "tagsDesc": "Colour-coded labels for grouping and filtering contacts.",
+      "tagsDesc": "Colored labels to group and filter companies.",
       "fieldsTitle": "Custom fields",
-      "fieldsDesc": "Extra contact fields (e.g. ZIP code, lead source). They appear on every contact and in the “Update Contact Field” automation action.",
+      "fieldsDesc": "Extra fields for companies (e.g. lead source, segment). They appear on every company.",
       "adminRole": "Admin",
       "failedToLoadTags": "Failed to load tags",
       "nameRequired": "Tag name is required",
@@ -1964,7 +1972,8 @@
       "deals": "Deals & currency",
       "inbox": "Inbox",
       "members": "Team members",
-      "api": "API keys"
+      "api": "API keys",
+      "company": "Company"
     },
     "groups": {
       "account": "Account",
@@ -2222,6 +2231,43 @@
       "textPlaceholder": "The message text to insert",
       "cancel": "Cancel",
       "save": "Save"
+    },
+    "company": {
+      "title": "Company",
+      "description": "Your company's registration details, kept in one place.",
+      "loading": "Loading...",
+      "identityTitle": "Identification",
+      "identityDesc": "Legal name, CNPJ and registrations.",
+      "legalName": "Legal name (razão social)",
+      "tradeName": "Trade name (nome fantasia)",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Letters are accepted: CNPJs issued from July 2026 can be alphanumeric.",
+      "stateRegistration": "State registration (IE)",
+      "municipalRegistration": "Municipal registration (IM)",
+      "contactTitle": "Contact",
+      "contactDesc": "How customers and suppliers reach the company.",
+      "phone": "Phone",
+      "email": "E-mail",
+      "website": "Website",
+      "addressTitle": "Address",
+      "addressDesc": "Registered or main address.",
+      "zip": "ZIP code (CEP)",
+      "street": "Street",
+      "number": "Number",
+      "complement": "Complement",
+      "district": "District",
+      "city": "City",
+      "state": "State",
+      "stateSelect": "—",
+      "adminOnlyHint": "Only account admins can edit the company details.",
+      "save": "Save",
+      "saving": "Saving...",
+      "saveFailed": "Failed to save company details",
+      "saveSuccess": "Company details saved",
+      "cnpjInvalid": "Invalid CNPJ. Check the digits.",
+      "zipInvalid": "The ZIP code must have 8 digits.",
+      "emailInvalid": "Invalid e-mail address.",
+      "loadFailed": "Failed to load company details"
     }
   },
   "SignupPage": {
@@ -2401,7 +2447,8 @@
       "createFlows": "create flows",
       "createPipelines": "create pipelines",
       "createDeals": "create deals",
-      "sendMessages": "send messages"
+      "sendMessages": "send messages",
+      "manageCompanies": "manage companies"
     }
   },
   "Metadata": {
@@ -2922,6 +2969,107 @@
       "submitFailed": "Failed to submit template.",
       "metaApiStatus": "Meta API error: {status}",
       "syncFailed": "Failed to sync templates"
+    }
+  },
+  "Companies": {
+    "select": {
+      "none": "No company",
+      "add": "Add company...",
+      "addAnother": "Add another company...",
+      "unknown": "Company",
+      "remove": "Remove {name}"
+    },
+    "page": {
+      "title": "Companies",
+      "subtitle": "{count} registered",
+      "subtitleZero": "Register the companies you sell to.",
+      "addBtn": "Add company",
+      "searchPlaceholder": "Search by name, CNPJ or city...",
+      "loading": "Loading companies...",
+      "noneYet": "No companies registered yet.",
+      "noMatch": "No companies match your search.",
+      "addFirst": "Add your first company",
+      "columns": {
+        "name": "Company",
+        "cnpj": "CNPJ",
+        "city": "City",
+        "phone": "Phone",
+        "tags": "Tags"
+      },
+      "editAction": "Edit",
+      "deleteAction": "Delete",
+      "deleteTitle": "Delete company?",
+      "deleteDesc": "This removes {name}. Linked contacts and deals are kept, just unlinked from the company.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "toastFailedLoad": "Failed to load companies",
+      "toastDeleted": "Company deleted",
+      "toastFailedDelete": "Failed to delete company",
+      "showingPagination": "Showing {start}–{end} of {total}",
+      "pageCount": "Page {page} of {total}",
+      "filterByTag": "Filter by tag",
+      "allTags": "All tags"
+    },
+    "form": {
+      "titleAdd": "Add company",
+      "titleEdit": "Edit company",
+      "descAdd": "Register a customer company with its CNPJ and address.",
+      "descEdit": "Update the registration details of this company.",
+      "identity": "Identification",
+      "cnpj": "CNPJ",
+      "cnpjHint": "Type the CNPJ and click Search to fill the registration from the public Receita Federal data.",
+      "lookupBtn": "Search",
+      "lookingUp": "Searching...",
+      "lookupFilled": "Data filled from the CNPJ. Review before saving.",
+      "lookupNotFound": "CNPJ not found in the public registry.",
+      "lookupUnavailable": "Could not reach the CNPJ lookup right now. Try again in a moment.",
+      "lookupInactive": "Registration status: {situation}. Double-check before using.",
+      "legalName": "Legal name (razão social)",
+      "tradeName": "Trade name (nome fantasia)",
+      "stateRegistration": "State registration (IE)",
+      "municipalRegistration": "Municipal registration (IM)",
+      "contact": "Contact",
+      "phone": "Phone",
+      "email": "E-mail",
+      "website": "Website",
+      "address": "Address",
+      "zip": "ZIP code (CEP)",
+      "street": "Street",
+      "number": "Number",
+      "complement": "Complement",
+      "district": "District",
+      "city": "City",
+      "state": "State",
+      "stateSelect": "—",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything worth remembering about this company...",
+      "linkedDeals": "Deals ({count})",
+      "unnamed": "Unnamed",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "nameRequired": "Enter the legal name or the trade name.",
+      "cnpjInvalid": "Invalid CNPJ. Check the digits.",
+      "zipInvalid": "The ZIP code must have 8 digits.",
+      "emailInvalid": "Invalid e-mail address.",
+      "cnpjDuplicate": "A company with this CNPJ is already registered.",
+      "toastCreated": "Company added",
+      "toastUpdated": "Company updated",
+      "toastFailed": "Failed to save company",
+      "notAuthenticated": "Not signed in",
+      "notLinkedToAccount": "Your profile is not linked to an account.",
+      "contactsTitle": "Contacts",
+      "addContactPlaceholder": "Search a contact by name or phone to add...",
+      "noContactsFound": "No contacts found.",
+      "noContactsLinked": "No contacts linked to this company yet. A contact can belong to more than one company.",
+      "jobTitle": "Job title",
+      "jobTitlePlaceholder": "Job title (e.g. buyer)",
+      "removeContact": "Remove {name} from this company",
+      "tagsTitle": "Tags",
+      "noTagsAvailable": "No tags yet. Create them under Settings, Fields & tags.",
+      "customFieldsTitle": "Custom fields",
+      "noCustomFields": "No custom fields yet. Create them under Settings, Fields & tags."
     }
   }
 }

@@ -5,6 +5,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { CURRENCIES } from "@/lib/currency";
+import { loadContactCompanyIds } from "@/lib/company-links";
+import { useCompanies } from "@/hooks/use-companies";
+import { CompanySelect } from "@/components/companies/company-select";
 import type {
   Contact,
   Conversation,
@@ -55,12 +58,17 @@ export function DealForm({
 }: DealFormProps) {
   const t = useTranslations("Pipelines.form");
   const supabase = createClient();
-  const { accountId, defaultCurrency } = useAuth();
+  const { accountId, defaultCurrency, profile } = useAuth();
+  // A new deal is attended by whoever is signed in until they pick
+  // someone else. `profiles.id` is the auth user id (deals.assigned_to
+  // is an FK to it).
+  const currentProfileId = profile?.id ?? "";
 
   const [title, setTitle] = useState("");
   const [value, setValue] = useState("");
   const [currency, setCurrency] = useState(defaultCurrency);
   const [contactId, setContactId] = useState("");
+  const [companyId, setCompanyId] = useState("");
   const [stageId, setStageId] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [expectedCloseDate, setExpectedCloseDate] = useState("");
@@ -90,6 +98,7 @@ export function DealForm({
       // contact_id is nullable when the contact has been deleted
       // (migration 004: ON DELETE SET NULL). "" means "no selection".
       setContactId(deal.contact_id ?? "");
+      setCompanyId(deal.company_id ?? "");
       setStageId(deal.stage_id);
       setAssignedTo(deal.assigned_to ?? "");
       setExpectedCloseDate(deal.expected_close_date ?? "");
@@ -99,13 +108,30 @@ export function DealForm({
       setValue("");
       setCurrency(defaultCurrency);
       setContactId("");
+      setCompanyId("");
       setStageId(defaultStageId || stages[0]?.id || "");
-      setAssignedTo("");
+      setAssignedTo(currentProfileId);
       setExpectedCloseDate("");
       setNotes("");
     }
-  }, [open, deal, defaultStageId, stages, defaultCurrency]);
+  }, [open, deal, defaultStageId, stages, defaultCurrency, currentProfileId]);
   /* eslint-enable react-hooks/set-state-in-effect */
+
+  const { companies } = useCompanies(open);
+
+  // Picking a contact on a new deal pre-fills the company when the contact
+  // belongs to exactly one (a contact can serve several companies, in which
+  // case the user chooses). Still editable afterwards.
+  useEffect(() => {
+    if (!open || deal || !contactId) return;
+    let cancelled = false;
+    loadContactCompanyIds(supabase, contactId).then((ids) => {
+      if (!cancelled && ids.length === 1) setCompanyId(ids[0]);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, deal, contactId, supabase]);
 
   // Load supporting data once the sheet is open
   useEffect(() => {
@@ -163,6 +189,7 @@ export function DealForm({
       value: parseFloat(value) || 0,
       currency,
       contact_id: contactId,
+      company_id: companyId || null,
       pipeline_id: pipelineId,
       stage_id: stageId,
       assigned_to: assignedTo || null,
@@ -293,6 +320,15 @@ export function DealForm({
                   {t("linkToConversation")}
                 </Link>
               )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label className="text-muted-foreground">{t("company")}</Label>
+              <CompanySelect
+                value={companyId}
+                companies={companies}
+                onChange={setCompanyId}
+              />
             </div>
 
             <div className="grid grid-cols-[1fr_110px] gap-3">

@@ -118,6 +118,8 @@ export interface Contact {
   name?: string;
   email?: string;
   company?: string;
+  /** Linked companies live in `company_contacts` (migration 062); the
+   *  free-text `company` above mirrors their names. */
   avatar_url?: string;
   created_at: string;
   updated_at: string;
@@ -398,6 +400,8 @@ export interface Deal {
    * contact is deleted (ON DELETE SET NULL). History preserved.
    */
   contact_id: string | null;
+  /** Company the deal is sold to (migration 061). Optional. */
+  company_id?: string | null;
   conversation_id?: string;
   assigned_to?: string;
   title: string;
@@ -409,8 +413,35 @@ export interface Deal {
   created_at: string;
   updated_at?: string;
   contact?: Contact;
+  company?: Pick<Company, 'id' | 'legal_name' | 'trade_name'> | null;
   stage?: PipelineStage;
   assignee?: Profile;
+}
+
+/** A B2B customer account (migration 061). CNPJ is stored without
+ *  punctuation; see `src/lib/br/documents.ts`. */
+export interface Company {
+  id: string;
+  account_id: string;
+  user_id?: string | null;
+  legal_name: string | null;
+  trade_name: string | null;
+  cnpj: string | null;
+  state_registration: string | null;
+  municipal_registration: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address_zip: string | null;
+  address_street: string | null;
+  address_number: string | null;
+  address_complement: string | null;
+  address_district: string | null;
+  address_city: string | null;
+  address_state: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export type BroadcastStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'failed';

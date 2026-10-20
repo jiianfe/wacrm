@@ -3,7 +3,8 @@
 import type { Deal, PipelineStage } from "@/types";
 import { Calendar, Check, X } from "lucide-react";
 import { formatCurrency } from "@/lib/currency";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { companyDisplayName } from "@/lib/companies";
 
 interface DealCardProps {
   deal: Deal;
@@ -12,23 +13,22 @@ interface DealCardProps {
   isOverlay?: boolean;
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+function formatDate(dateStr: string, locale: string) {
+  return new Date(dateStr).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 }
 
-function initials(name?: string, fallback?: string) {
-  const source = (name || fallback || "?").trim();
-  if (!source) return "?";
-  return source.charAt(0).toUpperCase();
-}
-
 export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
   const t = useTranslations("Pipelines.card");
-  const contactLabel = deal.contact?.name || deal.contact?.phone || t("noContact");
+  const locale = useLocale();
+  const contactName = deal.contact?.name || deal.contact?.phone || null;
+  const contactLabel = contactName
+    ? t("contact", { name: contactName })
+    : t("noContact");
+  const companyName = companyDisplayName(deal.company) || null;
   const assigneeLabel = deal.assignee?.full_name || null;
 
   return (
@@ -72,12 +72,25 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
         )}
       </div>
 
+      {companyName && (
+        <div className="mt-2">
+          <span
+            title={companyName}
+            className="block truncate text-xs font-medium text-foreground"
+          >
+            {t("company", { name: companyName })}
+          </span>
+        </div>
+      )}
+
       {/* Contact row */}
-      <div className="mt-2 flex items-center gap-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-semibold text-foreground">
-          {initials(deal.contact?.name, deal.contact?.phone)}
+      <div className={companyName ? "mt-1" : "mt-2"}>
+        <span
+          title={contactName ?? undefined}
+          className="block truncate text-xs text-muted-foreground"
+        >
+          {contactLabel}
         </span>
-        <span className="truncate text-xs text-muted-foreground">{contactLabel}</span>
       </div>
 
       <div className="mt-2 flex items-center justify-between">
@@ -87,7 +100,7 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
         {deal.expected_close_date && (
           <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Calendar className="h-3 w-3" />
-            {formatDate(deal.expected_close_date)}
+            {formatDate(deal.expected_close_date, locale)}
           </span>
         )}
       </div>
@@ -96,9 +109,9 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
         <div className="mt-2 flex items-center justify-end">
           <span
             title={assigneeLabel}
-            className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/15 text-[10px] font-semibold text-primary"
+            className="max-w-full truncate text-[11px] text-muted-foreground"
           >
-            {initials(assigneeLabel)}
+            {t("assignee", { name: assigneeLabel })}
           </span>
         </div>
       )}
