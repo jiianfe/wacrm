@@ -88,7 +88,12 @@ export function fetchContactsByIds(
 export function fetchAllContacts(db: SupabaseClient): Promise<Contact[]> {
   return withContext('contacts', () =>
     fetchAllPages<Contact>((from, to) =>
-      db.from('contacts').select('*').order('id').range(from, to),
+      db
+        .from('contacts')
+        .select('*')
+        .neq('registration_status', 'pending')
+        .order('id')
+        .range(from, to),
     ),
   );
 }
@@ -158,7 +163,8 @@ export async function countAudience(
   if (audience.type === 'all') {
     const { count, error } = await db
       .from('contacts')
-      .select('id', { count: 'exact', head: true });
+      .select('id', { count: 'exact', head: true })
+      .neq('registration_status', 'pending');
     if (error) throw new Error(`Failed to count contacts: ${error.message}`);
     const total = count ?? 0;
     const excluded = await fetchExcludedIds(db, audience);

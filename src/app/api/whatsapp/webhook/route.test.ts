@@ -1173,3 +1173,68 @@ describe('inbound webhook: first_inbound_message fires once', () => {
     expect(h.state.firstInboundClaims).toBe(0)
   })
 })
+
+// A stranger who writes first is stored as a pending contact (migration
+// 066) and stays hidden until someone registers them. No flow, automation
+// or AI reply may run for them, but the message is still saved and the
+// public `message.received` webhook still fires.
+describe('inbound webhook: unregistered contacts (066)', () => {
+  const botsQuiet = () => {
+    expect(h.dispatchInboundToFlows).not.toHaveBeenCalled()
+    expect(h.resumeAwaitingReply).not.toHaveBeenCalled()
+    expect(h.runAutomationsForTrigger).not.toHaveBeenCalled()
+    expect(h.dispatchInboundToAiReply).not.toHaveBeenCalled()
+  }
+
+  it('creates a brand-new sender as pending and keeps the bots quiet', async () => {
+    mockFindExistingContact.mockResolvedValue(null)
+
+    await runWebhook()
+
+    expect(h.state.contactInserts).toHaveLength(1)
+    expect(h.state.contactInserts[0]).toMatchObject({
+      registration_status: 'pending',
+    })
+    // The message itself is still stored and counted.
+    expect(h.state.upsertCalls).toHaveLength(1)
+    expect(h.state.rpcCalls).toHaveLength(1)
+    botsQuiet()
+    // Integrations still hear about it.
+    expect(h.dispatchWebhookEvent).toHaveBeenCalledWith(
+      expect.anything(),
+      'acc-1',
+      'message.received',
+      expect.objectContaining({ contact_id: 'contact-new' }),
+    )
+  })
+
+  it('keeps the bots quiet for an existing contact that is still pending', async () => {
+    mockFindExistingContact.mockResolvedValue({
+      id: 'contact-1',
+      name: 'Ada',
+      phone: '15551230000',
+      registration_status: 'pending',
+    } as never)
+
+    await runWebhook()
+
+    expect(h.state.upsertCalls).toHaveLength(1)
+    botsQuiet()
+    expect(h.dispatchWebhookEvent).toHaveBeenCalledTimes(1)
+  })
+
+  it('still runs the bots once the contact is registered', async () => {
+    mockFindExistingContact.mockResolvedValue({
+      id: 'contact-1',
+      name: 'Ada',
+      phone: '15551230000',
+      registration_status: 'registered',
+    } as never)
+
+    await runWebhook()
+
+    expect(h.dispatchInboundToFlows).toHaveBeenCalledTimes(1)
+    expect(h.dispatchInboundToAiReply).toHaveBeenCalledTimes(1)
+    expect(h.dispatchWebhookEvent).toHaveBeenCalledTimes(1)
+  })
+})

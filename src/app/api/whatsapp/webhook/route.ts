@@ -780,6 +780,28 @@ async function processMessage(
   // trigger installed in migration 003).
   await flagBroadcastReplyIfAny(accountId, contactRecord.id)
 
+  const receivedPayload = {
+    conversation_id: conversation.id,
+    contact_id: contactRecord.id,
+    whatsapp_message_id: message.id,
+    content_type: contentType,
+    text: contentText,
+  }
+
+  // An unregistered contact (migration 066) is a stranger: no flow,
+  // automation or AI reply runs until someone registers them in the inbox.
+  // The public `message.received` webhook still fires, so integrations see
+  // every message.
+  if (contactRecord.registration_status === 'pending') {
+    await dispatchWebhookEvent(
+      supabaseAdmin(),
+      accountId,
+      'message.received',
+      receivedPayload
+    )
+    return
+  }
+
   // ============================================================
   // Flow runner dispatch.
   //
@@ -923,13 +945,12 @@ async function processMessage(
   // when the account has no matching endpoint and never throws.
   // (conversation.created is emitted earlier, right after the thread is
   // opened.)
-  await dispatchWebhookEvent(supabaseAdmin(), accountId, 'message.received', {
-    conversation_id: conversation.id,
-    contact_id: contactRecord.id,
-    whatsapp_message_id: message.id,
-    content_type: contentType,
-    text: contentText,
-  })
+  await dispatchWebhookEvent(
+    supabaseAdmin(),
+    accountId,
+    'message.received',
+    receivedPayload
+  )
 }
 
 async function parseMessageContent(
@@ -1287,6 +1308,10 @@ async function findOrCreateContact(
       wa_user_id: identity.waUserId,
       wa_parent_user_id: identity.waParentUserId,
       wa_username: identity.waUsername,
+      // A stranger who wrote first is not a contact until someone accepts
+      // them (migration 066): hidden from the contact lists, and no
+      // flow / automation / AI reply runs for them meanwhile.
+      registration_status: 'pending',
     })
     .select()
     .single()

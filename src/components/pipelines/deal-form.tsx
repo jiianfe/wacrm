@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { CURRENCIES } from "@/lib/currency";
 import { loadContactCompanyIds } from "@/lib/company-links";
+import { DealTasks } from "@/components/pipelines/deal-tasks";
+import { DealNotes } from "@/components/pipelines/deal-notes";
+import { DealAttachments } from "@/components/pipelines/deal-attachments";
 import { useCompanies } from "@/hooks/use-companies";
 import { CompanySelect } from "@/components/companies/company-select";
 import type {
@@ -45,6 +48,9 @@ interface DealFormProps {
   stages: PipelineStage[];
   defaultStageId?: string;
   onSaved: () => void;
+  /** Start a NEW deal with this contact already selected (used when the
+   *  deal is created from a conversation in the inbox). */
+  presetContactId?: string;
 }
 
 export function DealForm({
@@ -55,6 +61,7 @@ export function DealForm({
   stages,
   defaultStageId,
   onSaved,
+  presetContactId,
 }: DealFormProps) {
   const t = useTranslations("Pipelines.form");
   const supabase = createClient();
@@ -102,19 +109,27 @@ export function DealForm({
       setStageId(deal.stage_id);
       setAssignedTo(deal.assigned_to ?? "");
       setExpectedCloseDate(deal.expected_close_date ?? "");
-      setNotes(deal.notes ?? "");
+      setNotes("");
     } else {
       setTitle("");
       setValue("");
       setCurrency(defaultCurrency);
-      setContactId("");
+      setContactId(presetContactId ?? "");
       setCompanyId("");
       setStageId(defaultStageId || stages[0]?.id || "");
       setAssignedTo(currentProfileId);
       setExpectedCloseDate("");
       setNotes("");
     }
-  }, [open, deal, defaultStageId, stages, defaultCurrency, currentProfileId]);
+  }, [
+    open,
+    deal,
+    defaultStageId,
+    stages,
+    defaultCurrency,
+    currentProfileId,
+    presetContactId,
+  ]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const { companies } = useCompanies(open);
@@ -139,7 +154,11 @@ export function DealForm({
     let cancelled = false;
     (async () => {
       const [c, p] = await Promise.all([
-        supabase.from("contacts").select("*").order("name"),
+        supabase
+          .from("contacts")
+          .select("*")
+          .neq("registration_status", "pending")
+          .order("name"),
         supabase.from("profiles").select("*").order("full_name"),
       ]);
       if (cancelled) return;
@@ -193,7 +212,8 @@ export function DealForm({
       pipeline_id: pipelineId,
       stage_id: stageId,
       assigned_to: assignedTo || null,
-      notes: notes.trim() || null,
+      // Notes live in `deal_notes` now (dated timeline); the legacy
+      // `deals.notes` column is no longer written.
       expected_close_date: expectedCloseDate || null,
     };
 
@@ -222,13 +242,25 @@ export function DealForm({
         setSaving(false);
         return;
       }
-      const { error } = await supabase
+      const { data: created, error } = await supabase
         .from("deals")
-        .insert({ ...payload, user_id: user.id, account_id: accountId, status: "open" });
-      if (error) {
+        .insert({ ...payload, user_id: user.id, account_id: accountId, status: "open" })
+        .select("id")
+        .single();
+      if (error || !created) {
         toast.error(t("toastFailedCreate"));
         setSaving(false);
         return;
+      }
+      // An optional first note, stamped with the creation moment.
+      if (notes.trim()) {
+        await supabase.from("deal_notes").insert({
+          deal_id: created.id,
+          account_id: accountId,
+          user_id: user.id,
+          author_name: profile?.full_name || profile?.email || null,
+          body: notes.trim(),
+        });
       }
     }
 
@@ -313,7 +345,7 @@ export function DealForm({
 
               {linkedConversation && (
                 <Link
-                  href="/inbox"
+                  href={`/inbox?c=${linkedConversation.id}`}
                   className="mt-1 inline-flex items-center gap-1.5 self-start rounded-md bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
                 >
                   <MessageSquare className="h-3 w-3" />
@@ -402,15 +434,24 @@ export function DealForm({
               </select>
             </div>
 
-            <div className="grid gap-2">
-              <Label className="text-muted-foreground">{t("notes")}</Label>
-              <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder={t("notesPlaceholder")}
-                className="min-h-[100px] border-border bg-muted text-foreground"
-              />
-            </div>
+            {deal ? (
+              <>
+                <DealTasks dealId={deal.id} onChanged={onSaved} />
+                <DealNotes dealId={deal.id} />
+                <DealAttachments dealId={deal.id} onChanged={onSaved} />
+              </>
+            ) : (
+              <div className="grid gap-2">
+                <Label className="text-muted-foreground">{t("firstNote")}</Label>
+                <Textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder={t("notesPlaceholder")}
+                  className="min-h-[100px] border-border bg-muted text-foreground"
+                />
+                <p className="text-xs text-muted-foreground">{t("saveToAttach")}</p>
+              </div>
+            )}
 
             {deal && (
               <div className="space-y-2 rounded-lg border border-border bg-muted/50 p-3">

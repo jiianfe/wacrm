@@ -120,6 +120,9 @@ export interface Contact {
   company?: string;
   /** Linked companies live in `company_contacts` (migration 062); the
    *  free-text `company` above mirrors their names. */
+  /** `pending` = created by an inbound message and not yet accepted
+   *  (migration 066); hidden from lists and pickers. Default `registered`. */
+  registration_status?: 'registered' | 'pending';
   avatar_url?: string;
   created_at: string;
   updated_at: string;
@@ -181,6 +184,10 @@ export interface Conversation {
   unread_count: number;
   last_inbound_at?: string | null;
   last_reply_at?: string | null;
+  /** Channels present in this (single per-contact) conversation — set by a
+   *  trigger on `messages` (migration 065). */
+  has_whatsapp?: boolean;
+  has_email?: boolean;
   closed_at?: string | null;
   created_at: string;
   updated_at: string;
@@ -420,8 +427,54 @@ export interface Deal {
   updated_at?: string;
   contact?: Contact;
   company?: Pick<Company, 'id' | 'legal_name' | 'trade_name'> | null;
+  /** Embedded count of attached documents (`deal_attachments(count)`). */
+  attachments?: { count: number }[];
+  /** Embedded task dates, enough to colour the card (migration 069). */
+  tasks?: Pick<DealTask, 'id' | 'start_date' | 'end_date' | 'completed_at'>[];
   stage?: PipelineStage;
   assignee?: Profile;
+}
+
+/** A task on a deal (migration 069). Dates are plain `YYYY-MM-DD`. */
+export interface DealTask {
+  id: string;
+  deal_id: string;
+  user_id: string | null;
+  assigned_to: string | null;
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string;
+  completed_at: string | null;
+  created_at: string;
+}
+
+/** A dated note on a deal (migration 068). Append-only. */
+export interface DealNote {
+  id: string;
+  deal_id: string;
+  user_id: string | null;
+  /** Snapshot of the author's name at the time of writing. */
+  author_name: string | null;
+  body: string;
+  created_at: string;
+}
+
+export type DealDocumentCategory = 'quote' | 'invoice' | 'boleto' | 'other';
+
+/** A document attached to a deal (migration 068); the file itself lives in
+ *  the private `deal-documents` bucket at `storage_path`. */
+export interface DealAttachment {
+  id: string;
+  deal_id: string;
+  user_id: string | null;
+  author_name: string | null;
+  file_name: string;
+  storage_path: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  category: DealDocumentCategory;
+  created_at: string;
 }
 
 /** A B2B customer account (migration 061). CNPJ is stored without

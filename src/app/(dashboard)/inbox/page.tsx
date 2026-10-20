@@ -1,6 +1,11 @@
 "use client";
 
-import { Suspense, useState, useCallback, useEffect, useRef } from "react";
+import { Suspense, useState, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  filterMessagesByChannel,
+  parseChannelFilter,
+  type ChannelFilter,
+} from "@/lib/inbox/channel-filter";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
@@ -55,6 +60,19 @@ function InboxPageInner() {
     useState<Conversation | null>(null);
   const [activeContact, setActiveContact] = useState<Contact | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  // WhatsApp / e-mail view. One conversation per contact holds both
+  // channels, so this only changes what the list and the open thread show.
+  const [channelFilter, setChannelFilter] = useState<ChannelFilter>(() =>
+    parseChannelFilter(searchParams.get("channel"))
+  );
+  // Bumped when a deal is created/linked from the inbox, so the contact
+  // panel reloads its deals list.
+  const [dealsVersion, setDealsVersion] = useState(0);
+  const handleDealCreated = useCallback(() => setDealsVersion((v) => v + 1), []);
+  const visibleMessages = useMemo(
+    () => filterMessagesByChannel(messages, channelFilter),
+    [messages, channelFilter]
+  );
   const [whatsappConnected, setWhatsappConnected] = useState<boolean | null>(
     null
   );
@@ -536,6 +554,24 @@ function InboxPageInner() {
     [],
   );
 
+  // The open contact changed (e.g. a pending contact was registered): update
+  // the open thread and the same contact inside the list.
+  const handleContactChange = useCallback(
+    (patch: Partial<Contact>) => {
+      setActiveContact((prev) => (prev ? { ...prev, ...patch } : prev));
+      const conversationId = activeConversation?.id;
+      if (!conversationId) return;
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === conversationId && c.contact
+            ? { ...c, contact: { ...c.contact, ...patch } }
+            : c
+        )
+      );
+    },
+    [activeConversation?.id]
+  );
+
   const handleOlderMessagesLoaded = useCallback((older: Message[]) => {
     setMessages((prev) => prependOlderMessages(prev, older));
   }, []);
@@ -623,6 +659,8 @@ function InboxPageInner() {
             onConversationsLoaded={handleConversationsLoaded}
             resyncToken={resyncToken}
             initialFilter={parseInboxFilter(searchParams.get("filter"))}
+            channelFilter={channelFilter}
+            onChannelFilterChange={setChannelFilter}
           />
         </div>
 
@@ -645,7 +683,10 @@ function InboxPageInner() {
           <MessageThread
             conversation={activeConversation}
             contact={activeContact}
-            messages={messages}
+            messages={visibleMessages}
+            channelFilter={channelFilter}
+            onContactChange={handleContactChange}
+            onDealCreated={handleDealCreated}
             onMessagesLoaded={handleMessagesLoaded}
             onOlderMessagesLoaded={handleOlderMessagesLoaded}
             onNewMessage={handleNewMessage}
@@ -666,7 +707,11 @@ function InboxPageInner() {
             toggle — which is itself desktop-only — never affects it. */}
         {contactPanelOpen && (
           <div className="hidden lg:block">
-            <ContactSidebar contact={activeContact} />
+            <ContactSidebar
+              contact={activeContact}
+              refreshToken={dealsVersion}
+              onDealLinked={handleDealCreated}
+            />
           </div>
         )}
       </div>

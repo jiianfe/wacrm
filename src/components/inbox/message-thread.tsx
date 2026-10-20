@@ -7,6 +7,7 @@ import { usePresence } from "@/hooks/use-presence";
 import { PresenceDot } from "@/components/presence/presence-dot";
 import { presenceLabel } from "@/lib/presence";
 import { cn } from "@/lib/utils";
+import { applySignature, readSignaturePref, writeSignaturePref } from "@/lib/message-signature";
 import type {
   Conversation,
   Message,
@@ -31,6 +32,9 @@ import {
 } from "lucide-react";
 import { format, isToday, isYesterday, differenceInHours } from "date-fns";
 import { useTranslations } from "next-intl";
+import type { ChannelFilter } from "@/lib/inbox/channel-filter";
+import { PendingContactBanner } from "./pending-contact-banner";
+import { NewDealButton } from "./new-deal-button";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -86,6 +90,13 @@ interface MessageThreadProps {
   conversation: Conversation | null;
   contact: Contact | null;
   messages: Message[];
+  /** Which channel the inbox is showing. In the e-mail view the composer is
+   *  replaced by a notice (replying by e-mail is not built yet). */
+  channelFilter?: ChannelFilter;
+  /** The open contact changed (e.g. a pending contact was registered). */
+  onContactChange?: (patch: Partial<Contact>) => void;
+  /** A deal was created from this conversation (reload the contact panel). */
+  onDealCreated?: () => void;
   onMessagesLoaded: (messages: Message[], conversationId: string) => void;
   onOlderMessagesLoaded?: (messages: Message[]) => void;
   onNewMessage: (message: Message) => void;
@@ -186,12 +197,26 @@ export function MessageThread({
   onRefresh,
   contactPanelOpen,
   onToggleContactPanel,
+  channelFilter = "all",
+  onContactChange,
+  onDealCreated,
 }: MessageThreadProps) {
   const t = useTranslations("Inbox.messageThread");
   const tTimer = useTranslations("Inbox.sessionTimer");
   const tQuote = useTranslations("Inbox.replyQuote");
 
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const [signatureOn, setSignatureOn] = useState(false);
+  useEffect(() => {
+    // localStorage is only readable in the browser, so load it after mount.
+    setSignatureOn(readSignaturePref(user?.id));
+  }, [user?.id]);
+  const toggleSignature = useCallback(() => {
+    setSignatureOn((on) => {
+      writeSignaturePref(user?.id, !on);
+      return !on;
+    });
+  }, [user?.id]);
   const { getPresence, getRow, now } = usePresence();
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -292,11 +317,18 @@ export function MessageThread({
   // 24-hour session timer
   const sessionInfo = useMemo(() => {
     if (!messages.length) return { expired: false, remaining: "" };
+    // The timer is about WhatsApp's customer-service window: not shown in
+    // the e-mail view.
+    if (channelFilter === "email") return { expired: false, remaining: "" };
 
-    // Find last customer message
+    // Find last customer message. Only WhatsApp opens the 24h window — an
+    // e-mail from the customer must not.
     const lastCustomerMsg = [...messages]
       .reverse()
-      .find((m) => m.sender_type === "customer");
+      .find(
+        (m) =>
+          m.sender_type === "customer" && (m.channel ?? "whatsapp") === "whatsapp",
+      );
 
     if (!lastCustomerMsg) return { expired: true, remaining: tTimer("noCustomerMessages") };
 
@@ -314,7 +346,7 @@ export function MessageThread({
         : tTimer("xmRemaining", { minutes: Math.floor(hoursLeft * 60) });
 
     return { expired, remaining };
-  }, [messages, tTimer]);
+  }, [messages, tTimer, channelFilter]);
 
   // Store latest callback in a ref so fetchMessages doesn't need to
   // depend on `onMessagesLoaded` — otherwise parent re-renders cause
@@ -573,9 +605,10 @@ export function MessageThread({
   }, [messages]);
 
   const handleSend = useCallback(
-    async (text: string, replyToId?: string) => {
+    async (rawText: string, replyToId?: string) => {
       if (!conversation) return;
 
+      const text = signatureOn ? applySignature(rawText, profile?.full_name) : rawText;
       const tempId = newTempMessageId();
 
       // Optimistic update — shows the message immediately with "sending" status
@@ -626,7 +659,7 @@ export function MessageThread({
         onUpdateMessage(tempId, { status: "failed" });
       }
     },
-    [conversation, onNewMessage, onUpdateMessage, t]
+    [conversation, onNewMessage, onUpdateMessage, t, signatureOn, profile?.full_name]
   );
 
   const handleSendMedia = useCallback(
@@ -1038,6 +1071,12 @@ export function MessageThread({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Start a deal for this contact without leaving the conversation
+              (WhatsApp or e-mail). A pending contact registers first. */}
+          {contact && contact.registration_status !== "pending" && (
+            <NewDealButton contactId={contact.id} onCreated={onDealCreated} />
+          )}
+
           {/* Contact-panel toggle — desktop only. The contact sidebar
               eats a chunk of horizontal width that crowds the thread on
               smaller laptops; this lets agents reclaim it when they just
@@ -1285,24 +1324,72 @@ export function MessageThread({
 
       {/* A contact that only ever wrote by e-mail has no WhatsApp number, so
           a reply typed below could not be delivered. */}
-      {contact && !contact.phone && !contact.wa_user_id && (
-        <div className="flex shrink-0 items-center gap-2 border-t border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-400">
-          <Mail className="h-4 w-4 shrink-0" />
-          {t("emailOnlyNotice")}
-        </div>
+      {/* A stranger who only wrote in (migration 066): register or ignore. */}
+      {contact?.registration_status === "pending" && (
+        <PendingContactBanner
+          contact={contact}
+          onIgnore={() => handleStatusChange("closed")}
+          onRegistered={() => onContactChange?.({ registration_status: "registered" })}
+        />
       )}
 
-      {/* Composer */}
-      <MessageComposer
-        conversationId={conversation.id}
-        sessionExpired={sessionInfo.expired}
-        onSend={handleSend}
-        onSendMedia={handleSendMedia}
-        onSendInteractive={handleSendInteractive}
-        onOpenTemplates={handleOpenTemplates}
-        replyTo={replyTo}
-        onClearReply={() => setReplyTo(null)}
-      />
+      {channelFilter !== "email" &&
+        contact &&
+        !contact.phone &&
+        !contact.wa_user_id && (
+          <div className="flex shrink-0 items-center gap-2 border-t border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-400">
+            <Mail className="h-4 w-4 shrink-0" />
+            {t("emailOnlyNotice")}
+          </div>
+        )}
+
+      {/* Composer. The e-mail view has none yet: replies there come later,
+          and a message typed here would go out on WhatsApp. */}
+      {channelFilter === "email" ? (
+        <div className="flex shrink-0 items-center gap-2 border-t border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
+          <Mail className="h-4 w-4 shrink-0" />
+          {t("emailViewNotice")}
+        </div>
+      ) : (
+        <>
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-border px-4 py-1.5">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={signatureOn}
+            onClick={toggleSignature}
+            title={t("signatureHint", { name: profile?.full_name || "" })}
+            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "relative h-4 w-7 rounded-full transition-colors",
+                signatureOn ? "bg-primary" : "bg-muted-foreground/30"
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-0.5 size-3 rounded-full bg-white transition-all",
+                  signatureOn ? "left-3.5" : "left-0.5"
+                )}
+              />
+            </span>
+            {signatureOn ? t("signatureOn") : t("signatureOff")}
+          </button>
+        </div>
+        <MessageComposer
+          conversationId={conversation.id}
+          sessionExpired={sessionInfo.expired}
+          onSend={handleSend}
+          onSendMedia={handleSendMedia}
+          onSendInteractive={handleSendInteractive}
+          onOpenTemplates={handleOpenTemplates}
+          replyTo={replyTo}
+          onClearReply={() => setReplyTo(null)}
+        />
+        </>
+      )}
 
       <TemplatePicker
         open={templateModalOpen}

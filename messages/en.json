@@ -350,7 +350,12 @@
       "clearAll": "Clear all",
       "noConversations": "No conversations found",
       "noMessagesYet": "No messages yet",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "channelLabel": "Channel",
+      "channelAll": "All",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "E-mail",
+      "notRegistered": "Not registered"
     },
     "messageThread": {
       "backToConversations": "Back to conversations",
@@ -388,7 +393,11 @@
       "networkError": "network error",
       "documentFallback": "Document",
       "you": "You",
-      "emailOnlyNotice": "This contact only has an e-mail address, so a WhatsApp reply cannot be delivered. Replying by e-mail comes in the next phase."
+      "emailOnlyNotice": "This contact only has an e-mail address, so a WhatsApp reply cannot be delivered. Replying by e-mail comes in the next phase.",
+      "emailViewNotice": "You are viewing only the e-mails of this conversation. Replying by e-mail is not available yet. Switch to All or WhatsApp to reply on WhatsApp.",
+      "signatureOn": "Signature on",
+      "signatureOff": "Signature off",
+      "signatureHint": "Adds your name ({name}) in bold above each text message sent to the customer"
     },
     "sessionTimer": {
       "expired": "Expired",
@@ -521,7 +530,14 @@
       "deals": "Deals",
       "noTags": "No tags",
       "noDeals": "No deals",
-      "addNotePlaceholder": "Add a note..."
+      "addNotePlaceholder": "Add a note...",
+      "linkDeal": "Link an existing deal",
+      "linkDealTitle": "Link an open deal to this contact",
+      "linkDealDone": "Deal linked to this contact",
+      "linkDealFailed": "Could not link the deal",
+      "noLinkableDeals": "No other open deals to link.",
+      "noContactOnDeal": "No contact",
+      "close": "Close"
     },
     "aiBanner": {
       "pausedTitle": "AI assistant is paused here",
@@ -532,6 +548,22 @@
       "resumed": "AI resumed.",
       "updateError": "Couldn’t update the AI assistant.",
       "networkError": "Couldn’t reach the server."
+    },
+    "pendingContact": {
+      "title": "This contact is not registered yet",
+      "description": "They wrote in, but nothing is saved as a contact until you decide. Automatic replies are paused for them.",
+      "registerContact": "Register contact",
+      "registerCompany": "Register company",
+      "ignore": "Ignore",
+      "registerFailed": "Could not register this contact"
+    },
+    "newDeal": {
+      "button": "Create deal",
+      "tooltip": "Create a deal in the pipeline for this contact",
+      "noPipeline": "Create a pipeline first, under Pipelines.",
+      "noStages": "This pipeline has no stages yet.",
+      "choosePipeline": "Choose a pipeline",
+      "choosePipelineDesc": "In which pipeline should the new deal start?"
     }
   },
   "Contacts": {
@@ -613,7 +645,7 @@
       "dupSimilar": "A contact with a very similar number already exists.",
       "loadingTags": "Loading tags...",
       "noTagsAvailable": "No tags available. Create tags in Settings.",
-      "phoneRequired": "Phone number is required",
+      "phoneRequired": "Enter a phone number or an e-mail.",
       "phoneNeedsCountryCode": "Include the country code — the number must start with + (e.g. +14155550123)",
       "notAuthenticated": "Not authenticated",
       "notLinkedToAccount": "Your profile is not linked to an account.",
@@ -669,7 +701,7 @@
       "sendTemplateBtn": "Send template",
       "saveChangesBtn": "Save Changes",
       "saveCustomFieldsBtn": "Save Custom Fields",
-      "toastPhoneRequired": "Phone number is required",
+      "toastPhoneRequired": "Enter a phone number or an e-mail.",
       "toastPhoneNeedsCountryCode": "Include the country code — the number must start with + (e.g. +14155550123)",
       "toastUpdateFailed": "Failed to update contact",
       "toastUpdated": "Contact updated",
@@ -796,7 +828,11 @@
       "lost": "Lost",
       "assignee": "Assignee: {name}",
       "contact": "Contact: {name}",
-      "company": "Company: {name}"
+      "company": "Company: {name}",
+      "attachments": "Attached documents: {count}",
+      "tasksOverdue": "{count, plural, one {# task overdue} other {# tasks overdue}} (ended {date})",
+      "tasksActive": "{count, plural, one {Task due {date}} other {# tasks, next due {date}}}",
+      "tasksUpcoming": "{count, plural, one {Task starts {date}} other {# tasks, next starts {date}}}"
     },
     "form": {
       "editDeal": "Edit Deal",
@@ -839,7 +875,9 @@
       "toastReopened": "Deal reopened",
       "toastFailedDelete": "Failed to delete deal",
       "toastDeleted": "Deal deleted",
-      "company": "Company"
+      "company": "Company",
+      "firstNote": "First note (optional)",
+      "saveToAttach": "Save the deal first to add more notes and attach documents."
     },
     "settings": {
       "managePipeline": "Manage Pipeline",
@@ -880,6 +918,79 @@
       "lostThisMonth": "Lost This Month",
       "lostThisMonthTooltip": "Deals marked as Lost since the first day of the current month.",
       "howCalculated": "How {label} is calculated"
+    },
+    "notes": {
+      "title": "Notes",
+      "placeholder": "Write a note. The date and time are saved automatically.",
+      "add": "Add note",
+      "loading": "Loading notes...",
+      "empty": "No notes yet.",
+      "loadFailed": "Failed to load notes",
+      "saveFailed": "Failed to save the note",
+      "deleteFailed": "Failed to delete the note",
+      "notSignedIn": "Not signed in",
+      "delete": "Delete note",
+      "confirmDelete": "Delete",
+      "cancel": "Cancel"
+    },
+    "documents": {
+      "title": "Documents",
+      "categoryLabel": "Document type",
+      "category": {
+        "quote": "Quote",
+        "invoice": "Invoice (NF)",
+        "boleto": "Boleto",
+        "other": "Other"
+      },
+      "attach": "Attach file",
+      "uploading": "Uploading...",
+      "limits": "PDF, images, XML, Word, Excel or ZIP, up to {max}",
+      "loading": "Loading documents...",
+      "empty": "No documents attached.",
+      "loadFailed": "Failed to load documents",
+      "uploaded": "Document attached",
+      "uploadFailed": "Failed to upload the document",
+      "tooLarge": "The file is too large. The limit is {max}.",
+      "typeNotAllowed": "This file type is not allowed.",
+      "download": "Download",
+      "downloadFailed": "Could not open the document",
+      "delete": "Delete document",
+      "deleteFailed": "Failed to delete the document",
+      "confirmDelete": "Delete",
+      "cancel": "Cancel",
+      "open": "Open"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "addHeading": "New task",
+      "editHeading": "Edit task",
+      "titlePlaceholder": "What needs to be done?",
+      "detailsPlaceholder": "Details (optional)",
+      "start": "Start",
+      "end": "End",
+      "assignee": "Responsible",
+      "noAssignee": "No one",
+      "add": "Add task",
+      "save": "Save task",
+      "cancel": "Cancel",
+      "loading": "Loading tasks...",
+      "empty": "No tasks yet.",
+      "loadFailed": "Failed to load tasks",
+      "saveFailed": "Failed to save the task",
+      "toggleFailed": "Failed to update the task",
+      "deleteFailed": "Failed to delete the task",
+      "titleRequired": "Enter what the task is.",
+      "datesInvalid": "The end date cannot be before the start date.",
+      "markDone": "Mark as done",
+      "markOpen": "Reopen task",
+      "edit": "Edit task",
+      "delete": "Delete task",
+      "confirmDelete": "Delete",
+      "stateOverdue": "Overdue",
+      "stateActive": "In progress",
+      "stateUpcoming": "Starts {date}",
+      "stateDone": "Done {date}",
+      "assignedTo": "Responsible: {name}"
     }
   },
   "Broadcasts": {
@@ -3124,7 +3235,8 @@
       "tagsTitle": "Tags",
       "noTagsAvailable": "No tags yet. Create them under Settings, Fields & tags.",
       "customFieldsTitle": "Custom fields",
-      "noCustomFields": "No custom fields yet. Create them under Settings, Fields & tags."
+      "noCustomFields": "No custom fields yet. Create them under Settings, Fields & tags.",
+      "openConversation": "Open conversation"
     }
   }
 }

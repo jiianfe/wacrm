@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { Check, Loader2, Search, UserPlus, X } from 'lucide-react';
+import { Check, Loader2, MessageSquare, Search, UserPlus, X } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
@@ -103,6 +104,7 @@ function ContactPicker({
       const { data } = await supabase
         .from('contacts')
         .select('id, name, phone')
+        .neq('registration_status', 'pending')
         .or(`name.ilike.${like},phone.ilike.${like}`)
         .order('name')
         .limit(8);
@@ -160,9 +162,20 @@ interface CompanyFormProps {
   onOpenChange: (open: boolean) => void;
   company?: Company | null;
   onSaved: () => void;
+  /** Values to start a NEW company with (e.g. from an inbound e-mail). */
+  prefill?: Partial<Record<Field, string>>;
+  /** A contact to link as soon as a NEW company is saved. */
+  presetContact?: { id: string; name: string | null; phone: string } | null;
 }
 
-export function CompanyForm({ open, onOpenChange, company, onSaved }: CompanyFormProps) {
+export function CompanyForm({
+  open,
+  onOpenChange,
+  company,
+  onSaved,
+  prefill,
+  presetContact,
+}: CompanyFormProps) {
   const t = useTranslations('Companies.form');
   const supabase = createClient();
   const { accountId } = useAuth();
@@ -175,6 +188,8 @@ export function CompanyForm({ open, onOpenChange, company, onSaved }: CompanyFor
   // saved, so the save can work out what to add, remove or retitle.
   const [contacts, setContacts] = useState<LinkedContact[]>([]);
   const [initialContacts, setInitialContacts] = useState<LinkedContact[]>([]);
+  // contact id -> conversation id, for the "open conversation" shortcut.
+  const [conversationByContact, setConversationByContact] = useState<Record<string, string>>({});
   const [deals, setDeals] = useState<LinkedDeal[]>([]);
   const [allTags, setAllTags] = useState<Tag[]>([]);
   const [tagIds, setTagIds] = useState<string[]>([]);
@@ -190,12 +205,20 @@ export function CompanyForm({ open, onOpenChange, company, onSaved }: CompanyFor
       for (const f of FIELDS) next[f] = company[f] ?? '';
       next.cnpj = formatCnpj(next.cnpj);
       next.address_zip = formatCep(next.address_zip);
+    } else if (prefill) {
+      for (const f of FIELDS) if (prefill[f]) next[f] = prefill[f]!;
     }
     setForm(next);
-    setContacts([]);
+    // A new company can start with one contact already linked; it counts as
+    // "added" on save because `initialContacts` stays empty.
+    setContacts(
+      !company && presetContact
+        ? [{ id: presetContact.id, name: presetContact.name, phone: presetContact.phone, job_title: '' }]
+        : [],
+    );
     setInitialContacts([]);
     setDeals([]);
-  }, [open, company]);
+  }, [open, company, prefill, presetContact]);
 
   // Contacts and deals already linked to this company (edit mode only).
   useEffect(() => {
@@ -233,6 +256,21 @@ export function CompanyForm({ open, onOpenChange, company, onSaved }: CompanyFor
       setContacts(linked);
       setInitialContacts(linked);
       setDeals((d.data ?? []) as LinkedDeal[]);
+
+      if (linked.length > 0) {
+        const { data: convs } = await supabase
+          .from('conversations')
+          .select('id, contact_id')
+          .in('contact_id', linked.map((c) => c.id));
+        if (cancelled) return;
+        const map: Record<string, string> = {};
+        for (const row of (convs ?? []) as { id: string; contact_id: string }[]) {
+          map[row.contact_id] = row.id;
+        }
+        setConversationByContact(map);
+      } else {
+        setConversationByContact({});
+      }
     })();
     return () => {
       cancelled = true;
@@ -741,6 +779,15 @@ export function CompanyForm({ open, onOpenChange, company, onSaved }: CompanyFor
                         {c.name || t('unnamed')}
                       </p>
                       <p className="text-xs text-muted-foreground">{c.phone}</p>
+                      {conversationByContact[c.id] && (
+                        <Link
+                          href={`/inbox?c=${conversationByContact[c.id]}`}
+                          className="mt-0.5 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          <MessageSquare className="size-3" />
+                          {t('openConversation')}
+                        </Link>
+                      )}
                     </div>
                     <Input
                       value={c.job_title}

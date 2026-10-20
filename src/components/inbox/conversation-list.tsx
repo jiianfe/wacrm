@@ -4,10 +4,12 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   CONVERSATION_SELECT,
+  companyNames,
   matchesContactFilters,
   normalizeConversations,
 } from "@/lib/inbox/conversations";
 import { applyInboxFilter, type InboxFilter } from "@/lib/inbox/inbox-filters";
+import { matchesChannel, type ChannelFilter } from "@/lib/inbox/channel-filter";
 import { cn } from "@/lib/utils";
 import type { Conversation, ConversationStatus, Tag } from "@/types";
 import { Search, ChevronDown, X } from "lucide-react";
@@ -36,6 +38,10 @@ interface ConversationListProps {
    */
   resyncToken?: number;
   initialFilter?: InboxFilter;
+  /** WhatsApp / e-mail view of the inbox. Owned by the page so the open
+   *  thread shows the same channel. */
+  channelFilter?: ChannelFilter;
+  onChannelFilterChange?: (channel: ChannelFilter) => void;
 }
 
 const STATUS_COLORS: Record<ConversationStatus, string> = {
@@ -52,6 +58,8 @@ export function ConversationList({
   onConversationsLoaded,
   resyncToken = 0,
   initialFilter = "all",
+  channelFilter = "all",
+  onChannelFilterChange,
 }: ConversationListProps) {
   const t = useTranslations("Inbox.conversationList");
   
@@ -155,8 +163,7 @@ export function ConversationList({
   const companies = useMemo(() => {
     const set = new Set<string>();
     for (const c of conversations) {
-      const co = c.contact?.company?.trim();
-      if (co) set.add(co);
+      for (const co of companyNames(c.contact?.company)) set.add(co);
     }
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [conversations]);
@@ -168,7 +175,9 @@ export function ConversationList({
   }, [tags]);
 
   const filtered = useMemo(() => {
-    let result = applyInboxFilter(conversations, filter, now);
+    let result = applyInboxFilter(conversations, filter, now).filter((c) =>
+      matchesChannel(c, channelFilter)
+    );
 
     // Contact-based filters (tags via OR logic, exact company match).
     if (selectedTagIds.length > 0 || selectedCompany !== null) {
@@ -185,13 +194,21 @@ export function ConversationList({
       result = result.filter((c) => {
         const name = c.contact?.name?.toLowerCase() ?? "";
         const phone = c.contact?.phone?.toLowerCase() ?? "";
+        const email = c.contact?.email?.toLowerCase() ?? "";
+        const company = c.contact?.company?.toLowerCase() ?? "";
         const lastMsg = c.last_message_text?.toLowerCase() ?? "";
-        return name.includes(q) || phone.includes(q) || lastMsg.includes(q);
+        return (
+          name.includes(q) ||
+          phone.includes(q) ||
+          email.includes(q) ||
+          company.includes(q) ||
+          lastMsg.includes(q)
+        );
       });
     }
 
     return result;
-  }, [conversations, filter, now, search, selectedTagIds, selectedCompany]);
+  }, [conversations, filter, now, search, selectedTagIds, selectedCompany, channelFilter]);
 
   const toggleTag = useCallback((id: string) => {
     setSelectedTagIds((prev) =>
@@ -229,6 +246,35 @@ export function ConversationList({
     <div className="flex h-full w-full flex-col border-r border-border bg-card lg:w-80">
       {/* Search + Filter */}
       <div className="space-y-2 border-b border-border p-3">
+        {/* Channel view: everything, WhatsApp only, or e-mail only. */}
+        <div
+          role="group"
+          aria-label={t("channelLabel")}
+          className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1"
+        >
+          {(["all", "whatsapp", "email"] as ChannelFilter[]).map((ch) => (
+            <button
+              key={ch}
+              type="button"
+              onClick={() => onChannelFilterChange?.(ch)}
+              aria-pressed={channelFilter === ch}
+              className={cn(
+                "rounded-md px-2 py-1 text-xs font-medium transition-colors",
+                channelFilter === ch
+                  ? "bg-card text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {t(
+                ch === "all"
+                  ? "channelAll"
+                  : ch === "whatsapp"
+                    ? "channelWhatsapp"
+                    : "channelEmail"
+              )}
+            </button>
+          ))}
+        </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -477,8 +523,15 @@ function ConversationItem({
       {/* Content */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className="truncate text-sm font-medium text-foreground">
-            {displayName}
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="truncate text-sm font-medium text-foreground">
+              {displayName}
+            </span>
+            {contact?.registration_status === "pending" && (
+              <span className="shrink-0 rounded-full bg-primary/15 px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide text-primary">
+                {t("notRegistered")}
+              </span>
+            )}
           </span>
           <span className="shrink-0 text-[10px] text-muted-foreground">{timeAgo}</span>
         </div>

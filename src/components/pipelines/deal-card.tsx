@@ -5,6 +5,7 @@ import { Calendar, Check, X } from "lucide-react";
 import { formatCurrency } from "@/lib/currency";
 import { useLocale, useTranslations } from "next-intl";
 import { companyDisplayName } from "@/lib/companies";
+import { formatTaskDate, localDateString, summarizeTasks } from "@/lib/deal-tasks";
 
 interface DealCardProps {
   deal: Deal;
@@ -30,6 +31,15 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
     : t("noContact");
   const companyName = companyDisplayName(deal.company) || null;
   const assigneeLabel = deal.assignee?.full_name || null;
+  const attachmentCount = deal.attachments?.[0]?.count ?? 0;
+  // Tasks only matter while the deal is open: green = an open task is within
+  // its period, red = an open task's end date has passed.
+  const taskSummary =
+    deal.status === "won" || deal.status === "lost"
+      ? null
+      : summarizeTasks(deal.tasks, localDateString());
+  const taskOverdue = taskSummary?.status === "overdue";
+  const taskUpcoming = taskSummary?.status === "upcoming";
 
   return (
     <button
@@ -58,6 +68,16 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
         <h4 className="flex-1 text-sm font-semibold leading-snug text-foreground break-words">
           {deal.title}
         </h4>
+        {attachmentCount > 0 && (
+          <span
+            title={t("attachments", { count: attachmentCount })}
+            aria-label={t("attachments", { count: attachmentCount })}
+            className="inline-flex shrink-0 items-center gap-0.5 text-xs text-muted-foreground"
+          >
+            <span aria-hidden>📎</span>
+            {attachmentCount > 1 ? attachmentCount : null}
+          </span>
+        )}
         {deal.status === "won" && (
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
             <Check className="h-3 w-3" />
@@ -71,6 +91,47 @@ export function DealCard({ deal, stage, onEdit, isOverlay }: DealCardProps) {
           </span>
         )}
       </div>
+
+      {taskSummary && taskSummary.status !== "none" && taskSummary.date && (
+        <div className="mt-2">
+          <span
+            className={`inline-flex max-w-full items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+              taskOverdue
+                ? "bg-red-500/15 text-red-400"
+                : taskUpcoming
+                  ? "bg-muted-foreground/15 text-muted-foreground"
+                  : "bg-emerald-500/15 text-emerald-400"
+            }`}
+          >
+            <span
+              aria-hidden
+              className={`size-1.5 shrink-0 rounded-full ${
+                taskOverdue
+                  ? "bg-red-400"
+                  : taskUpcoming
+                    ? "bg-muted-foreground"
+                    : "bg-emerald-400"
+              }`}
+            />
+            <span className="truncate">
+              {taskOverdue
+                ? t("tasksOverdue", {
+                    count: taskSummary.overdue,
+                    date: formatTaskDate(taskSummary.date, locale),
+                  })
+                : taskUpcoming
+                  ? t("tasksUpcoming", {
+                      count: taskSummary.upcoming,
+                      date: formatTaskDate(taskSummary.date, locale),
+                    })
+                  : t("tasksActive", {
+                      count: taskSummary.active,
+                      date: formatTaskDate(taskSummary.date, locale),
+                    })}
+            </span>
+          </span>
+        </div>
+      )}
 
       {companyName && (
         <div className="mt-2">

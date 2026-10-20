@@ -206,7 +206,8 @@ export function ContactDetailView({
   }
 
   async function saveDetails() {
-    if (!contactId || !editPhone.trim()) {
+    // A phone or an e-mail is enough (e-mail-only contacts have no phone).
+    if (!contactId || (!editPhone.trim() && !editEmail.trim())) {
       toast.error(t('toastPhoneRequired'));
       return;
     }
@@ -216,7 +217,7 @@ export function ContactDetailView({
     // digits-only form the inbound webhook stores — are left alone so a
     // name/email edit is never blocked by the phone field.
     const phoneChanged = editPhone.trim() !== (contact?.phone ?? '');
-    if (phoneChanged && !parseInternationalPhone(editPhone)) {
+    if (editPhone.trim() && phoneChanged && !parseInternationalPhone(editPhone)) {
       toast.error(t('toastPhoneNeedsCountryCode'));
       return;
     }

@@ -41,6 +41,9 @@ interface ContactFormProps {
   /** Open an existing contact's detail view — used by the duplicate
    *  notice to jump to the contact that already owns this number. */
   onViewExisting?: (contactId: string) => void;
+  /** Saving also accepts a pending contact (migration 066) — used when
+   *  registering someone who wrote in from the inbox. */
+  markRegistered?: boolean;
 }
 
 export function ContactForm({
@@ -50,6 +53,7 @@ export function ContactForm({
   contactTags = [],
   onSaved,
   onViewExisting,
+  markRegistered = false,
 }: ContactFormProps) {
   const t = useTranslations('Contacts.form');
   const supabase = createClient();
@@ -141,7 +145,9 @@ export function ContactForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!phone.trim()) {
+    // A phone OR an e-mail identifies the contact: someone who only ever
+    // wrote by e-mail has no phone.
+    if (!phone.trim() && !email.trim()) {
       toast.error(t('phoneRequired'));
       return;
     }
@@ -153,7 +159,7 @@ export function ContactForm({
     // webhook store Meta's digits-only form, and editing their name must
     // not be blocked by a phone the user never touched.
     const phoneChanged = !isEdit || phone.trim() !== (contact?.phone ?? '');
-    if (phoneChanged && !parseInternationalPhone(phone)) {
+    if (phone.trim() && phoneChanged && !parseInternationalPhone(phone)) {
       toast.error(t('phoneNeedsCountryCode'));
       return;
     }
@@ -184,6 +190,7 @@ export function ContactForm({
             name: name.trim() || null,
             phone: phone.trim(),
             email: email.trim() || null,
+            ...(markRegistered ? { registration_status: 'registered' } : {}),
             updated_at: new Date().toISOString(),
           })
           .eq('id', contactId);

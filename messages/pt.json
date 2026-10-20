@@ -350,7 +350,12 @@
       "clearAll": "Limpar tudo",
       "noConversations": "Nenhuma conversa encontrada",
       "noMessagesYet": "Nenhuma mensagem ainda",
-      "unknown": "Desconhecido"
+      "unknown": "Desconhecido",
+      "channelLabel": "Canal",
+      "channelAll": "Todos",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "E-mail",
+      "notRegistered": "Não cadastrado"
     },
     "messageThread": {
       "backToConversations": "Voltar às conversas",
@@ -388,7 +393,11 @@
       "networkError": "erro de rede",
       "documentFallback": "Documento",
       "you": "Você",
-      "emailOnlyNotice": "Este contato só tem e-mail, então uma resposta pelo WhatsApp não seria entregue. A resposta por e-mail vem na próxima fase."
+      "emailOnlyNotice": "Este contato só tem e-mail, então uma resposta pelo WhatsApp não seria entregue. A resposta por e-mail vem na próxima fase.",
+      "emailViewNotice": "Você está vendo só os e-mails desta conversa. A resposta por e-mail ainda não está disponível. Mude para Todos ou WhatsApp para responder pelo WhatsApp.",
+      "signatureOn": "Assinatura ligada",
+      "signatureOff": "Assinatura desligada",
+      "signatureHint": "Coloca o seu nome ({name}) em negrito acima de cada mensagem de texto enviada ao cliente"
     },
     "sessionTimer": {
       "expired": "Expirada",
@@ -521,7 +530,14 @@
       "deals": "Negócios",
       "noTags": "Sem tags",
       "noDeals": "Sem negócios",
-      "addNotePlaceholder": "Adicionar uma nota..."
+      "addNotePlaceholder": "Adicionar uma nota...",
+      "linkDeal": "Vincular negócio existente",
+      "linkDealTitle": "Vincular um negócio em aberto a este contato",
+      "linkDealDone": "Negócio vinculado a este contato",
+      "linkDealFailed": "Não foi possível vincular o negócio",
+      "noLinkableDeals": "Não há outros negócios em aberto para vincular.",
+      "noContactOnDeal": "Sem contato",
+      "close": "Fechar"
     },
     "aiBanner": {
       "pausedTitle": "O assistente de IA está pausado aqui",
@@ -532,6 +548,22 @@
       "resumed": "IA retomada.",
       "updateError": "Não foi possível atualizar o assistente de IA.",
       "networkError": "Não foi possível conectar ao servidor."
+    },
+    "pendingContact": {
+      "title": "Este contato ainda não está cadastrado",
+      "description": "A pessoa escreveu, mas nada é guardado como contato até você decidir. As respostas automáticas ficam pausadas para ela.",
+      "registerContact": "Cadastrar contato",
+      "registerCompany": "Cadastrar empresa",
+      "ignore": "Ignorar",
+      "registerFailed": "Não foi possível cadastrar este contato"
+    },
+    "newDeal": {
+      "button": "Criar negócio",
+      "tooltip": "Criar um negócio no pipeline para este contato",
+      "noPipeline": "Crie um pipeline primeiro, em Pipelines.",
+      "noStages": "Este pipeline ainda não tem etapas.",
+      "choosePipeline": "Escolha o pipeline",
+      "choosePipelineDesc": "Em qual pipeline o novo negócio deve começar?"
     }
   },
   "Contacts": {
@@ -613,7 +645,7 @@
       "dupSimilar": "Já existe um contato com um número muito parecido.",
       "loadingTags": "Carregando tags...",
       "noTagsAvailable": "Nenhuma tag disponível. Crie tags em Configurações.",
-      "phoneRequired": "O número de telefone é obrigatório",
+      "phoneRequired": "Informe um telefone ou um e-mail.",
       "phoneNeedsCountryCode": "Inclua o código do país — o número deve começar com + (ex.: +5511999990000)",
       "notAuthenticated": "Não autenticado",
       "notLinkedToAccount": "Seu perfil não está vinculado a uma conta.",
@@ -669,7 +701,7 @@
       "sendTemplateBtn": "Enviar modelo",
       "saveChangesBtn": "Salvar alterações",
       "saveCustomFieldsBtn": "Salvar campos personalizados",
-      "toastPhoneRequired": "O número de telefone é obrigatório",
+      "toastPhoneRequired": "Informe um telefone ou um e-mail.",
       "toastPhoneNeedsCountryCode": "Inclua o código do país — o número deve começar com + (ex.: +5511999990000)",
       "toastUpdateFailed": "Falha ao atualizar o contato",
       "toastUpdated": "Contato atualizado",
@@ -796,7 +828,11 @@
       "lost": "Perdido",
       "assignee": "Responsável: {name}",
       "contact": "Contato: {name}",
-      "company": "Empresa: {name}"
+      "company": "Empresa: {name}",
+      "attachments": "Documentos anexados: {count}",
+      "tasksOverdue": "{count, plural, one {# tarefa atrasada} other {# tarefas atrasadas}} (venceu {date})",
+      "tasksActive": "{count, plural, one {Tarefa até {date}} other {# tarefas, próxima até {date}}}",
+      "tasksUpcoming": "{count, plural, one {Tarefa começa em {date}} other {# tarefas, próxima começa em {date}}}"
     },
     "form": {
       "editDeal": "Editar negócio",
@@ -839,7 +875,9 @@
       "toastReopened": "Negócio reaberto",
       "toastFailedDelete": "Falha ao excluir o negócio",
       "toastDeleted": "Negócio excluído",
-      "company": "Empresa"
+      "company": "Empresa",
+      "firstNote": "Primeira nota (opcional)",
+      "saveToAttach": "Salve o negócio primeiro para adicionar mais notas e anexar documentos."
     },
     "settings": {
       "managePipeline": "Gerenciar pipeline",
@@ -880,6 +918,79 @@
       "lostThisMonth": "Perdidos neste mês",
       "lostThisMonthTooltip": "Negócios marcados como perdidos desde o primeiro dia do mês atual.",
       "howCalculated": "Como {label} é calculado"
+    },
+    "notes": {
+      "title": "Notas",
+      "placeholder": "Escreva uma nota. A data e a hora são salvas automaticamente.",
+      "add": "Adicionar nota",
+      "loading": "Carregando notas...",
+      "empty": "Nenhuma nota ainda.",
+      "loadFailed": "Não foi possível carregar as notas",
+      "saveFailed": "Não foi possível salvar a nota",
+      "deleteFailed": "Não foi possível excluir a nota",
+      "notSignedIn": "Você não está conectado",
+      "delete": "Excluir nota",
+      "confirmDelete": "Excluir",
+      "cancel": "Cancelar"
+    },
+    "documents": {
+      "title": "Documentos",
+      "categoryLabel": "Tipo de documento",
+      "category": {
+        "quote": "Orçamento",
+        "invoice": "Nota fiscal (NF)",
+        "boleto": "Boleto",
+        "other": "Outro"
+      },
+      "attach": "Anexar arquivo",
+      "uploading": "Enviando...",
+      "limits": "PDF, imagens, XML, Word, Excel ou ZIP, até {max}",
+      "loading": "Carregando documentos...",
+      "empty": "Nenhum documento anexado.",
+      "loadFailed": "Não foi possível carregar os documentos",
+      "uploaded": "Documento anexado",
+      "uploadFailed": "Não foi possível enviar o documento",
+      "tooLarge": "O arquivo é grande demais. O limite é {max}.",
+      "typeNotAllowed": "Este tipo de arquivo não é permitido.",
+      "download": "Baixar",
+      "downloadFailed": "Não foi possível abrir o documento",
+      "delete": "Excluir documento",
+      "deleteFailed": "Não foi possível excluir o documento",
+      "confirmDelete": "Excluir",
+      "cancel": "Cancelar",
+      "open": "Abrir"
+    },
+    "tasks": {
+      "title": "Tarefas",
+      "addHeading": "Nova tarefa",
+      "editHeading": "Editar tarefa",
+      "titlePlaceholder": "O que precisa ser feito?",
+      "detailsPlaceholder": "Detalhes (opcional)",
+      "start": "Início",
+      "end": "Fim",
+      "assignee": "Responsável",
+      "noAssignee": "Ninguém",
+      "add": "Adicionar tarefa",
+      "save": "Salvar tarefa",
+      "cancel": "Cancelar",
+      "loading": "Carregando tarefas...",
+      "empty": "Nenhuma tarefa ainda.",
+      "loadFailed": "Não foi possível carregar as tarefas",
+      "saveFailed": "Não foi possível salvar a tarefa",
+      "toggleFailed": "Não foi possível atualizar a tarefa",
+      "deleteFailed": "Não foi possível excluir a tarefa",
+      "titleRequired": "Informe o que é a tarefa.",
+      "datesInvalid": "A data de fim não pode ser anterior à de início.",
+      "markDone": "Marcar como concluída",
+      "markOpen": "Reabrir tarefa",
+      "edit": "Editar tarefa",
+      "delete": "Excluir tarefa",
+      "confirmDelete": "Excluir",
+      "stateOverdue": "Atrasada",
+      "stateActive": "Em andamento",
+      "stateUpcoming": "Começa em {date}",
+      "stateDone": "Concluída em {date}",
+      "assignedTo": "Responsável: {name}"
     }
   },
   "Broadcasts": {
@@ -3124,7 +3235,8 @@
       "tagsTitle": "Tags",
       "noTagsAvailable": "Nenhuma tag criada. Crie em Configurações, Campos e tags.",
       "customFieldsTitle": "Campos personalizados",
-      "noCustomFields": "Nenhum campo personalizado criado. Crie em Configurações, Campos e tags."
+      "noCustomFields": "Nenhum campo personalizado criado. Crie em Configurações, Campos e tags.",
+      "openConversation": "Abrir conversa"
     }
   }
 }

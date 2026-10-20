@@ -15,7 +15,11 @@ import {
   DollarSign,
   StickyNote,
   Plus,
+  Link2,
+  Loader2,
+  X,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
@@ -24,9 +28,26 @@ import { contactHandle } from "@/lib/whatsapp/wa-identity";
 
 interface ContactSidebarProps {
   contact: Contact | null;
+  /** Bump to reload the deals (e.g. one was just created from the thread). */
+  refreshToken?: number;
+  /** A deal was linked to this contact from the panel. */
+  onDealLinked?: () => void;
 }
 
-export function ContactSidebar({ contact }: ContactSidebarProps) {
+/** An open deal that belongs to someone else (or nobody) and can be linked. */
+interface LinkableDeal {
+  id: string;
+  title: string;
+  value: number;
+  currency?: string | null;
+  contact?: { name?: string | null; phone?: string | null } | null;
+}
+
+export function ContactSidebar({
+  contact,
+  refreshToken = 0,
+  onDealLinked,
+}: ContactSidebarProps) {
   const tSidebar = useTranslations("Inbox.sidebar");
   const tThread = useTranslations("Inbox.messageThread");
 
@@ -79,7 +100,49 @@ export function ContactSidebar({ contact }: ContactSidebarProps) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchContactData();
-  }, [fetchContactData]);
+  }, [fetchContactData, refreshToken]);
+
+  // Link an existing pipeline card to this contact (and so to this
+  // conversation, which is the contact's single thread).
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkLoading, setLinkLoading] = useState(false);
+  const [linkable, setLinkable] = useState<LinkableDeal[]>([]);
+
+  const openLink = useCallback(async () => {
+    if (!contact) return;
+    setLinkOpen(true);
+    setLinkLoading(true);
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("deals")
+      .select("id, title, value, currency, contact:contacts(name, phone)")
+      .eq("status", "open")
+      .or(`contact_id.is.null,contact_id.neq.${contact.id}`)
+      .order("created_at", { ascending: false })
+      .limit(30);
+    setLinkable((data ?? []) as unknown as LinkableDeal[]);
+    setLinkLoading(false);
+  }, [contact]);
+
+  const linkDeal = useCallback(
+    async (deal: LinkableDeal) => {
+      if (!contact) return;
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("deals")
+        .update({ contact_id: contact.id })
+        .eq("id", deal.id);
+      if (error) {
+        toast.error(tSidebar("linkDealFailed"));
+        return;
+      }
+      toast.success(tSidebar("linkDealDone"));
+      setLinkOpen(false);
+      await fetchContactData();
+      onDealLinked?.();
+    },
+    [contact, fetchContactData, onDealLinked, tSidebar],
+  );
 
   const handleCopyPhone = useCallback(async () => {
     // Copies whatever the row displays — a BSUID-only contact has no
@@ -253,6 +316,65 @@ export function ContactSidebar({ contact }: ContactSidebarProps) {
                     </div>
                   </div>
                 ))
+              )}
+
+              {contact && contact.registration_status !== "pending" && (
+                <div>
+                  {!linkOpen ? (
+                    <button
+                      type="button"
+                      onClick={openLink}
+                      className="inline-flex items-center gap-1 px-1 text-xs text-primary hover:underline"
+                    >
+                      <Link2 className="h-3 w-3" />
+                      {tSidebar("linkDeal")}
+                    </button>
+                  ) : (
+                    <div className="rounded-lg border border-border bg-card p-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-medium text-foreground">
+                          {tSidebar("linkDealTitle")}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setLinkOpen(false)}
+                          aria-label={tSidebar("close")}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      {linkLoading ? (
+                        <div className="flex justify-center py-3">
+                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        </div>
+                      ) : linkable.length === 0 ? (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {tSidebar("noLinkableDeals")}
+                        </p>
+                      ) : (
+                        <ul className="mt-1 max-h-48 space-y-1 overflow-y-auto">
+                          {linkable.map((d) => (
+                            <li key={d.id}>
+                              <button
+                                type="button"
+                                onClick={() => linkDeal(d)}
+                                className="w-full rounded-md px-2 py-1.5 text-left hover:bg-muted"
+                              >
+                                <span className="block truncate text-xs font-medium text-foreground">
+                                  {d.title}
+                                </span>
+                                <span className="block truncate text-[11px] text-muted-foreground">
+                                  {d.contact?.name || d.contact?.phone || tSidebar("noContactOnDeal")}
+                                </span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>

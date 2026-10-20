@@ -91,6 +91,8 @@ export async function ingestInboundEmail(
         phone: '',
         name: sender?.name?.trim() || fromAddress,
         email: fromAddress,
+        // Not a contact until someone accepts them in the inbox (066).
+        registration_status: 'pending',
       })
       .select('id')
       .single()

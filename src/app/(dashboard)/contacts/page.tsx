@@ -157,9 +157,12 @@ export default function ContactsPage() {
       contactRows = rows.map((r) => r.contact);
       count = rows.length > 0 ? Number(rows[0].total_count) : 0;
     } else {
+      // Strangers who only wrote in (pending, migration 066) are not
+      // contacts yet; they live in the inbox until registered.
       let query = supabase
         .from('contacts')
         .select('*', { count: 'exact' })
+        .neq('registration_status', 'pending')
         .order('created_at', { ascending: false })
         .range(from, to);
 

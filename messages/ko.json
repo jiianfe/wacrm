@@ -350,7 +350,12 @@
       "clearAll": "모두 지우기",
       "noConversations": "대화를 찾을 수 없습니다",
       "noMessagesYet": "아직 메시지가 없습니다",
-      "unknown": "알 수 없음"
+      "unknown": "알 수 없음",
+      "channelLabel": "채널",
+      "channelAll": "전체",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "이메일",
+      "notRegistered": "미등록"
     },
     "messageThread": {
       "backToConversations": "대화 목록으로 돌아가기",
@@ -388,7 +393,11 @@
       "networkError": "네트워크 오류",
       "documentFallback": "문서",
       "you": "나",
-      "emailOnlyNotice": "이 연락처는 이메일 주소만 있어 WhatsApp 답장을 전달할 수 없습니다. 이메일 답장은 다음 단계에서 제공됩니다."
+      "emailOnlyNotice": "이 연락처는 이메일 주소만 있어 WhatsApp 답장을 전달할 수 없습니다. 이메일 답장은 다음 단계에서 제공됩니다.",
+      "emailViewNotice": "이 대화의 이메일만 보고 있습니다. 이메일 답장은 아직 지원되지 않습니다. WhatsApp으로 답장하려면 전체 또는 WhatsApp으로 전환하세요.",
+      "signatureOn": "서명 켜짐",
+      "signatureOff": "서명 꺼짐",
+      "signatureHint": "고객에게 보내는 각 텍스트 메시지 위에 이름({name})을 굵게 추가합니다"
     },
     "sessionTimer": {
       "expired": "만료됨",
@@ -521,7 +530,14 @@
       "deals": "딜",
       "noTags": "태그 없음",
       "noDeals": "딜 없음",
-      "addNotePlaceholder": "메모 추가..."
+      "addNotePlaceholder": "메모 추가...",
+      "linkDeal": "기존 거래 연결",
+      "linkDealTitle": "진행 중인 거래를 이 연락처에 연결",
+      "linkDealDone": "거래가 이 연락처에 연결되었습니다",
+      "linkDealFailed": "거래를 연결하지 못했습니다",
+      "noLinkableDeals": "연결할 다른 진행 중인 거래가 없습니다.",
+      "noContactOnDeal": "연락처 없음",
+      "close": "닫기"
     },
     "aiBanner": {
       "pausedTitle": "이 대화에서 AI 어시스턴트가 일시 중지됨",
@@ -532,6 +548,22 @@
       "resumed": "AI가 재개되었습니다.",
       "updateError": "AI 어시스턴트를 업데이트하지 못했습니다.",
       "networkError": "서버에 연결할 수 없습니다."
+    },
+    "pendingContact": {
+      "title": "아직 등록되지 않은 연락처입니다",
+      "description": "상대방이 메시지를 보냈지만, 결정하기 전에는 연락처로 저장되지 않습니다. 자동 응답은 일시 중지됩니다.",
+      "registerContact": "연락처 등록",
+      "registerCompany": "회사 등록",
+      "ignore": "무시",
+      "registerFailed": "이 연락처를 등록하지 못했습니다"
+    },
+    "newDeal": {
+      "button": "거래 만들기",
+      "tooltip": "이 연락처로 파이프라인에 거래 만들기",
+      "noPipeline": "먼저 파이프라인 메뉴에서 파이프라인을 만드세요.",
+      "noStages": "이 파이프라인에는 아직 단계가 없습니다.",
+      "choosePipeline": "파이프라인 선택",
+      "choosePipelineDesc": "새 거래를 어느 파이프라인에서 시작할까요?"
     }
   },
   "Contacts": {
@@ -613,7 +645,7 @@
       "dupSimilar": "매우 유사한 번호를 가진 연락처가 이미 있습니다.",
       "loadingTags": "태그를 불러오는 중...",
       "noTagsAvailable": "사용 가능한 태그가 없습니다. 설정에서 태그를 만드세요.",
-      "phoneRequired": "전화번호는 필수입니다",
+      "phoneRequired": "전화번호 또는 이메일을 입력하세요.",
       "phoneNeedsCountryCode": "국가 코드를 포함하세요. 번호는 +로 시작해야 합니다 (예: +14155550123)",
       "notAuthenticated": "인증되지 않았습니다",
       "notLinkedToAccount": "프로필이 계정에 연결되어 있지 않습니다.",
@@ -669,7 +701,7 @@
       "sendTemplateBtn": "템플릿 보내기",
       "saveChangesBtn": "변경 사항 저장",
       "saveCustomFieldsBtn": "커스텀 필드 저장",
-      "toastPhoneRequired": "전화번호는 필수입니다",
+      "toastPhoneRequired": "전화번호 또는 이메일을 입력하세요.",
       "toastPhoneNeedsCountryCode": "국가 코드를 포함하세요. 번호는 +로 시작해야 합니다 (예: +14155550123)",
       "toastUpdateFailed": "연락처를 업데이트하지 못했습니다",
       "toastUpdated": "연락처가 업데이트되었습니다",
@@ -796,7 +828,11 @@
       "lost": "실패",
       "assignee": "담당자: {name}",
       "contact": "연락처: {name}",
-      "company": "회사: {name}"
+      "company": "회사: {name}",
+      "attachments": "첨부 문서: {count}",
+      "tasksOverdue": "{count}개 지연 (마감 {date})",
+      "tasksActive": "{count}개 진행 중, 다음 마감 {date}",
+      "tasksUpcoming": "{count}개 예정, 다음 시작 {date}"
     },
     "form": {
       "editDeal": "딜 수정",
@@ -839,7 +875,9 @@
       "toastReopened": "딜이 재개되었습니다",
       "toastFailedDelete": "딜을 삭제하지 못했습니다",
       "toastDeleted": "딜이 삭제되었습니다",
-      "company": "회사"
+      "company": "회사",
+      "firstNote": "첫 메모 (선택)",
+      "saveToAttach": "메모를 더 추가하고 문서를 첨부하려면 먼저 거래를 저장하세요."
     },
     "settings": {
       "managePipeline": "파이프라인 관리",
@@ -880,6 +918,79 @@
       "lostThisMonth": "이번 달 실패",
       "lostThisMonthTooltip": "이번 달 1일 이후 실패로 표시된 딜입니다.",
       "howCalculated": "{label} 계산 방법"
+    },
+    "notes": {
+      "title": "메모",
+      "placeholder": "메모를 작성하세요. 날짜와 시간이 자동으로 저장됩니다.",
+      "add": "메모 추가",
+      "loading": "메모를 불러오는 중...",
+      "empty": "아직 메모가 없습니다.",
+      "loadFailed": "메모를 불러오지 못했습니다",
+      "saveFailed": "메모를 저장하지 못했습니다",
+      "deleteFailed": "메모를 삭제하지 못했습니다",
+      "notSignedIn": "로그인되어 있지 않습니다",
+      "delete": "메모 삭제",
+      "confirmDelete": "삭제",
+      "cancel": "취소"
+    },
+    "documents": {
+      "title": "문서",
+      "categoryLabel": "문서 유형",
+      "category": {
+        "quote": "견적서",
+        "invoice": "세금계산서 (NF)",
+        "boleto": "보레토",
+        "other": "기타"
+      },
+      "attach": "파일 첨부",
+      "uploading": "업로드 중...",
+      "limits": "PDF, 이미지, XML, Word, Excel 또는 ZIP, 최대 {max}",
+      "loading": "문서를 불러오는 중...",
+      "empty": "첨부된 문서가 없습니다.",
+      "loadFailed": "문서를 불러오지 못했습니다",
+      "uploaded": "문서가 첨부되었습니다",
+      "uploadFailed": "문서를 업로드하지 못했습니다",
+      "tooLarge": "파일이 너무 큽니다. 제한은 {max}입니다.",
+      "typeNotAllowed": "허용되지 않는 파일 형식입니다.",
+      "download": "다운로드",
+      "downloadFailed": "문서를 열 수 없습니다",
+      "delete": "문서 삭제",
+      "deleteFailed": "문서를 삭제하지 못했습니다",
+      "confirmDelete": "삭제",
+      "cancel": "취소",
+      "open": "열기"
+    },
+    "tasks": {
+      "title": "작업",
+      "addHeading": "새 작업",
+      "editHeading": "작업 수정",
+      "titlePlaceholder": "무엇을 해야 하나요?",
+      "detailsPlaceholder": "세부 내용 (선택)",
+      "start": "시작",
+      "end": "종료",
+      "assignee": "담당자",
+      "noAssignee": "없음",
+      "add": "작업 추가",
+      "save": "작업 저장",
+      "cancel": "취소",
+      "loading": "작업을 불러오는 중...",
+      "empty": "아직 작업이 없습니다.",
+      "loadFailed": "작업을 불러오지 못했습니다",
+      "saveFailed": "작업을 저장하지 못했습니다",
+      "toggleFailed": "작업을 업데이트하지 못했습니다",
+      "deleteFailed": "작업을 삭제하지 못했습니다",
+      "titleRequired": "작업 내용을 입력하세요.",
+      "datesInvalid": "종료일은 시작일보다 빠를 수 없습니다.",
+      "markDone": "완료로 표시",
+      "markOpen": "작업 다시 열기",
+      "edit": "작업 수정",
+      "delete": "작업 삭제",
+      "confirmDelete": "삭제",
+      "stateOverdue": "지연",
+      "stateActive": "진행 중",
+      "stateUpcoming": "{date} 시작",
+      "stateDone": "{date} 완료",
+      "assignedTo": "담당자: {name}"
     }
   },
   "Broadcasts": {
@@ -3124,7 +3235,8 @@
       "tagsTitle": "태그",
       "noTagsAvailable": "아직 태그가 없습니다. 설정의 필드 및 태그에서 만드세요.",
       "customFieldsTitle": "사용자 정의 필드",
-      "noCustomFields": "아직 사용자 정의 필드가 없습니다. 설정의 필드 및 태그에서 만드세요."
+      "noCustomFields": "아직 사용자 정의 필드가 없습니다. 설정의 필드 및 태그에서 만드세요.",
+      "openConversation": "대화 열기"
     }
   }
 }

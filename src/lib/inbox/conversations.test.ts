@@ -86,6 +86,14 @@ describe("matchesContactFilters", () => {
     ).toBe(false);
   });
 
+  it("matches any of the companies of a contact linked to several", () => {
+    const conv = makeConversation({ company: "Acme, Globex" });
+    expect(matchesContactFilters(conv, { tagIds: [], company: "Acme" })).toBe(true);
+    expect(matchesContactFilters(conv, { tagIds: [], company: "Globex" })).toBe(true);
+    expect(matchesContactFilters(conv, { tagIds: [], company: "Acme, Globex" })).toBe(false);
+    expect(matchesContactFilters(conv, { tagIds: [], company: "Initech" })).toBe(false);
+  });
+
   it("requires both tag and company to match when both are set (AND across facets)", () => {
     const conv = makeConversation({ company: "Acme", tags: [tag("t1")] });
     expect(

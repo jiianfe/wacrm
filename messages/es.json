@@ -350,7 +350,12 @@
       "clearAll": "Limpiar todo",
       "noConversations": "No se encontraron conversaciones",
       "noMessagesYet": "Aún no hay mensajes",
-      "unknown": "Desconocido"
+      "unknown": "Desconocido",
+      "channelLabel": "Canal",
+      "channelAll": "Todos",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "Correo",
+      "notRegistered": "Sin registrar"
     },
     "messageThread": {
       "backToConversations": "Volver a las conversaciones",
@@ -388,7 +393,11 @@
       "networkError": "error de red",
       "documentFallback": "Documento",
       "you": "Tú",
-      "emailOnlyNotice": "Este contacto solo tiene correo electrónico, por lo que una respuesta por WhatsApp no se entregaría. La respuesta por correo llega en la próxima fase."
+      "emailOnlyNotice": "Este contacto solo tiene correo electrónico, por lo que una respuesta por WhatsApp no se entregaría. La respuesta por correo llega en la próxima fase.",
+      "emailViewNotice": "Estás viendo solo los correos de esta conversación. La respuesta por correo aún no está disponible. Cambia a Todos o WhatsApp para responder por WhatsApp.",
+      "signatureOn": "Firma activada",
+      "signatureOff": "Firma desactivada",
+      "signatureHint": "Añade tu nombre ({name}) en negrita sobre cada mensaje de texto enviado al cliente"
     },
     "sessionTimer": {
       "expired": "Expirada",
@@ -521,7 +530,14 @@
       "deals": "Negocios",
       "noTags": "Sin etiquetas",
       "noDeals": "Sin negocios",
-      "addNotePlaceholder": "Agregar una nota..."
+      "addNotePlaceholder": "Agregar una nota...",
+      "linkDeal": "Vincular un negocio existente",
+      "linkDealTitle": "Vincular un negocio abierto a este contacto",
+      "linkDealDone": "Negocio vinculado a este contacto",
+      "linkDealFailed": "No se pudo vincular el negocio",
+      "noLinkableDeals": "No hay otros negocios abiertos para vincular.",
+      "noContactOnDeal": "Sin contacto",
+      "close": "Cerrar"
     },
     "aiBanner": {
       "pausedTitle": "El asistente de IA está en pausa aquí",
@@ -532,6 +548,22 @@
       "resumed": "IA reanudada.",
       "updateError": "No se pudo actualizar el asistente de IA.",
       "networkError": "No se pudo conectar con el servidor."
+    },
+    "pendingContact": {
+      "title": "Este contacto aún no está registrado",
+      "description": "La persona escribió, pero no se guarda nada como contacto hasta que decidas. Las respuestas automáticas están en pausa para ella.",
+      "registerContact": "Registrar contacto",
+      "registerCompany": "Registrar empresa",
+      "ignore": "Ignorar",
+      "registerFailed": "No se pudo registrar este contacto"
+    },
+    "newDeal": {
+      "button": "Crear negocio",
+      "tooltip": "Crear un negocio en el pipeline para este contacto",
+      "noPipeline": "Crea primero un pipeline, en Pipelines.",
+      "noStages": "Este pipeline aún no tiene etapas.",
+      "choosePipeline": "Elige el pipeline",
+      "choosePipelineDesc": "¿En qué pipeline debe empezar el nuevo negocio?"
     }
   },
   "Contacts": {
@@ -613,7 +645,7 @@
       "dupSimilar": "Ya existe un contacto con un número muy parecido.",
       "loadingTags": "Cargando etiquetas...",
       "noTagsAvailable": "No hay etiquetas disponibles. Crea etiquetas en Configuración.",
-      "phoneRequired": "El número de teléfono es obligatorio",
+      "phoneRequired": "Indica un teléfono o un correo electrónico.",
       "phoneNeedsCountryCode": "Incluye el código de país — el número debe empezar con + (p. ej. +5215512345678)",
       "notAuthenticated": "No autenticado",
       "notLinkedToAccount": "Tu perfil no está vinculado a una cuenta.",
@@ -669,7 +701,7 @@
       "sendTemplateBtn": "Enviar plantilla",
       "saveChangesBtn": "Guardar cambios",
       "saveCustomFieldsBtn": "Guardar campos personalizados",
-      "toastPhoneRequired": "El número de teléfono es obligatorio",
+      "toastPhoneRequired": "Indica un teléfono o un correo electrónico.",
       "toastPhoneNeedsCountryCode": "Incluye el código de país — el número debe empezar con + (p. ej. +5215512345678)",
       "toastUpdateFailed": "Error al actualizar el contacto",
       "toastUpdated": "Contacto actualizado",
@@ -796,7 +828,11 @@
       "lost": "Perdido",
       "assignee": "Responsable: {name}",
       "contact": "Contacto: {name}",
-      "company": "Empresa: {name}"
+      "company": "Empresa: {name}",
+      "attachments": "Documentos adjuntos: {count}",
+      "tasksOverdue": "{count, plural, one {# tarea vencida} other {# tareas vencidas}} (venció {date})",
+      "tasksActive": "{count, plural, one {Tarea hasta {date}} other {# tareas, próxima hasta {date}}}",
+      "tasksUpcoming": "{count, plural, one {Tarea empieza el {date}} other {# tareas, la próxima empieza el {date}}}"
     },
     "form": {
       "editDeal": "Editar negocio",
@@ -839,7 +875,9 @@
       "toastReopened": "Negocio reabierto",
       "toastFailedDelete": "Error al eliminar el negocio",
       "toastDeleted": "Negocio eliminado",
-      "company": "Empresa"
+      "company": "Empresa",
+      "firstNote": "Primera nota (opcional)",
+      "saveToAttach": "Guarda primero el negocio para añadir más notas y adjuntar documentos."
     },
     "settings": {
       "managePipeline": "Administrar pipeline",
@@ -880,6 +918,79 @@
       "lostThisMonth": "Perdidos este mes",
       "lostThisMonthTooltip": "Negocios marcados como perdidos desde el primer día del mes actual.",
       "howCalculated": "Cómo se calcula {label}"
+    },
+    "notes": {
+      "title": "Notas",
+      "placeholder": "Escribe una nota. La fecha y la hora se guardan automáticamente.",
+      "add": "Añadir nota",
+      "loading": "Cargando notas...",
+      "empty": "Aún no hay notas.",
+      "loadFailed": "No se pudieron cargar las notas",
+      "saveFailed": "No se pudo guardar la nota",
+      "deleteFailed": "No se pudo eliminar la nota",
+      "notSignedIn": "No has iniciado sesión",
+      "delete": "Eliminar nota",
+      "confirmDelete": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "documents": {
+      "title": "Documentos",
+      "categoryLabel": "Tipo de documento",
+      "category": {
+        "quote": "Presupuesto",
+        "invoice": "Factura (NF)",
+        "boleto": "Boleto",
+        "other": "Otro"
+      },
+      "attach": "Adjuntar archivo",
+      "uploading": "Subiendo...",
+      "limits": "PDF, imágenes, XML, Word, Excel o ZIP, hasta {max}",
+      "loading": "Cargando documentos...",
+      "empty": "No hay documentos adjuntos.",
+      "loadFailed": "No se pudieron cargar los documentos",
+      "uploaded": "Documento adjuntado",
+      "uploadFailed": "No se pudo subir el documento",
+      "tooLarge": "El archivo es demasiado grande. El límite es {max}.",
+      "typeNotAllowed": "Este tipo de archivo no está permitido.",
+      "download": "Descargar",
+      "downloadFailed": "No se pudo abrir el documento",
+      "delete": "Eliminar documento",
+      "deleteFailed": "No se pudo eliminar el documento",
+      "confirmDelete": "Eliminar",
+      "cancel": "Cancelar",
+      "open": "Abrir"
+    },
+    "tasks": {
+      "title": "Tareas",
+      "addHeading": "Nueva tarea",
+      "editHeading": "Editar tarea",
+      "titlePlaceholder": "¿Qué hay que hacer?",
+      "detailsPlaceholder": "Detalles (opcional)",
+      "start": "Inicio",
+      "end": "Fin",
+      "assignee": "Responsable",
+      "noAssignee": "Nadie",
+      "add": "Añadir tarea",
+      "save": "Guardar tarea",
+      "cancel": "Cancelar",
+      "loading": "Cargando tareas...",
+      "empty": "Aún no hay tareas.",
+      "loadFailed": "No se pudieron cargar las tareas",
+      "saveFailed": "No se pudo guardar la tarea",
+      "toggleFailed": "No se pudo actualizar la tarea",
+      "deleteFailed": "No se pudo eliminar la tarea",
+      "titleRequired": "Indica qué es la tarea.",
+      "datesInvalid": "La fecha de fin no puede ser anterior a la de inicio.",
+      "markDone": "Marcar como hecha",
+      "markOpen": "Reabrir tarea",
+      "edit": "Editar tarea",
+      "delete": "Eliminar tarea",
+      "confirmDelete": "Eliminar",
+      "stateOverdue": "Vencida",
+      "stateActive": "En curso",
+      "stateUpcoming": "Empieza el {date}",
+      "stateDone": "Hecha el {date}",
+      "assignedTo": "Responsable: {name}"
     }
   },
   "Broadcasts": {
@@ -3124,7 +3235,8 @@
       "tagsTitle": "Etiquetas",
       "noTagsAvailable": "Aún no hay etiquetas. Créalas en Configuración, Campos y etiquetas.",
       "customFieldsTitle": "Campos personalizados",
-      "noCustomFields": "Aún no hay campos personalizados. Créalos en Configuración, Campos y etiquetas."
+      "noCustomFields": "Aún no hay campos personalizados. Créalos en Configuración, Campos y etiquetas.",
+      "openConversation": "Abrir conversación"
     }
   }
 }

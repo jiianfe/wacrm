@@ -104,7 +104,7 @@ export default function PipelinesPage() {
     async (pipelineId: string) => {
       const { data } = await supabase
         .from("deals")
-        .select("*, contact:contacts(*), company:companies(id, legal_name, trade_name), assignee:profiles!deals_assigned_to_fkey(*)")
+        .select("*, contact:contacts(*), company:companies(id, legal_name, trade_name), attachments:deal_attachments(count), tasks:deal_tasks(id, start_date, end_date, completed_at), assignee:profiles!deals_assigned_to_fkey(*)")
         .eq("pipeline_id", pipelineId)
         .order("created_at", { ascending: false });
       return (data ?? []) as Deal[];

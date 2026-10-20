@@ -63,9 +63,21 @@ export function matchesContactFilters(
     if (!contactTagIds.some((t) => tagIds.includes(t.id))) return false;
   }
 
-  if (company !== null && conversation.contact?.company?.trim() !== company) {
+  if (company !== null && !companyNames(conversation.contact?.company).includes(company)) {
     return false;
   }
 
   return true;
+}
+
+/**
+ * The company names a contact belongs to. `contacts.company` mirrors the
+ * linked companies as "Acme, Globex" (migration 062), so it is split on
+ * commas; a single company is just a one-item list.
+ */
+export function companyNames(company: string | null | undefined): string[] {
+  return (company ?? '')
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
 }
