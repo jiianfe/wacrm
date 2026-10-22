@@ -653,7 +653,23 @@
       "companyLegacyHint": "Current text: {name}. Pick a registered company to link it."
     },
     "detailView": {
+      "timeline": {
+        "empty": "No history for this contact yet.",
+        "dealCreated": "Deal created: {title}",
+        "dealWon": "Deal won: {title}",
+        "dealLost": "Deal lost: {title}",
+        "dealValue": "Value: {value}",
+        "dealNote": "Deal note: {title}",
+        "attachment": "Document attached to deal: {title}",
+        "contactNote": "Contact note",
+        "messagesDay": "Conversation: {received} received, {sent} sent",
+        "showMessages": "Show messages",
+        "hideMessages": "Hide messages",
+        "fromCustomer": "Customer",
+        "fromUs": "Us"
+      },
       "tabs": {
+        "timeline": "History",
         "details": "Details",
         "activity": "Activity",
         "notes": "Notes",

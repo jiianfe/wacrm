@@ -418,7 +418,7 @@ export default function PipelinesPage() {
           <PipelineAnalytics stages={stages} deals={deals} />
           <PipelineBoard
             stages={stages}
-            deals={deals}
+            deals={deals.filter((d) => d.status !== "won")}
             onDealMoved={handleDealMoved}
             onAddDeal={handleAddDeal}
             onEditDeal={handleEditDeal}

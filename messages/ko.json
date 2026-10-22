@@ -653,7 +653,23 @@
       "companyLegacyHint": "현재 텍스트: {name}. 등록된 회사를 선택하면 연결됩니다."
     },
     "detailView": {
+      "timeline": {
+        "empty": "이 연락처의 기록이 아직 없습니다.",
+        "dealCreated": "딜 생성: {title}",
+        "dealWon": "딜 성사: {title}",
+        "dealLost": "딜 실패: {title}",
+        "dealValue": "금액: {value}",
+        "dealNote": "딜 메모: {title}",
+        "attachment": "딜에 문서 첨부: {title}",
+        "contactNote": "연락처 메모",
+        "messagesDay": "대화: 수신 {received}건, 발신 {sent}건",
+        "showMessages": "메시지 보기",
+        "hideMessages": "메시지 숨기기",
+        "fromCustomer": "고객",
+        "fromUs": "우리"
+      },
       "tabs": {
+        "timeline": "기록",
         "details": "상세 정보",
         "activity": "활동",
         "notes": "메모",

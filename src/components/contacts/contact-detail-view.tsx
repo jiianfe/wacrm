@@ -47,6 +47,7 @@ import { loadContactCompanyIds, replaceContactCompanies } from '@/lib/company-li
 import { CONTACT_CUSTOM_FIELDS_ENABLED, CONTACT_TAGS_ENABLED } from '@/lib/features';
 import { useCompanies } from '@/hooks/use-companies';
 import { CompanyMultiSelect } from '@/components/companies/company-multi-select';
+import { ContactTimeline } from '@/components/contacts/contact-timeline';
 
 interface ContactDetailViewProps {
   open: boolean;
@@ -513,6 +514,12 @@ export function ContactDetailView({
                 >
                   {t('tabs.deals')}
                 </TabsTrigger>
+                <TabsTrigger
+                  value="timeline"
+                  className="data-active:bg-muted data-active:text-primary text-muted-foreground"
+                >
+                  {t('tabs.timeline')}
+                </TabsTrigger>
               </TabsList>
 
               {/* Details Tab */}
@@ -775,6 +782,11 @@ export function ContactDetailView({
                     ))}
                   </div>
                 )}
+              </TabsContent>
+
+              {/* Timeline Tab — deals, notes, documents and chat, newest first */}
+              <TabsContent value="timeline" className="flex-1 overflow-y-auto px-4 py-3">
+                {contactId && <ContactTimeline contactId={contactId} />}
               </TabsContent>
             </Tabs>
           </div>

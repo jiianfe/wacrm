@@ -425,6 +425,8 @@ export interface Deal {
   status?: DealStatus;
   created_at: string;
   updated_at?: string;
+  /** Set by a trigger when the deal becomes won/lost (migration 059). */
+  closed_at?: string | null;
   contact?: Contact;
   company?: Pick<Company, 'id' | 'legal_name' | 'trade_name'> | null;
   /** Embedded count of attached documents (`deal_attachments(count)`). */

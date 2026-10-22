@@ -653,7 +653,23 @@
       "companyLegacyHint": "Texto atual: {name}. Escolha uma empresa cadastrada para vincular."
     },
     "detailView": {
+      "timeline": {
+        "empty": "Nenhum histórico para este contato ainda.",
+        "dealCreated": "Negócio criado: {title}",
+        "dealWon": "Negócio ganho: {title}",
+        "dealLost": "Negócio perdido: {title}",
+        "dealValue": "Valor: {value}",
+        "dealNote": "Nota do negócio: {title}",
+        "attachment": "Documento anexado ao negócio: {title}",
+        "contactNote": "Nota do contato",
+        "messagesDay": "Conversa: {received} recebidas, {sent} enviadas",
+        "showMessages": "Ver mensagens",
+        "hideMessages": "Ocultar mensagens",
+        "fromCustomer": "Cliente",
+        "fromUs": "Nós"
+      },
       "tabs": {
+        "timeline": "Histórico",
         "details": "Detalhes",
         "activity": "Atividade",
         "notes": "Notas",

@@ -55,8 +55,9 @@ export function PipelineAnalytics({ stages, deals }: PipelineAnalyticsProps) {
   );
 
   const stats = useMemo(() => {
-    const active = deals.filter((d) => d.status !== "lost");
-    const openDeals = active.filter((d) => d.status !== "won");
+    // Won deals leave the board, so they no longer count as pipeline.
+    const active = deals.filter((d) => d.status !== "lost" && d.status !== "won");
+    const openDeals = active;
 
     const totalCount = active.length;
     const totalValue = active.reduce((sum, d) => sum + Number(d.value || 0), 0);
@@ -73,7 +74,7 @@ export function PipelineAnalytics({ stages, deals }: PipelineAnalyticsProps) {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const thisMonth = (d: Deal) => {
-      const ts = d.updated_at ?? d.created_at;
+      const ts = d.closed_at ?? d.updated_at ?? d.created_at;
       return ts ? new Date(ts) >= monthStart : false;
     };
     const wonThisMonth = deals.filter(
