@@ -35,6 +35,7 @@ import { useTranslations } from "next-intl";
 import type { ChannelFilter } from "@/lib/inbox/channel-filter";
 import { PendingContactBanner } from "./pending-contact-banner";
 import { NewDealButton } from "./new-deal-button";
+import { AiRegisterButton } from "./ai-register-button";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -207,6 +208,7 @@ export function MessageThread({
 
   const { user, profile } = useAuth();
   const [signatureOn, setSignatureOn] = useState(false);
+  const [insertRequest, setInsertRequest] = useState<{ id: number; text: string } | null>(null);
   useEffect(() => {
     // localStorage is only readable in the browser, so load it after mount.
     setSignatureOn(readSignaturePref(user?.id));
@@ -1073,6 +1075,15 @@ export function MessageThread({
         <div className="flex items-center gap-2">
           {/* Start a deal for this contact without leaving the conversation
               (WhatsApp or e-mail). A pending contact registers first. */}
+          {contact && (
+            <AiRegisterButton
+              conversationId={conversation.id}
+              contact={contact}
+              onContactChange={() => onContactChange?.({ registration_status: "registered" })}
+              onDealCreated={onDealCreated}
+              onInsertText={(text) => setInsertRequest({ id: Date.now(), text })}
+            />
+          )}
           {contact && contact.registration_status !== "pending" && (
             <NewDealButton contactId={contact.id} onCreated={onDealCreated} />
           )}
@@ -1387,6 +1398,7 @@ export function MessageThread({
           onOpenTemplates={handleOpenTemplates}
           replyTo={replyTo}
           onClearReply={() => setReplyTo(null)}
+          insertRequest={insertRequest}
         />
         </>
       )}

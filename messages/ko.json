@@ -564,6 +564,27 @@
       "noStages": "이 파이프라인에는 아직 단계가 없습니다.",
       "choosePipeline": "파이프라인 선택",
       "choosePipelineDesc": "새 거래를 어느 파이프라인에서 시작할까요?"
+    },
+    "aiRegister": {
+      "button": "AI로 등록",
+      "tooltip": "AI가 대화를 읽고 연락처, 회사, 거래를 제안합니다",
+      "title": "AI로 등록",
+      "description": "AI가 대화를 읽고 아래 정보를 제안합니다. 확인하기 전에는 저장되거나 고객에게 전송되지 않습니다.",
+      "reading": "대화를 읽는 중...",
+      "failed": "대화를 분석하지 못했습니다.",
+      "retry": "다시 시도",
+      "contact": "연락처",
+      "company": "회사",
+      "deal": "거래",
+      "missing": "추가로 물어볼 내용",
+      "notIdentified": "대화에서 확인되지 않음",
+      "registerContact": "연락처 등록",
+      "updateContact": "연락처 검토",
+      "registerCompany": "회사 등록",
+      "registerFirst": "거래를 만들기 전에 연락처를 먼저 등록하세요.",
+      "nothingMissing": "부족한 중요한 정보가 없습니다.",
+      "useQuestion": "메시지에 사용",
+      "registerFailed": "연락처를 등록하지 못했습니다"
     }
   },
   "Contacts": {
@@ -3055,7 +3076,8 @@
         "savedIndexFailed": "저장되었지만 의미 기반 색인에 실패했습니다({message}). 키워드 검색은 계속 작동합니다. 재색인을 사용해 다시 시도하세요.",
         "savedNotIndexed": "저장되었지만 색인에 실패했습니다({message}). 아직 문서를 검색할 수 없습니다. 재색인을 사용해 다시 시도하세요.",
         "savedKeywordOnly": "키워드 검색만으로 저장되었습니다 — 임베딩 키를 복호화할 수 없습니다(ENCRYPTION_KEY를 확인한 후 키를 다시 입력하세요)."
-      }
+      },
+      "registrationUnreadable": "AI 응답을 해석하지 못했습니다. 다시 시도하세요."
     },
     "automations": {
       "copyName": "{name} (복사본)",

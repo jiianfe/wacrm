@@ -118,6 +118,9 @@ interface MessageComposerProps {
   onOpenTemplates: () => void;
   replyTo?: ReplyDraft | null;
   onClearReply?: () => void;
+  /** Text to drop into the box (e.g. a question suggested by the AI). A new
+   *  `id` inserts it again. */
+  insertRequest?: { id: number; text: string } | null;
 }
 
 function formatDuration(seconds: number): string {
@@ -140,6 +143,7 @@ export function MessageComposer({
   onOpenTemplates,
   replyTo,
   onClearReply,
+  insertRequest,
 }: MessageComposerProps) {
   const t = useTranslations("Inbox.composer");
   const tGate = useTranslations("GatedButton");
@@ -234,6 +238,19 @@ export function MessageComposer({
     // Max 4 lines (~96px)
     el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
   }, []);
+
+  // A suggested text (AI question) lands in the box for the agent to edit and send.
+  const insertId = insertRequest?.id;
+  const insertText = insertRequest?.text;
+  useEffect(() => {
+    if (insertId === undefined || !insertText) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setText((prev) => (prev && !/\s$/.test(prev) ? `${prev}\n${insertText}` : `${prev}${insertText}`));
+    requestAnimationFrame(() => {
+      adjustHeight();
+      textareaRef.current?.focus();
+    });
+  }, [insertId, insertText, adjustHeight]);
 
   const handleSend = useCallback(async () => {
     const trimmed = text.trim();

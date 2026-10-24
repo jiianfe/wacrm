@@ -51,6 +51,9 @@ interface DealFormProps {
   /** Start a NEW deal with this contact already selected (used when the
    *  deal is created from a conversation in the inbox). */
   presetContactId?: string;
+  /** Start a NEW deal with this title / first note (e.g. from the AI proposal). */
+  presetTitle?: string;
+  presetNotes?: string;
 }
 
 export function DealForm({
@@ -62,6 +65,8 @@ export function DealForm({
   defaultStageId,
   onSaved,
   presetContactId,
+  presetTitle,
+  presetNotes,
 }: DealFormProps) {
   const t = useTranslations("Pipelines.form");
   const supabase = createClient();
@@ -111,7 +116,7 @@ export function DealForm({
       setExpectedCloseDate(deal.expected_close_date ?? "");
       setNotes("");
     } else {
-      setTitle("");
+      setTitle(presetTitle ?? "");
       setValue("");
       setCurrency(defaultCurrency);
       setContactId(presetContactId ?? "");
@@ -119,7 +124,7 @@ export function DealForm({
       setStageId(defaultStageId || stages[0]?.id || "");
       setAssignedTo(currentProfileId);
       setExpectedCloseDate("");
-      setNotes("");
+      setNotes(presetNotes ?? "");
     }
   }, [
     open,
@@ -129,6 +134,8 @@ export function DealForm({
     defaultCurrency,
     currentProfileId,
     presetContactId,
+    presetTitle,
+    presetNotes,
   ]);
   /* eslint-enable react-hooks/set-state-in-effect */
 

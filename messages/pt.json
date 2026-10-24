@@ -564,6 +564,27 @@
       "noStages": "Este pipeline ainda não tem etapas.",
       "choosePipeline": "Escolha o pipeline",
       "choosePipelineDesc": "Em qual pipeline o novo negócio deve começar?"
+    },
+    "aiRegister": {
+      "button": "Cadastrar com IA",
+      "tooltip": "A IA lê a conversa e sugere contato, empresa e negócio",
+      "title": "Cadastrar com IA",
+      "description": "A IA leu a conversa e sugere os dados abaixo. Nada é salvo nem enviado ao cliente sem a sua confirmação.",
+      "reading": "Lendo a conversa...",
+      "failed": "Não foi possível analisar a conversa.",
+      "retry": "Tentar de novo",
+      "contact": "Contato",
+      "company": "Empresa",
+      "deal": "Negócio",
+      "missing": "O que falta perguntar",
+      "notIdentified": "Não identificado na conversa",
+      "registerContact": "Cadastrar contato",
+      "updateContact": "Revisar contato",
+      "registerCompany": "Cadastrar empresa",
+      "registerFirst": "Cadastre o contato antes de criar o negócio.",
+      "nothingMissing": "Nada importante faltando.",
+      "useQuestion": "Usar na mensagem",
+      "registerFailed": "Não foi possível registrar o contato"
     }
   },
   "Contacts": {
@@ -3055,7 +3076,8 @@
         "savedIndexFailed": "Salvo, mas a indexação semântica falhou ({message}). A busca por palavras-chave continua funcionando; use Reindexar para tentar novamente.",
         "savedNotIndexed": "Salvo, mas a indexação falhou ({message}). O documento ainda não pode ser encontrado na busca; use Reindexar para tentar novamente.",
         "savedKeywordOnly": "Salvo apenas com busca por palavras-chave — não foi possível descriptografar sua chave de embeddings (verifique a ENCRYPTION_KEY e informe a chave novamente)."
-      }
+      },
+      "registrationUnreadable": "Não consegui interpretar a resposta da IA. Tente novamente."
     },
     "automations": {
       "copyName": "{name} (Cópia)",

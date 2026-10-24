@@ -564,6 +564,27 @@
       "noStages": "This pipeline has no stages yet.",
       "choosePipeline": "Choose a pipeline",
       "choosePipelineDesc": "In which pipeline should the new deal start?"
+    },
+    "aiRegister": {
+      "button": "Register with AI",
+      "tooltip": "AI reads the conversation and suggests a contact, company and deal",
+      "title": "Register with AI",
+      "description": "The AI read the conversation and suggests the details below. Nothing is saved or sent to the customer until you confirm.",
+      "reading": "Reading the conversation...",
+      "failed": "Couldn't analyse the conversation.",
+      "retry": "Try again",
+      "contact": "Contact",
+      "company": "Company",
+      "deal": "Deal",
+      "missing": "Still to ask",
+      "notIdentified": "Not found in the conversation",
+      "registerContact": "Register contact",
+      "updateContact": "Review contact",
+      "registerCompany": "Register company",
+      "registerFirst": "Register the contact before creating the deal.",
+      "nothingMissing": "Nothing important missing.",
+      "useQuestion": "Use in message",
+      "registerFailed": "Failed to register the contact"
     }
   },
   "Contacts": {
@@ -3055,7 +3076,8 @@
         "savedIndexFailed": "Saved, but semantic indexing failed ({message}). Lexical search still works; use Reindex to retry.",
         "savedNotIndexed": "Saved, but indexing failed ({message}). The document is not searchable yet; use Reindex to retry.",
         "savedKeywordOnly": "Saved with keyword search only — your embeddings key could not be decrypted (check ENCRYPTION_KEY, then re-enter the key)."
-      }
+      },
+      "registrationUnreadable": "Couldn't understand the AI's answer. Please try again."
     },
     "automations": {
       "copyName": "{name} (Copy)",

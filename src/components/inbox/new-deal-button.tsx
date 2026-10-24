@@ -22,6 +22,9 @@ interface NewDealButtonProps {
   contactId: string;
   /** Called after a deal is created, so the contact panel can reload. */
   onCreated?: () => void;
+  /** Start the deal with this title / first note (from the AI proposal). */
+  presetTitle?: string;
+  presetNotes?: string;
 }
 
 /**
@@ -30,7 +33,12 @@ interface NewDealButtonProps {
  * have exactly one — already filled in. With several pipelines the agent
  * picks one first.
  */
-export function NewDealButton({ contactId, onCreated }: NewDealButtonProps) {
+export function NewDealButton({
+  contactId,
+  onCreated,
+  presetTitle,
+  presetNotes,
+}: NewDealButtonProps) {
   const t = useTranslations("Inbox.newDeal");
   const supabase = createClient();
 
@@ -128,6 +136,8 @@ export function NewDealButton({ contactId, onCreated }: NewDealButtonProps) {
         stages={stages}
         defaultStageId={stages[0]?.id}
         presetContactId={contactId}
+        presetTitle={presetTitle}
+        presetNotes={presetNotes}
         onSaved={() => onCreated?.()}
       />
     </>

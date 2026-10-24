@@ -564,6 +564,27 @@
       "noStages": "Este pipeline aún no tiene etapas.",
       "choosePipeline": "Elige el pipeline",
       "choosePipelineDesc": "¿En qué pipeline debe empezar el nuevo negocio?"
+    },
+    "aiRegister": {
+      "button": "Registrar con IA",
+      "tooltip": "La IA lee la conversación y sugiere contacto, empresa y negocio",
+      "title": "Registrar con IA",
+      "description": "La IA leyó la conversación y sugiere los datos de abajo. No se guarda ni se envía nada al cliente sin tu confirmación.",
+      "reading": "Leyendo la conversación...",
+      "failed": "No se pudo analizar la conversación.",
+      "retry": "Reintentar",
+      "contact": "Contacto",
+      "company": "Empresa",
+      "deal": "Negocio",
+      "missing": "Falta preguntar",
+      "notIdentified": "No identificado en la conversación",
+      "registerContact": "Registrar contacto",
+      "updateContact": "Revisar contacto",
+      "registerCompany": "Registrar empresa",
+      "registerFirst": "Registra el contacto antes de crear el negocio.",
+      "nothingMissing": "No falta nada importante.",
+      "useQuestion": "Usar en el mensaje",
+      "registerFailed": "No se pudo registrar el contacto"
     }
   },
   "Contacts": {
@@ -3055,7 +3076,8 @@
         "savedIndexFailed": "Guardado, pero la indexación semántica falló ({message}). La búsqueda por palabras clave sigue funcionando; usa Reindexar para reintentar.",
         "savedNotIndexed": "Guardado, pero la indexación falló ({message}). El documento aún no aparece en las búsquedas; usa Reindexar para reintentar.",
         "savedKeywordOnly": "Guardado solo con búsqueda por palabras clave: no se pudo descifrar tu clave de embeddings (revisa ENCRYPTION_KEY y vuelve a ingresar la clave)."
-      }
+      },
+      "registrationUnreadable": "No pude interpretar la respuesta de la IA. Inténtalo de nuevo."
     },
     "automations": {
       "copyName": "{name} (Copia)",
