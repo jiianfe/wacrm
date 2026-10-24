@@ -60,7 +60,9 @@
     "menuProfile": "Perfil",
     "menuSettings": "Configuración",
     "menuSignOut": "Cerrar sesión",
-    "companies": "Empresas"
+    "companies": "Empresas",
+    "hideMenu": "Ocultar menú",
+    "showMenu": "Mostrar menú"
   },
   "ModeToggle": {
     "switchMode": "Cambiar al modo {mode}"
@@ -555,7 +557,9 @@
       "registerContact": "Registrar contacto",
       "registerCompany": "Registrar empresa",
       "ignore": "Ignorar",
-      "registerFailed": "No se pudo registrar este contacto"
+      "registerFailed": "No se pudo registrar este contacto",
+      "hide": "Ocultar aviso",
+      "show": "Mostrar"
     },
     "newDeal": {
       "button": "Crear negocio",

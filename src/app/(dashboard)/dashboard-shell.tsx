@@ -24,6 +24,28 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
+  // Desktop only: the agent can hide the side menu to give the inbox more
+  // room. Remembered in this browser; on mobile the drawer is unaffected.
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNavCollapsed(window.localStorage.getItem("wacrm.nav.collapsed") === "1");
+    } catch {
+      // Storage blocked: the menu simply starts open.
+    }
+  }, []);
+  const toggleNav = useCallback(() => {
+    setNavCollapsed((c) => {
+      try {
+        window.localStorage.setItem("wacrm.nav.collapsed", c ? "0" : "1");
+      } catch {
+        // Not persisted; still works for this session.
+      }
+      return !c;
+    });
+  }, []);
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
@@ -51,9 +73,13 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
       {/* Desktop alerts for new customer messages (opt-in via Settings →
           Your profile). Headless — renders nothing. */}
       <BrowserNotificationsListener />
-      <Sidebar open={sidebarOpen} onClose={closeSidebar} />
+      <Sidebar open={sidebarOpen} onClose={closeSidebar} collapsed={navCollapsed} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Header onOpenSidebar={() => setSidebarOpen(true)} />
+        <Header
+          onOpenSidebar={() => setSidebarOpen(true)}
+          navCollapsed={navCollapsed}
+          onToggleNav={toggleNav}
+        />
         {/* Thinner horizontal padding on mobile so cards have room to breathe. */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           {/* Above every page: writes are being rejected and here's why.

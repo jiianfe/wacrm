@@ -60,7 +60,9 @@
     "menuProfile": "프로필",
     "menuSettings": "설정",
     "menuSignOut": "로그아웃",
-    "companies": "회사"
+    "companies": "회사",
+    "hideMenu": "메뉴 숨기기",
+    "showMenu": "메뉴 표시"
   },
   "ModeToggle": {
     "switchMode": "{mode} 모드로 전환"
@@ -555,7 +557,9 @@
       "registerContact": "연락처 등록",
       "registerCompany": "회사 등록",
       "ignore": "무시",
-      "registerFailed": "이 연락처를 등록하지 못했습니다"
+      "registerFailed": "이 연락처를 등록하지 못했습니다",
+      "hide": "안내 숨기기",
+      "show": "표시"
     },
     "newDeal": {
       "button": "거래 만들기",

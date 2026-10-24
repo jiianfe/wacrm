@@ -60,7 +60,9 @@
     "menuProfile": "Profile",
     "menuSettings": "Settings",
     "menuSignOut": "Sign out",
-    "companies": "Companies"
+    "companies": "Companies",
+    "hideMenu": "Hide menu",
+    "showMenu": "Show menu"
   },
   "ModeToggle": {
     "switchMode": "Switch to {mode} mode"
@@ -555,7 +557,9 @@
       "registerContact": "Register contact",
       "registerCompany": "Register company",
       "ignore": "Ignore",
-      "registerFailed": "Could not register this contact"
+      "registerFailed": "Could not register this contact",
+      "hide": "Hide notice",
+      "show": "Show"
     },
     "newDeal": {
       "button": "Create deal",

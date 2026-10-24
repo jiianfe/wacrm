@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { Building2, EyeOff, UserPlus } from "lucide-react";
+import { Building2, ChevronDown, ChevronUp, EyeOff, UserPlus } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import type { Contact } from "@/types";
@@ -67,6 +67,27 @@ export function PendingContactBanner({
   const supabase = createClient();
   const [contactFormOpen, setContactFormOpen] = useState(false);
   const [companyFormOpen, setCompanyFormOpen] = useState(false);
+  // The agent can fold the banner away to see more of the thread; the choice
+  // is remembered in this browser.
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCollapsed(window.localStorage.getItem("wacrm.pendingBanner.collapsed") === "1");
+    } catch {
+      // Storage blocked: the banner starts expanded.
+    }
+  }, []);
+  function toggleCollapsed() {
+    setCollapsed((c) => {
+      try {
+        window.localStorage.setItem("wacrm.pendingBanner.collapsed", c ? "0" : "1");
+      } catch {
+        // Not persisted; still works for this session.
+      }
+      return !c;
+    });
+  }
 
   // Memoised: CompanyForm resets its fields whenever these change.
   const prefill = useMemo(() => {
@@ -98,6 +119,19 @@ export function PendingContactBanner({
 
   return (
     <>
+      {collapsed ? (
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          className="flex w-full shrink-0 items-center justify-between gap-2 border-t border-primary/20 bg-primary/10 px-4 py-1.5 text-left text-xs font-medium text-foreground hover:bg-primary/15"
+        >
+          <span className="truncate">{t("title")}</span>
+          <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+            {t("show")}
+            <ChevronUp className="size-3.5" />
+          </span>
+        </button>
+      ) : (
       <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-primary/20 bg-primary/10 px-4 py-2.5">
         <div className="min-w-0 flex-1 basis-60">
           <p className="text-sm font-medium text-foreground">{t("title")}</p>
@@ -133,8 +167,20 @@ export function PendingContactBanner({
             <EyeOff className="size-3.5" />
             {t("ignore")}
           </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={toggleCollapsed}
+            title={t("hide")}
+            aria-label={t("hide")}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ChevronDown className="size-3.5" />
+          </Button>
         </div>
       </div>
+      )}
 
       <ContactForm
         open={contactFormOpen}
