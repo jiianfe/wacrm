@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { splitBold } from "@/lib/whatsapp-bold";
 import type {
   Message,
   MessageReaction,
@@ -184,7 +185,7 @@ function MessageContent({
     case "text":
       return (
         <p className="whitespace-pre-wrap break-words text-sm">
-          {message.content_text}
+          <FormattedText text={message.content_text} />
         </p>
       );
 
@@ -198,7 +199,7 @@ function MessageContent({
           )}
           {message.content_text && (
             <p className="mt-1 whitespace-pre-wrap break-words text-sm">
-              {message.content_text}
+              <FormattedText text={message.content_text} />
             </p>
           )}
         </div>
@@ -214,7 +215,7 @@ function MessageContent({
           )}
           {message.content_text && (
             <p className="mt-1 whitespace-pre-wrap break-words text-sm">
-              {message.content_text}
+              <FormattedText text={message.content_text} />
             </p>
           )}
         </div>
@@ -264,7 +265,7 @@ function MessageContent({
           )}
           {message.content_text ? (
             <p className="mt-1 whitespace-pre-wrap break-words text-sm">
-              {message.content_text}
+              <FormattedText text={message.content_text} />
             </p>
           ) : (
             message.template_name && (
@@ -342,14 +343,14 @@ function MessageContent({
               {t("buttonReply")}
             </span>
             <p className="whitespace-pre-wrap break-words text-sm">
-              {message.content_text || t("interactiveReply")}
+              <FormattedText text={message.content_text || t("interactiveReply")} />
             </p>
           </div>
         );
       }
       return (
         <p className="whitespace-pre-wrap break-words text-sm">
-          {message.content_text || t("interactiveReply")}
+          <FormattedText text={message.content_text || t("interactiveReply")} />
         </p>
       );
     }
@@ -361,6 +362,18 @@ function MessageContent({
         </p>
       );
   }
+}
+
+/** Message text with WhatsApp-style *bold* rendered (no asterisks). */
+function FormattedText({ text }: { text?: string | null }) {
+  if (!text) return null;
+  return (
+    <>
+      {splitBold(text).map((part, i) =>
+        part.bold ? <strong key={i}>{part.text}</strong> : <span key={i}>{part.text}</span>,
+      )}
+    </>
+  );
 }
 
 export function MessageBubble({
