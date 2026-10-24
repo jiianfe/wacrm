@@ -1464,7 +1464,8 @@
           "tag_presence": "Presencia de etiqueta",
           "contact_field": "Campo del contacto",
           "message_content": "Contenido del mensaje",
-          "time_of_day": "Hora del día"
+          "time_of_day": "Hora del día",
+          "business_hours": "Horario de atención (semanal)"
         },
         "operandLabel": "Operando",
         "placeholderTime": "HH:mm-HH:mm",
@@ -1483,7 +1484,9 @@
         "matchExact": "Exacta",
         "waitForReply": "Esperar respuesta antes de continuar",
         "waitForReplyHint": "Se detiene aquí hasta que el cliente toque un botón o responda (hasta 24 h). Los pasos siguientes, incluido Si/Si no sobre el contenido del mensaje, usan esa respuesta.",
-        "closeConversationHint": "Cambia el estado de la conversación a \"cerrada\". No requiere configuración."
+        "closeConversationHint": "Cambia el estado de la conversación a \"cerrada\". No requiere configuración.",
+        "placeholderBusinessHours": "lun-vie 08:00-17:00; sab 08:00-12:00",
+        "businessHoursHint": "Verdadero (SÍ) mientras la empresa está ABIERTA. Escribe días y horarios separados por punto y coma; los días sin horario cuentan como cerrados. Para avisar fuera de horario, pon el mensaje en el camino NO."
       },
       "preview": {
         "noText": "sin texto aún",
@@ -2910,7 +2913,8 @@
       "matchTypeInvalid": "el tipo de coincidencia debe ser \"exact\", \"contains\" o \"word\"",
       "scheduleRequired": "la programación es obligatoria",
       "replyIdRequired": "se requiere al menos un ID de respuesta",
-      "replyIdsEmpty": "los IDs de respuesta no pueden estar vacíos"
+      "replyIdsEmpty": "los IDs de respuesta no pueden estar vacíos",
+      "conditionScheduleInvalid": "el horario de atención no es válido; usa el formato \"mon-fri 08:00-17:00; sat 08:00-12:00\""
     },
     "templates": {
       "nameRequired": "El nombre de la plantilla es obligatorio.",

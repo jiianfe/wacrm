@@ -26,6 +26,7 @@ import { validateInteractivePayload } from '@/lib/whatsapp/interactive'
 import { isDeliverableUrl } from '@/lib/webhooks/ssrf'
 import { getT } from '@/lib/i18n/translate'
 import { isWithinTimeWindow } from './time-of-day'
+import { isWithinBusinessHours } from './business-hours'
 
 /** Step errors land in automation_logs and are shown on the logs page. */
 const tErr = getT('LibErrors.engine')
@@ -1159,6 +1160,8 @@ async function evaluateCondition(cfg: ConditionStepConfig, args: ExecuteArgs): P
     }
     case 'time_of_day':
       return isWithinTimeWindow(cfg.operand, new Date(), cfg.timezone)
+    case 'business_hours':
+      return isWithinBusinessHours(cfg.operand, new Date(), cfg.timezone)
     default:
       return false
   }

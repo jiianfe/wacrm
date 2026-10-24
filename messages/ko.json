@@ -1464,7 +1464,8 @@
           "tag_presence": "태그 존재 여부",
           "contact_field": "연락처 필드",
           "message_content": "메시지 내용",
-          "time_of_day": "시간대"
+          "time_of_day": "시간대",
+          "business_hours": "영업시간 (주간)"
         },
         "operandLabel": "피연산자",
         "placeholderTime": "HH:mm-HH:mm",
@@ -1483,7 +1484,9 @@
         "matchExact": "정확히 일치",
         "waitForReply": "계속하기 전에 답장 기다리기",
         "waitForReplyHint": "고객이 버튼을 누르거나 답장할 때까지 여기서 멈춥니다(최대 24시간). 이후 단계(메시지 내용 조건 포함)는 그 답장을 사용합니다.",
-        "closeConversationHint": "대화 상태를 \"닫힘\"으로 설정합니다. 추가 설정이 필요 없습니다."
+        "closeConversationHint": "대화 상태를 \"닫힘\"으로 설정합니다. 추가 설정이 필요 없습니다.",
+        "placeholderBusinessHours": "mon-fri 08:00-17:00; sat 08:00-12:00",
+        "businessHoursHint": "영업 중일 때 참(예)입니다. 요일과 시간을 세미콜론으로 구분하세요. 시간이 없는 요일은 휴무입니다. 영업시간 외에 답장하려면 메시지를 아니오 경로에 두세요."
       },
       "preview": {
         "noText": "아직 텍스트 없음",
@@ -2910,7 +2913,8 @@
       "matchTypeInvalid": "일치 유형은 \"exact\", \"contains\" 또는 \"word\"여야 합니다",
       "scheduleRequired": "일정은 필수입니다",
       "replyIdRequired": "응답 ID가 하나 이상 필요합니다",
-      "replyIdsEmpty": "응답 ID는 빈 문자열일 수 없습니다"
+      "replyIdsEmpty": "응답 ID는 빈 문자열일 수 없습니다",
+      "conditionScheduleInvalid": "영업시간이 올바르지 않습니다. \"mon-fri 08:00-17:00; sat 08:00-12:00\" 형식을 사용하세요"
     },
     "templates": {
       "nameRequired": "템플릿 이름은 필수입니다.",

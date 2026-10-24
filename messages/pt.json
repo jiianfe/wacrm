@@ -1464,7 +1464,8 @@
           "tag_presence": "Presença de tag",
           "contact_field": "Campo do contato",
           "message_content": "Conteúdo da mensagem",
-          "time_of_day": "Hora do dia"
+          "time_of_day": "Hora do dia",
+          "business_hours": "Horário de atendimento (semana)"
         },
         "operandLabel": "Operando",
         "placeholderTime": "HH:mm-HH:mm",
@@ -1483,7 +1484,9 @@
         "matchExact": "Exata",
         "waitForReply": "Aguardar resposta antes de continuar",
         "waitForReplyHint": "Pausa aqui até o cliente tocar em um botão ou responder (até 24h). As etapas seguintes, incluindo Se/Senão no conteúdo da mensagem, usam essa resposta.",
-        "closeConversationHint": "Define o status da conversa como \"fechada\". Nenhuma configuração necessária."
+        "closeConversationHint": "Define o status da conversa como \"fechada\". Nenhuma configuração necessária.",
+        "placeholderBusinessHours": "seg-sex 08:00-17:00; sab 08:00-12:00",
+        "businessHoursHint": "Verdadeiro (SIM) enquanto a empresa está ABERTA. Escreva os dias e horários separados por ponto e vírgula; dias sem horário contam como fechados. Para avisar fora do expediente, coloque a mensagem no caminho NÃO."
       },
       "preview": {
         "noText": "sem texto ainda",
@@ -2910,7 +2913,8 @@
       "matchTypeInvalid": "o tipo de correspondência deve ser \"exact\", \"contains\" ou \"word\"",
       "scheduleRequired": "o agendamento é obrigatório",
       "replyIdRequired": "é necessário pelo menos um ID de resposta",
-      "replyIdsEmpty": "os IDs de resposta não podem ser vazios"
+      "replyIdsEmpty": "os IDs de resposta não podem ser vazios",
+      "conditionScheduleInvalid": "o horário de atendimento é inválido; use o formato \"seg-sex 08:00-17:00; sab 08:00-12:00\""
     },
     "templates": {
       "nameRequired": "O nome do modelo é obrigatório.",

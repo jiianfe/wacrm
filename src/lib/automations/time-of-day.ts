@@ -63,7 +63,8 @@ export function withConditionTimezone(
   stepConfig: Record<string, unknown>,
   timeZone: string,
 ): Record<string, unknown> {
-  if (stepConfig.subject !== 'time_of_day' || stepConfig.timezone) return stepConfig
+  const usesZone = stepConfig.subject === 'time_of_day' || stepConfig.subject === 'business_hours'
+  if (!usesZone || stepConfig.timezone) return stepConfig
   return { ...stepConfig, timezone: timeZone }
 }
 

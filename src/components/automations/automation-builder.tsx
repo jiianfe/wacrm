@@ -1337,13 +1337,16 @@ function ConditionEditor({
           <option value="contact_field">{t("config.subjects.contact_field")}</option>
           <option value="message_content">{t("config.subjects.message_content")}</option>
           <option value="time_of_day">{t("config.subjects.time_of_day")}</option>
+          <option value="business_hours">{t("config.subjects.business_hours")}</option>
         </select>
       </FieldBlock>
       {subject !== "message_content" && (
         <FieldBlock label={t("config.operandLabel")}>
           <Input
             placeholder={
-              subject === "time_of_day"
+              subject === "business_hours"
+                ? t("config.placeholderBusinessHours")
+                : subject === "time_of_day"
                 ? t("config.placeholderTime")
                 : subject === "contact_field"
                 ? t("config.placeholderContact")
@@ -1357,7 +1360,10 @@ function ConditionEditor({
           />
         </FieldBlock>
       )}
-      {subject === "time_of_day" && (
+      {subject === "business_hours" && (
+        <p className="text-xs text-muted-foreground">{t("config.businessHoursHint")}</p>
+      )}
+      {(subject === "time_of_day" || subject === "business_hours") && (
         <FieldBlock label={t("config.timezoneLabel")}>
           <Select value={timezone} onValueChange={(v) => v && set({ timezone: v })}>
             <SelectTrigger className="w-full bg-muted text-foreground">

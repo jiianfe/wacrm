@@ -2,6 +2,7 @@ import type { AutomationTriggerType } from '@/types'
 import { validateInteractivePayload } from '@/lib/whatsapp/interactive'
 import { getT } from '@/lib/i18n/translate'
 import { isValidTimeZone } from './time-of-day'
+import { parseSchedule } from './business-hours'
 
 const t = getT('Validation.automations')
 
@@ -135,7 +136,14 @@ function validateOne(step: StepLike, path: string, issues: ValidationIssue[]): v
       ) {
         issues.push({ path: `${path}.value`, message: t('conditionValueRequired') })
       }
-      if (c.subject === 'time_of_day' && c.timezone !== undefined && !isValidTimeZone(c.timezone)) {
+      if (c.subject === 'business_hours' && nonEmpty(c.operand) && !parseSchedule(String(c.operand))) {
+        issues.push({ path: `${path}.operand`, message: t('conditionScheduleInvalid') })
+      }
+      if (
+        (c.subject === 'time_of_day' || c.subject === 'business_hours') &&
+        c.timezone !== undefined &&
+        !isValidTimeZone(c.timezone)
+      ) {
         issues.push({ path: `${path}.timezone`, message: t('conditionTimezoneInvalid') })
       }
       break

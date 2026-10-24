@@ -1464,7 +1464,8 @@
           "tag_presence": "Tag presence",
           "contact_field": "Contact field",
           "message_content": "Message content",
-          "time_of_day": "Time of day"
+          "time_of_day": "Time of day",
+          "business_hours": "Business hours (weekly)"
         },
         "operandLabel": "Operand",
         "placeholderTime": "HH:mm-HH:mm",
@@ -1483,7 +1484,9 @@
         "matchExact": "Exact",
         "waitForReply": "Wait for reply before continuing",
         "waitForReplyHint": "Pauses here until the customer taps a button or replies (up to 24h). The steps after this one, including If/Else on message content, then use their reply.",
-        "closeConversationHint": "Sets the conversation status to \"closed\". No configuration needed."
+        "closeConversationHint": "Sets the conversation status to \"closed\". No configuration needed.",
+        "placeholderBusinessHours": "mon-fri 08:00-17:00; sat 08:00-12:00",
+        "businessHoursHint": "True (YES) while the business is OPEN. Write days and hours separated by semicolons; days without hours count as closed. To reply outside hours, put the message on the NO path."
       },
       "preview": {
         "noText": "no text yet",
@@ -2910,7 +2913,8 @@
       "matchTypeInvalid": "match type must be \"exact\", \"contains\" or \"word\"",
       "scheduleRequired": "schedule is required",
       "replyIdRequired": "at least one reply id is required",
-      "replyIdsEmpty": "reply ids cannot be empty strings"
+      "replyIdsEmpty": "reply ids cannot be empty strings",
+      "conditionScheduleInvalid": "the business hours are invalid; use the format \"mon-fri 08:00-17:00; sat 08:00-12:00\""
     },
     "templates": {
       "nameRequired": "Template name is required.",
