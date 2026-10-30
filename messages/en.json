@@ -589,6 +589,15 @@
       "nothingMissing": "Nothing important missing.",
       "useQuestion": "Use in message",
       "registerFailed": "Failed to register the contact"
+    },
+    "deleteConversation": {
+      "button": "Delete conversation",
+      "title": "Delete this conversation?",
+      "description": "All messages in this conversation will be erased and this cannot be undone. The contact, company and deals stay; deals only lose their link to the conversation. If the customer writes again, a new conversation starts.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "failed": "Failed to delete the conversation",
+      "deleted": "Conversation deleted"
     }
   },
   "Contacts": {

@@ -589,6 +589,15 @@
       "nothingMissing": "No falta nada importante.",
       "useQuestion": "Usar en el mensaje",
       "registerFailed": "No se pudo registrar el contacto"
+    },
+    "deleteConversation": {
+      "button": "Eliminar conversación",
+      "title": "¿Eliminar esta conversación?",
+      "description": "Todos los mensajes de esta conversación se borrarán y no se puede deshacer. El contacto, la empresa y los negocios se conservan; los negocios solo pierden el vínculo con la conversación. Si el cliente vuelve a escribir, empieza una conversación nueva.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar",
+      "failed": "No se pudo eliminar la conversación",
+      "deleted": "Conversación eliminada"
     }
   },
   "Contacts": {

@@ -602,6 +602,16 @@ function InboxPageInner() {
     [activeConversation]
   );
 
+  const handleConversationDeleted = useCallback(
+    (conversationId: string) => {
+      setConversations((prev) => prev.filter((c) => c.id !== conversationId));
+      setActiveConversation(null);
+      setActiveContact(null);
+      setMessages([]);
+    },
+    []
+  );
+
   const handleAssignChange = useCallback(
     (conversationId: string, assignedAgentId: string | null) => {
       setConversations((prev) =>
@@ -692,6 +702,7 @@ function InboxPageInner() {
             onNewMessage={handleNewMessage}
             onUpdateMessage={handleUpdateMessage}
             onStatusChange={handleStatusChange}
+            onConversationDeleted={handleConversationDeleted}
             onAssignChange={handleAssignChange}
             onBack={handleCloseConversation}
             resyncToken={resyncToken}

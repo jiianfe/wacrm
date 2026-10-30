@@ -36,6 +36,7 @@ import type { ChannelFilter } from "@/lib/inbox/channel-filter";
 import { PendingContactBanner } from "./pending-contact-banner";
 import { NewDealButton } from "./new-deal-button";
 import { AiRegisterButton } from "./ai-register-button";
+import { DeleteConversationButton } from "./delete-conversation-button";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -103,6 +104,8 @@ interface MessageThreadProps {
   onNewMessage: (message: Message) => void;
   onUpdateMessage: (id: string, updates: Partial<Message>) => void;
   onStatusChange: (conversationId: string, status: ConversationStatus) => void;
+  /** The conversation was deleted from the header. */
+  onConversationDeleted?: (conversationId: string) => void;
   onAssignChange: (
     conversationId: string,
     assignedAgentId: string | null,
@@ -192,6 +195,7 @@ export function MessageThread({
   onNewMessage,
   onUpdateMessage,
   onStatusChange,
+  onConversationDeleted,
   onAssignChange,
   onBack,
   resyncToken = 0,
@@ -1161,6 +1165,13 @@ export function MessageThread({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {onConversationDeleted && (
+            <DeleteConversationButton
+              conversationId={conversation.id}
+              onDeleted={onConversationDeleted}
+            />
+          )}
 
           {/* Assign dropdown */}
           <DropdownMenu>

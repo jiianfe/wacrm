@@ -589,6 +589,15 @@
       "nothingMissing": "부족한 중요한 정보가 없습니다.",
       "useQuestion": "메시지에 사용",
       "registerFailed": "연락처를 등록하지 못했습니다"
+    },
+    "deleteConversation": {
+      "button": "대화 삭제",
+      "title": "이 대화를 삭제할까요?",
+      "description": "이 대화의 모든 메시지가 삭제되며 되돌릴 수 없습니다. 연락처, 회사, 거래는 유지되며 거래는 대화와의 연결만 해제됩니다. 고객이 다시 메시지를 보내면 새 대화가 시작됩니다.",
+      "cancel": "취소",
+      "confirm": "삭제",
+      "failed": "대화를 삭제하지 못했습니다",
+      "deleted": "대화가 삭제되었습니다"
     }
   },
   "Contacts": {
