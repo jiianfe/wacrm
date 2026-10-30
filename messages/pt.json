@@ -553,7 +553,7 @@
     },
     "pendingContact": {
       "title": "Este contato ainda não está cadastrado",
-      "description": "A pessoa escreveu, mas nada é guardado como contato até você decidir. As respostas automáticas ficam pausadas para ela.",
+      "description": "A pessoa escreveu, mas nada é guardado como contato até você decidir. Mensagens automáticas fixas (boas-vindas, ausência) funcionam; fluxos e a resposta por IA ficam pausados para ela.",
       "registerContact": "Cadastrar contato",
       "registerCompany": "Cadastrar empresa",
       "ignore": "Ignorar",

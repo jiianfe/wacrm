@@ -553,7 +553,7 @@
     },
     "pendingContact": {
       "title": "This contact is not registered yet",
-      "description": "They wrote in, but nothing is saved as a contact until you decide. Automatic replies are paused for them.",
+      "description": "They wrote in, but nothing is saved as a contact until you decide. Fixed automatic messages (welcome, out-of-office) still work; flows and the AI reply are paused for them.",
       "registerContact": "Register contact",
       "registerCompany": "Register company",
       "ignore": "Ignore",

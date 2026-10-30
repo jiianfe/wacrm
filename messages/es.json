@@ -553,7 +553,7 @@
     },
     "pendingContact": {
       "title": "Este contacto aún no está registrado",
-      "description": "La persona escribió, pero no se guarda nada como contacto hasta que decidas. Las respuestas automáticas están en pausa para ella.",
+      "description": "La persona escribió, pero no se guarda nada como contacto hasta que decidas. Los mensajes automáticos fijos (bienvenida, ausencia) funcionan; los flujos y la respuesta por IA están en pausa para ella.",
       "registerContact": "Registrar contacto",
       "registerCompany": "Registrar empresa",
       "ignore": "Ignorar",

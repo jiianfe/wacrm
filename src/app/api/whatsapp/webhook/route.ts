@@ -788,19 +788,11 @@ async function processMessage(
     text: contentText,
   }
 
-  // An unregistered contact (migration 066) is a stranger: no flow,
-  // automation or AI reply runs until someone registers them in the inbox.
-  // The public `message.received` webhook still fires, so integrations see
-  // every message.
-  if (contactRecord.registration_status === 'pending') {
-    await dispatchWebhookEvent(
-      supabaseAdmin(),
-      accountId,
-      'message.received',
-      receivedPayload
-    )
-    return
-  }
+  // An unregistered contact (migration 066) is a stranger. Plain automations
+  // (welcome message, out-of-office...) still run for them — they are fixed
+  // texts the owner wrote — but Flows and the AI auto-reply stay off until
+  // someone registers the contact in the inbox.
+  const unregistered = contactRecord.registration_status === 'pending'
 
   // ============================================================
   // Flow runner dispatch.
@@ -821,7 +813,9 @@ async function processMessage(
   // no active flows take the runner's early-exit "no_match" path
   // basically for free (one indexed SELECT for the active run).
   // ============================================================
-  const flowResult = await dispatchInboundToFlows({
+  const flowResult: { consumed: boolean } = unregistered
+    ? { consumed: false }
+    : await dispatchInboundToFlows({
     accountId,
     userId: configOwnerUserId,
     contactId: contactRecord.id,
@@ -926,7 +920,7 @@ async function processMessage(
   // the account has enabled it. Awaited inside `after()` (same reason as
   // the webhook dispatch below); `dispatchInboundToAiReply` owns its
   // eligibility gates + try/catch and never throws.
-  if (!contentConsumed && !interactiveReplyId && inboundText.trim()) {
+  if (!unregistered && !contentConsumed && !interactiveReplyId && inboundText.trim()) {
     await dispatchInboundToAiReply({
       accountId,
       conversationId: conversation.id,

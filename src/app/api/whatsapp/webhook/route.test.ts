@@ -1175,18 +1175,18 @@ describe('inbound webhook: first_inbound_message fires once', () => {
 })
 
 // A stranger who writes first is stored as a pending contact (migration
-// 066) and stays hidden until someone registers them. No flow, automation
-// or AI reply may run for them, but the message is still saved and the
-// public `message.received` webhook still fires.
+// 066) until someone registers them. Plain automations (welcome message,
+// out-of-office) still run for them, but no Flow or AI reply may, and the
+// message is still saved and the public `message.received` webhook fires.
 describe('inbound webhook: unregistered contacts (066)', () => {
   const botsQuiet = () => {
     expect(h.dispatchInboundToFlows).not.toHaveBeenCalled()
-    expect(h.resumeAwaitingReply).not.toHaveBeenCalled()
-    expect(h.runAutomationsForTrigger).not.toHaveBeenCalled()
     expect(h.dispatchInboundToAiReply).not.toHaveBeenCalled()
+    // Fixed-text automations (welcome / out-of-office) are allowed.
+    expect(h.runAutomationsForTrigger).toHaveBeenCalled()
   }
 
-  it('creates a brand-new sender as pending and keeps the bots quiet', async () => {
+  it('creates a brand-new sender as pending, runs automations but no flow or AI', async () => {
     mockFindExistingContact.mockResolvedValue(null)
 
     await runWebhook()
@@ -1208,7 +1208,7 @@ describe('inbound webhook: unregistered contacts (066)', () => {
     )
   })
 
-  it('keeps the bots quiet for an existing contact that is still pending', async () => {
+  it('runs automations but no flow or AI for an existing contact that is still pending', async () => {
     mockFindExistingContact.mockResolvedValue({
       id: 'contact-1',
       name: 'Ada',
