@@ -55,6 +55,7 @@ import {
 import { validateInteractivePayload } from "@/lib/whatsapp/interactive";
 import type { InteractiveMessagePayload, QuickReply } from "@/types";
 import { QuickReplyPicker } from "./quick-reply-picker";
+import { useAuth } from "@/hooks/use-auth";
 
 /** Media content types an agent can send from the composer. */
 export type ComposerMediaKind = "image" | "video" | "document" | "audio";
@@ -388,6 +389,7 @@ export function MessageComposer({
 
   // A picked quick reply: text fills the composer; interactive opens the
   // builder pre-filled so the agent can tweak before sending.
+  const { profile } = useAuth();
   const handlePickQuickReply = useCallback(
     (qr: QuickReply) => {
       setQuickReplyOpen(false);
@@ -395,7 +397,11 @@ export function MessageComposer({
         openInteractiveBuilder(qr.interactive_payload);
         return;
       }
-      const body = qr.content_text ?? "";
+      // "@nome_do_usuario" becomes the name of whoever is sending.
+      const body = (qr.content_text ?? "").replace(
+        /@nome_do_usuario/gi,
+        profile?.full_name ?? "",
+      );
       // Separate the snippet from any existing draft with a newline so the
       // words don't run together ("Thanks" + "we'll…" → "Thankswe'll…").
       setText((prev) =>
@@ -410,7 +416,7 @@ export function MessageComposer({
         }
       });
     },
-    [openInteractiveBuilder, adjustHeight],
+    [openInteractiveBuilder, adjustHeight, profile?.full_name],
   );
 
   // Upload a captured file to chat-media and stage it as a draft.
