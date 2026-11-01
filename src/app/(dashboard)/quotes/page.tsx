@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { FileDown, FileText, Loader2, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { FileDown, FileText, Loader2, Pencil, Plus, Search, Send, Trash2 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
 import { useCan } from '@/hooks/use-can';
-import { downloadQuotePdf } from '@/lib/quotes/download';
+import { downloadQuotePdf, sendQuotePdfViaWhatsApp } from '@/lib/quotes/download';
 import { formatBRL, formatShortDate } from '@/lib/quotes/format';
 import type { Quote, QuoteItem, QuoteStatus } from '@/types';
 import { QuoteForm } from '@/components/quotes/quote-form';
@@ -55,6 +55,13 @@ export default function QuotesPage() {
   const [deleteTarget, setDeleteTarget] = useState<Quote | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [sendTarget, setSendTarget] = useState<{
+    quote: Quote;
+    name: string;
+    phone: string;
+    contactId: string;
+  } | null>(null);
+  const [sending, setSending] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -104,6 +111,58 @@ export default function QuotesPage() {
       toast.error(t('page.pdfFailed'));
     } finally {
       setBusyId(null);
+    }
+  }
+
+  /** Looks up the quote's contact and asks for confirmation before anything is sent. */
+  async function askSend(quote: Quote) {
+    if (!quote.contact_id) {
+      toast.error(t('page.sendNoContact'));
+      return;
+    }
+    const { data } = await supabase
+      .from('contacts')
+      .select('id, name, phone')
+      .eq('id', quote.contact_id)
+      .maybeSingle();
+    const contact = data as { id: string; name: string | null; phone: string | null } | null;
+    if (!contact?.phone) {
+      toast.error(t('page.sendNoPhone'));
+      return;
+    }
+    setSendTarget({
+      quote,
+      name: contact.name || quote.contact_name || '',
+      phone: contact.phone,
+      contactId: contact.id,
+    });
+  }
+
+  async function confirmSend() {
+    if (!sendTarget) return;
+    const { quote, contactId } = sendTarget;
+    setSending(true);
+    try {
+      const { data, error } = await supabase
+        .from('quote_items')
+        .select('*')
+        .eq('quote_id', quote.id)
+        .order('position');
+      if (error) throw error;
+      await sendQuotePdfViaWhatsApp(
+        quote,
+        (data ?? []) as QuoteItem[],
+        contactId,
+        t('page.sendCaption', { number: quote.number }),
+      );
+      toast.success(t('page.sent'));
+      if (quote.status === 'draft') await changeStatus(quote, 'sent');
+      setSendTarget(null);
+    } catch (err) {
+      console.error('Quote send failed:', err);
+      toast.error(err instanceof Error && err.message !== 'send failed' ? err.message : t('page.sendFailed'));
+    } finally {
+      setSending(false);
     }
   }
 
@@ -164,7 +223,7 @@ export default function QuotesPage() {
               <TableHead>{t('page.colDate')}</TableHead>
               <TableHead className="text-right">{t('page.colTotal')}</TableHead>
               <TableHead>{t('page.colStatus')}</TableHead>
-              <TableHead className="w-32" />
+              <TableHead className="w-40" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -220,6 +279,16 @@ export default function QuotesPage() {
                       </button>
                       <button
                         type="button"
+                        onClick={() => askSend(q)}
+                        disabled={!canEdit}
+                        aria-label={t('page.sendWhatsapp')}
+                        title={t('page.sendWhatsapp')}
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                      >
+                        <Send className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => {
                           setEditing(q);
                           setFormOpen(true);
@@ -259,6 +328,30 @@ export default function QuotesPage() {
           if (download) downloadPdf(quote, items);
         }}
       />
+
+      <Dialog open={!!sendTarget} onOpenChange={(v) => !sending && !v && setSendTarget(null)}>
+        <DialogContent className="bg-popover border-border text-popover-foreground sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-popover-foreground">{t('page.sendTitle')}</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              {t('page.sendDescription', {
+                number: sendTarget?.quote.number ?? 0,
+                name: sendTarget?.name ?? '',
+                phone: sendTarget?.phone ?? '',
+              })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" disabled={sending} onClick={() => setSendTarget(null)}>
+              {t('form.cancel')}
+            </Button>
+            <Button disabled={sending} onClick={confirmSend} className="gap-1.5">
+              {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+              {t('page.sendConfirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!deleteTarget} onOpenChange={(v) => !deleting && !v && setDeleteTarget(null)}>
         <DialogContent className="bg-popover border-border text-popover-foreground sm:max-w-sm">

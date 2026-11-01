@@ -329,13 +329,7 @@ export function Sidebar({ open = false, onClose, collapsed = false }: SidebarPro
           </ul>
 
           {navGroups.map((group) => {
-            const hasActive = group.items.some(
-              (item) =>
-                pathname === item.href ||
-                (item.href !== "/dashboard" && pathname.startsWith(item.href)),
-            );
-            // A folder holding the page you are on never hides it.
-            const isOpen = hasActive || !closedGroups[group.key];
+            const isOpen = !closedGroups[group.key];
             return (
               <div key={group.key} className="mt-4">
                 <button

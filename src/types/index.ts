@@ -815,7 +815,27 @@ export interface Product {
   unit_price: number;
   unit: string;
   active: boolean;
+  purchase_price: number | null;
+  stock_qty: number;
+  min_stock: number;
+  cest: string | null;
+  ean: string | null;
+  ean_tributado: string | null;
+  /** ICMS origin code, 0-8. */
+  origin: number | null;
   created_at: string;
+}
+
+export interface ProductSupplier {
+  id: string;
+  account_id: string;
+  product_id: string;
+  legal_name: string;
+  trade_name: string | null;
+  last_price: number | null;
+  last_date: string | null;
+  doc_number: string | null;
+  origin: string | null;
 }
 
 export type QuoteStatus = 'draft' | 'sent' | 'approved' | 'rejected';
@@ -861,4 +881,6 @@ export interface QuoteItem {
   description: string;
   ncm: string | null;
   unit_price: number;
+  product_id: string | null;
+  deduct_stock: boolean;
 }

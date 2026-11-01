@@ -36,6 +36,7 @@ import type { ChannelFilter } from "@/lib/inbox/channel-filter";
 import { PendingContactBanner } from "./pending-contact-banner";
 import { NewDealButton } from "./new-deal-button";
 import { AiRegisterButton } from "./ai-register-button";
+import { AiQuoteButton } from "./ai-quote-button";
 import { DeleteConversationButton } from "./delete-conversation-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -1087,6 +1088,9 @@ export function MessageThread({
               onDealCreated={onDealCreated}
               onInsertText={(text) => setInsertRequest({ id: Date.now(), text })}
             />
+          )}
+          {contact && (
+            <AiQuoteButton conversationId={conversation.id} contact={contact} />
           )}
           {contact && contact.registration_status !== "pending" && (
             <NewDealButton contactId={contact.id} onCreated={onDealCreated} />

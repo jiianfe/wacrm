@@ -604,6 +604,14 @@
       "confirm": "Excluir",
       "failed": "Não foi possível excluir a conversa",
       "deleted": "Conversa excluída"
+    },
+    "aiQuote": {
+      "button": "Orçamento com IA",
+      "tooltip": "A IA lê a conversa e monta os itens do orçamento",
+      "failed": "Não foi possível montar o orçamento com a IA",
+      "noItems": "A IA não encontrou itens pedidos na conversa. Preencha manualmente.",
+      "saved": "Orçamento {number} salvo",
+      "pdfFailed": "Não foi possível gerar o PDF"
     }
   },
   "Contacts": {
@@ -3333,7 +3341,41 @@
       "unit": "Unidade",
       "active": "Disponível para novos orçamentos",
       "cancel": "Cancelar",
-      "save": "Salvar"
+      "save": "Salvar",
+      "purchasePrice": "Valor de compra (R$)",
+      "stockQty": "Quantidade em estoque (saldo)",
+      "minStock": "Quantidade mínima",
+      "cest": "CEST",
+      "ean": "EAN-13",
+      "eanTributado": "EAN tributado",
+      "origin": "Origem da mercadoria",
+      "originNone": "Não informada",
+      "suppliers": "Fornecedores do produto",
+      "supplierLegalName": "Razão Social",
+      "supplierTradeName": "Nome Fantasia",
+      "supplierLastPrice": "Último preço",
+      "supplierLastDate": "Data do último registro",
+      "supplierNumber": "Número",
+      "addSupplier": "Adicionar",
+      "removeSupplier": "Remover fornecedor",
+      "noSuppliers": "Nenhum registro informado nesta tabela.",
+      "supplierNameRequired": "Informe a razão social do fornecedor."
+    },
+    "searchPlaceholder": "Buscar por descrição, NCM ou EAN...",
+    "noResults": "Nenhum item encontrado.",
+    "colStock": "Estoque",
+    "minStockHint": "Estoque mínimo: {min}",
+    "numberInvalid": "Confira os valores numéricos.",
+    "origins": {
+      "o0": "Nacional, exceto as indicadas nos códigos 3 a 5.",
+      "o1": "Estrangeira - Importação direta, exceto a indicada no código 6.",
+      "o2": "Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7.",
+      "o3": "Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%.",
+      "o4": "Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos (Decreto-Lei nº 288/67 e Leis 8.248/91, 8.387/91, 10.176/01 e 11.484/07).",
+      "o5": "Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%.",
+      "o6": "Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX.",
+      "o7": "Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.",
+      "o8": "Nacional - Mercadoria ou bem com Conteúdo de Importação superior a 70%."
     }
   },
   "Quotes": {
@@ -3356,7 +3398,16 @@
       "deleteTitle": "Excluir este orçamento?",
       "deleteDescription": "O orçamento {number} será excluído e não dá para desfazer.",
       "deleted": "Orçamento excluído",
-      "deleteFailed": "Não foi possível excluir o orçamento"
+      "deleteFailed": "Não foi possível excluir o orçamento",
+      "sendWhatsapp": "Enviar pelo WhatsApp",
+      "sendNoContact": "Este orçamento não tem contato vinculado. Edite e escolha o contato do cliente.",
+      "sendNoPhone": "O contato deste orçamento não tem telefone.",
+      "sendTitle": "Enviar orçamento pelo WhatsApp?",
+      "sendDescription": "O orçamento {number} (PDF) será enviado para {name} ({phone}).",
+      "sendConfirm": "Enviar",
+      "sendCaption": "Olá! Segue o orçamento nº {number}.",
+      "sent": "Orçamento enviado",
+      "sendFailed": "Não foi possível enviar o orçamento"
     },
     "status": {
       "draft": "Rascunho",
@@ -3412,7 +3463,16 @@
       "needClient": "Informe o cliente (empresa ou contato).",
       "needItems": "Adicione pelo menos um item com descrição.",
       "invalidItem": "Confira quantidade e preço dos itens.",
-      "saveFailed": "Não foi possível salvar o orçamento"
+      "saveFailed": "Não foi possível salvar o orçamento",
+      "companySearch": "Digite o nome ou CNPJ do cliente...",
+      "companyNoMatch": "Nenhum cliente encontrado. Preencha os dados abaixo.",
+      "deductStock": "Baixar do estoque (quando aprovado)",
+      "stockBalance": "saldo: {qty}",
+      "descriptionLocked": "Com baixa de estoque, a descrição vem do produto cadastrado.",
+      "deal": "Negócio (o PDF será anexado ao cartão)",
+      "noDeal": "Sem negócio vinculado",
+      "attachedToDeal": "PDF anexado ao negócio",
+      "attachFailed": "O orçamento foi salvo, mas não consegui anexar o PDF ao negócio"
     }
   }
 }

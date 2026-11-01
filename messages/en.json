@@ -604,6 +604,14 @@
       "confirm": "Delete",
       "failed": "Failed to delete the conversation",
       "deleted": "Conversation deleted"
+    },
+    "aiQuote": {
+      "button": "Quote with AI",
+      "tooltip": "The AI reads the conversation and drafts the quote items",
+      "failed": "Could not draft the quote with AI",
+      "noItems": "The AI found no requested items in the conversation. Fill it in manually.",
+      "saved": "Quote {number} saved",
+      "pdfFailed": "Could not generate the PDF"
     }
   },
   "Contacts": {
@@ -3333,7 +3341,41 @@
       "unit": "Unit",
       "active": "Available for new quotes",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "purchasePrice": "Purchase price (R$)",
+      "stockQty": "Quantity in stock (balance)",
+      "minStock": "Minimum quantity",
+      "cest": "CEST",
+      "ean": "EAN-13",
+      "eanTributado": "Taxable EAN",
+      "origin": "Goods origin",
+      "originNone": "Not specified",
+      "suppliers": "Product suppliers",
+      "supplierLegalName": "Legal name",
+      "supplierTradeName": "Trade name",
+      "supplierLastPrice": "Last price",
+      "supplierLastDate": "Last record date",
+      "supplierNumber": "Number",
+      "addSupplier": "Add",
+      "removeSupplier": "Remove supplier",
+      "noSuppliers": "No records in this table.",
+      "supplierNameRequired": "Enter the supplier legal name."
+    },
+    "searchPlaceholder": "Search by description, NCM or EAN...",
+    "noResults": "No items found.",
+    "colStock": "Stock",
+    "minStockHint": "Minimum stock: {min}",
+    "numberInvalid": "Check the numeric values.",
+    "origins": {
+      "o0": "Domestic, except those in codes 3 to 5.",
+      "o1": "Foreign - direct import, except code 6.",
+      "o2": "Foreign - bought on the domestic market, except code 7.",
+      "o3": "Domestic, goods with import content above 40%.",
+      "o4": "Domestic, produced under the basic production processes (Decree-Law 288/67 and Laws 8,248/91, 8,387/91, 10,176/01 and 11,484/07).",
+      "o5": "Domestic, goods with import content of 40% or less.",
+      "o6": "Foreign - direct import, no domestic equivalent, listed by CAMEX resolution.",
+      "o7": "Foreign - bought on the domestic market, no domestic equivalent, listed by CAMEX resolution.",
+      "o8": "Domestic - goods with import content above 70%."
     }
   },
   "Quotes": {
@@ -3356,7 +3398,16 @@
       "deleteTitle": "Delete this quote?",
       "deleteDescription": "Quote {number} will be deleted and this cannot be undone.",
       "deleted": "Quote deleted",
-      "deleteFailed": "Failed to delete the quote"
+      "deleteFailed": "Failed to delete the quote",
+      "sendWhatsapp": "Send on WhatsApp",
+      "sendNoContact": "This quote has no linked contact. Edit it and choose the client contact.",
+      "sendNoPhone": "This quote's contact has no phone number.",
+      "sendTitle": "Send quote on WhatsApp?",
+      "sendDescription": "Quote {number} (PDF) will be sent to {name} ({phone}).",
+      "sendConfirm": "Send",
+      "sendCaption": "Hello! Here is quote no. {number}.",
+      "sent": "Quote sent",
+      "sendFailed": "Could not send the quote"
     },
     "status": {
       "draft": "Draft",
@@ -3412,7 +3463,16 @@
       "needClient": "Enter the client (company or contact).",
       "needItems": "Add at least one item with a description.",
       "invalidItem": "Check the quantity and price of the items.",
-      "saveFailed": "Failed to save the quote"
+      "saveFailed": "Failed to save the quote",
+      "companySearch": "Type the client name or CNPJ...",
+      "companyNoMatch": "No client found. Fill in the details below.",
+      "deductStock": "Deduct from stock (when approved)",
+      "stockBalance": "balance: {qty}",
+      "descriptionLocked": "When deducting from stock, the description comes from the catalog product.",
+      "deal": "Deal (the PDF will be attached to the card)",
+      "noDeal": "No linked deal",
+      "attachedToDeal": "PDF attached to the deal",
+      "attachFailed": "The quote was saved, but the PDF could not be attached to the deal"
     }
   }
 }

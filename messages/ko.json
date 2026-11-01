@@ -604,6 +604,14 @@
       "confirm": "삭제",
       "failed": "대화를 삭제하지 못했습니다",
       "deleted": "대화가 삭제되었습니다"
+    },
+    "aiQuote": {
+      "button": "AI로 견적서",
+      "tooltip": "AI가 대화를 읽고 견적서 항목을 작성합니다",
+      "failed": "AI로 견적서를 만들지 못했습니다",
+      "noItems": "AI가 대화에서 요청된 항목을 찾지 못했습니다. 직접 입력하세요.",
+      "saved": "견적서 {number} 저장됨",
+      "pdfFailed": "PDF를 만들지 못했습니다"
     }
   },
   "Contacts": {
@@ -3333,7 +3341,41 @@
       "unit": "단위",
       "active": "새 견적서에 사용 가능",
       "cancel": "취소",
-      "save": "저장"
+      "save": "저장",
+      "purchasePrice": "매입가 (R$)",
+      "stockQty": "재고 수량 (잔량)",
+      "minStock": "최소 수량",
+      "cest": "CEST",
+      "ean": "EAN-13",
+      "eanTributado": "과세 EAN",
+      "origin": "상품 원산지",
+      "originNone": "미지정",
+      "suppliers": "제품 공급업체",
+      "supplierLegalName": "상호",
+      "supplierTradeName": "상표명",
+      "supplierLastPrice": "마지막 가격",
+      "supplierLastDate": "마지막 기록 날짜",
+      "supplierNumber": "번호",
+      "addSupplier": "추가",
+      "removeSupplier": "공급업체 삭제",
+      "noSuppliers": "이 표에 기록이 없습니다.",
+      "supplierNameRequired": "공급업체 상호를 입력하세요."
+    },
+    "searchPlaceholder": "설명, NCM 또는 EAN으로 검색...",
+    "noResults": "항목을 찾을 수 없습니다.",
+    "colStock": "재고",
+    "minStockHint": "최소 재고: {min}",
+    "numberInvalid": "숫자 값을 확인하세요.",
+    "origins": {
+      "o0": "국내산 (코드 3~5 제외).",
+      "o1": "외국산 - 직수입 (코드 6 제외).",
+      "o2": "외국산 - 내수시장 구매 (코드 7 제외).",
+      "o3": "국내산, 수입 비중 40% 초과 상품.",
+      "o4": "국내산, 기본 생산 공정에 따라 생산 (법령 288/67, 8.248/91, 8.387/91, 10.176/01, 11.484/07).",
+      "o5": "국내산, 수입 비중 40% 이하 상품.",
+      "o6": "외국산 - 직수입, 국내 유사품 없음 (CAMEX 목록).",
+      "o7": "외국산 - 내수시장 구매, 국내 유사품 없음 (CAMEX 목록).",
+      "o8": "국내산 - 수입 비중 70% 초과 상품."
     }
   },
   "Quotes": {
@@ -3356,7 +3398,16 @@
       "deleteTitle": "이 견적서를 삭제할까요?",
       "deleteDescription": "견적서 {number}이(가) 삭제되며 되돌릴 수 없습니다.",
       "deleted": "견적서가 삭제되었습니다",
-      "deleteFailed": "견적서를 삭제하지 못했습니다"
+      "deleteFailed": "견적서를 삭제하지 못했습니다",
+      "sendWhatsapp": "WhatsApp으로 보내기",
+      "sendNoContact": "이 견적서에는 연결된 담당자가 없습니다. 수정해서 고객 담당자를 선택하세요.",
+      "sendNoPhone": "이 견적서의 담당자에게 전화번호가 없습니다.",
+      "sendTitle": "견적서를 WhatsApp으로 보낼까요?",
+      "sendDescription": "견적서 {number}(PDF)이(가) {name} ({phone})에게 전송됩니다.",
+      "sendConfirm": "보내기",
+      "sendCaption": "안녕하세요! 견적서 {number}번을 보내드립니다.",
+      "sent": "견적서를 보냈습니다",
+      "sendFailed": "견적서를 보내지 못했습니다"
     },
     "status": {
       "draft": "초안",
@@ -3412,7 +3463,16 @@
       "needClient": "고객(회사 또는 담당자)을 입력하세요.",
       "needItems": "설명이 있는 항목을 하나 이상 추가하세요.",
       "invalidItem": "항목의 수량과 가격을 확인하세요.",
-      "saveFailed": "견적서를 저장하지 못했습니다"
+      "saveFailed": "견적서를 저장하지 못했습니다",
+      "companySearch": "고객 이름 또는 CNPJ를 입력하세요...",
+      "companyNoMatch": "고객을 찾을 수 없습니다. 아래에 직접 입력하세요.",
+      "deductStock": "재고에서 차감 (승인 시)",
+      "stockBalance": "잔량: {qty}",
+      "descriptionLocked": "재고에서 차감하면 설명은 등록된 제품에서 가져옵니다.",
+      "deal": "거래 (PDF가 카드에 첨부됩니다)",
+      "noDeal": "연결된 거래 없음",
+      "attachedToDeal": "PDF가 거래에 첨부되었습니다",
+      "attachFailed": "견적서는 저장되었지만 PDF를 거래에 첨부하지 못했습니다"
     }
   }
 }

@@ -604,6 +604,14 @@
       "confirm": "Eliminar",
       "failed": "No se pudo eliminar la conversación",
       "deleted": "Conversación eliminada"
+    },
+    "aiQuote": {
+      "button": "Presupuesto con IA",
+      "tooltip": "La IA lee la conversación y arma los ítems del presupuesto",
+      "failed": "No se pudo armar el presupuesto con la IA",
+      "noItems": "La IA no encontró ítems pedidos en la conversación. Complétalo manualmente.",
+      "saved": "Presupuesto {number} guardado",
+      "pdfFailed": "No se pudo generar el PDF"
     }
   },
   "Contacts": {
@@ -3333,7 +3341,41 @@
       "unit": "Unidad",
       "active": "Disponible para nuevos presupuestos",
       "cancel": "Cancelar",
-      "save": "Guardar"
+      "save": "Guardar",
+      "purchasePrice": "Precio de compra (R$)",
+      "stockQty": "Cantidad en stock (saldo)",
+      "minStock": "Cantidad mínima",
+      "cest": "CEST",
+      "ean": "EAN-13",
+      "eanTributado": "EAN tributado",
+      "origin": "Origen de la mercadería",
+      "originNone": "No informado",
+      "suppliers": "Proveedores del producto",
+      "supplierLegalName": "Razón social",
+      "supplierTradeName": "Nombre de fantasía",
+      "supplierLastPrice": "Último precio",
+      "supplierLastDate": "Fecha del último registro",
+      "supplierNumber": "Número",
+      "addSupplier": "Agregar",
+      "removeSupplier": "Quitar proveedor",
+      "noSuppliers": "Ningún registro en esta tabla.",
+      "supplierNameRequired": "Indica la razón social del proveedor."
+    },
+    "searchPlaceholder": "Buscar por descripción, NCM o EAN...",
+    "noResults": "No se encontraron artículos.",
+    "colStock": "Stock",
+    "minStockHint": "Stock mínimo: {min}",
+    "numberInvalid": "Revisa los valores numéricos.",
+    "origins": {
+      "o0": "Nacional, excepto las de los códigos 3 a 5.",
+      "o1": "Extranjera - importación directa, excepto la del código 6.",
+      "o2": "Extranjera - adquirida en el mercado interno, excepto la del código 7.",
+      "o3": "Nacional, mercadería con contenido de importación superior al 40%.",
+      "o4": "Nacional, producida conforme a los procesos productivos básicos (Decreto-Ley 288/67 y Leyes 8.248/91, 8.387/91, 10.176/01 y 11.484/07).",
+      "o5": "Nacional, mercadería con contenido de importación igual o inferior al 40%.",
+      "o6": "Extranjera - importación directa, sin similar nacional, en lista de resolución CAMEX.",
+      "o7": "Extranjera - adquirida en el mercado interno, sin similar nacional, en lista de resolución CAMEX.",
+      "o8": "Nacional - mercadería con contenido de importación superior al 70%."
     }
   },
   "Quotes": {
@@ -3356,7 +3398,16 @@
       "deleteTitle": "¿Eliminar este presupuesto?",
       "deleteDescription": "El presupuesto {number} se eliminará y no se puede deshacer.",
       "deleted": "Presupuesto eliminado",
-      "deleteFailed": "No se pudo eliminar el presupuesto"
+      "deleteFailed": "No se pudo eliminar el presupuesto",
+      "sendWhatsapp": "Enviar por WhatsApp",
+      "sendNoContact": "Este presupuesto no tiene contacto vinculado. Edítalo y elige el contacto del cliente.",
+      "sendNoPhone": "El contacto de este presupuesto no tiene teléfono.",
+      "sendTitle": "¿Enviar el presupuesto por WhatsApp?",
+      "sendDescription": "El presupuesto {number} (PDF) se enviará a {name} ({phone}).",
+      "sendConfirm": "Enviar",
+      "sendCaption": "¡Hola! Te envío el presupuesto n.º {number}.",
+      "sent": "Presupuesto enviado",
+      "sendFailed": "No se pudo enviar el presupuesto"
     },
     "status": {
       "draft": "Borrador",
@@ -3412,7 +3463,16 @@
       "needClient": "Indica el cliente (empresa o contacto).",
       "needItems": "Añade al menos un ítem con descripción.",
       "invalidItem": "Revisa la cantidad y el precio de los ítems.",
-      "saveFailed": "No se pudo guardar el presupuesto"
+      "saveFailed": "No se pudo guardar el presupuesto",
+      "companySearch": "Escribe el nombre o CNPJ del cliente...",
+      "companyNoMatch": "Ningún cliente encontrado. Completa los datos abajo.",
+      "deductStock": "Descontar del stock (al aprobar)",
+      "stockBalance": "saldo: {qty}",
+      "descriptionLocked": "Al descontar del stock, la descripción viene del producto registrado.",
+      "deal": "Negocio (el PDF se adjuntará a la tarjeta)",
+      "noDeal": "Sin negocio vinculado",
+      "attachedToDeal": "PDF adjuntado al negocio",
+      "attachFailed": "El presupuesto se guardó, pero no se pudo adjuntar el PDF al negocio"
     }
   }
 }

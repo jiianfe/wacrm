@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { FileDown, Loader2, Plus, Trash2 } from "lucide-react";
@@ -9,10 +9,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { formatCep } from "@/lib/br/documents";
 import { QUOTE_DEFAULTS } from "@/lib/quotes/company";
+import { attachQuotePdfToDeal } from "@/lib/quotes/download";
 import {
   addDays,
   formatBRL,
   formatPhoneBR,
+  formatQuantity,
   lineTotal,
   nextQuoteNumber,
   parseMoney,
@@ -59,6 +61,25 @@ interface ItemDraft {
   description: string;
   ncm: string;
   unit_price: string;
+  /** Catalog product this line came from; "" for a free-text line. */
+  productId: string;
+  /** Take the quantity off the product's stock; the line then comes only from the catalog. */
+  deduct: boolean;
+}
+
+/** What the AI (or any caller) already knows when starting a new quote. */
+export interface QuotePrefill {
+  contactId?: string | null;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  notes?: string | null;
+  items?: { productId: string | null; description: string; quantity: number }[];
+}
+
+interface DealOption {
+  id: string;
+  title: string;
 }
 
 interface QuoteFormProps {
@@ -66,6 +87,8 @@ interface QuoteFormProps {
   onOpenChange: (open: boolean) => void;
   /** Quote to edit; null starts a new one. */
   quote: Quote | null;
+  /** Starting data for a NEW quote (ignored when editing). */
+  prefill?: QuotePrefill | null;
   /** Called after saving; `download` is true for "Save and download PDF". */
   onSaved: (quote: Quote, items: QuoteItem[], download: boolean) => void;
 }
@@ -77,13 +100,19 @@ const blankItem = (): ItemDraft => ({
   description: "",
   ncm: "",
   unit_price: "",
+  productId: "",
+  deduct: false,
 });
+
+/** Lower-case and strip accents so "joao" finds "João". */
+const normalize = (v: string) =>
+  v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 const SELECT_CLASS =
   "h-9 w-full rounded-md border border-border bg-muted px-2 text-sm text-foreground";
 const INPUT_CLASS = "bg-muted text-foreground";
 
-export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps) {
+export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: QuoteFormProps) {
   const t = useTranslations("Quotes.form");
   const supabase = createClient();
   const { accountId, user, profile } = useAuth();
@@ -91,10 +120,14 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
   const [companies, setCompanies] = useState<CompanyRow[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [contacts, setContacts] = useState<ContactOption[]>([]);
+  const [deals, setDeals] = useState<DealOption[]>([]);
+  const [dealId, setDealId] = useState("");
   const [saving, setSaving] = useState(false);
 
   const [number, setNumber] = useState("");
   const [companyId, setCompanyId] = useState("");
+  const [companyQuery, setCompanyQuery] = useState("");
+  const [companyFocused, setCompanyFocused] = useState(false);
   const [contactId, setContactId] = useState("");
   const [legalName, setLegalName] = useState("");
   const [tradeName, setTradeName] = useState("");
@@ -125,7 +158,7 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
     setContacts([]);
 
     (async () => {
-      const [companiesRes, productsRes, numbersRes, itemsRes] = await Promise.all([
+      const [companiesRes, productsRes, numbersRes, itemsRes, dealsRes] = await Promise.all([
         supabase
           .from("companies")
           .select(
@@ -139,14 +172,20 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
         quote
           ? supabase.from("quote_items").select("*").eq("quote_id", quote.id).order("position")
           : Promise.resolve({ data: [] as QuoteItem[] }),
+        supabase.from("deals").select("id, title").order("created_at", { ascending: false }).limit(300),
       ]);
       if (cancelled) return;
-      setCompanies((companiesRes.data ?? []) as CompanyRow[]);
-      setProducts((productsRes.data ?? []) as Product[]);
+      const companyList = (companiesRes.data ?? []) as CompanyRow[];
+      const productList = (productsRes.data ?? []) as Product[];
+      setCompanies(companyList);
+      setProducts(productList);
+      setDeals((dealsRes.data ?? []) as DealOption[]);
 
       if (quote) {
         setNumber(String(quote.number));
         setCompanyId(quote.company_id ?? "");
+        setCompanyQuery(quote.client_trade_name || quote.client_legal_name || "");
+        setDealId(quote.deal_id ?? "");
         setContactId(quote.contact_id ?? "");
         setLegalName(quote.client_legal_name ?? "");
         setTradeName(quote.client_trade_name ?? "");
@@ -176,6 +215,8 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
                 description: r.description,
                 ncm: r.ncm ?? "",
                 unit_price: String(r.unit_price).replace(".", ","),
+                productId: r.product_id ?? "",
+                deduct: r.deduct_stock,
               }))
             : [blankItem()],
         );
@@ -184,6 +225,7 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
         const highest = ((numbersRes.data ?? []) as { number: number }[]).map((r) => r.number);
         setNumber(String(nextQuoteNumber(highest, QUOTE_DEFAULTS.firstNumber)));
         setCompanyId("");
+        setCompanyQuery("");
         setContactId("");
         setLegalName("");
         setTradeName("");
@@ -201,10 +243,47 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
         setDeliveryTime(QUOTE_DEFAULTS.deliveryTime);
         setPaymentTerms(QUOTE_DEFAULTS.paymentTerms);
         setPaymentDue("");
-        setNotes("");
+        setNotes(prefill?.notes ?? "");
         setSellerName(profile?.full_name ?? "");
         setSellerPhone(QUOTE_DEFAULTS.sellerPhone);
-        setItems([blankItem()]);
+        setDealId("");
+
+        if (prefill) {
+          setContactId(prefill.contactId ?? "");
+          setContactName(prefill.contactName ?? "");
+          setContactEmail(prefill.contactEmail ?? "");
+          setContactPhone(formatPhoneBR(prefill.contactPhone));
+          const drafts = (prefill.items ?? []).map((pi): ItemDraft => {
+            const prod = productList.find((x) => x.id === pi.productId);
+            return {
+              key: ++itemKey,
+              quantity: String(pi.quantity).replace(".", ","),
+              description: prod ? prod.description : pi.description,
+              ncm: prod?.ncm ?? "",
+              unit_price: prod ? String(prod.unit_price).replace(".", ",") : "",
+              productId: prod?.id ?? "",
+              deduct: false,
+            };
+          });
+          setItems(drafts.length ? drafts : [blankItem()]);
+
+          // The contact's company, when there is one, fills the client block.
+          if (prefill.contactId) {
+            const { data: links } = await supabase
+              .from("company_contacts")
+              .select("company_id")
+              .eq("contact_id", prefill.contactId)
+              .limit(1);
+            const cid = (links?.[0] as { company_id: string } | undefined)?.company_id;
+            const company = companyList.find((x) => x.id === cid);
+            if (!cancelled && company) {
+              setCompanyId(company.id);
+              fillCompany(company);
+            }
+          }
+        } else {
+          setItems([blankItem()]);
+        }
       }
     })();
 
@@ -235,6 +314,29 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, companyId]);
 
+  // Companies whose name (or CNPJ) is closest to what was typed; nothing until typing.
+  const suggestions = useMemo(() => {
+    const term = normalize(companyQuery.trim());
+    if (!term) return [];
+    const digits = term.replace(/\D/g, "");
+    return companies
+      .map((c) => {
+        const names = [c.trade_name, c.legal_name].filter(Boolean).map((n) => normalize(n as string));
+        let score = 99;
+        for (const n of names) {
+          if (n.startsWith(term)) score = Math.min(score, 0);
+          else if (n.split(/\s+/).some((w) => w.startsWith(term))) score = Math.min(score, 1);
+          else if (n.includes(term)) score = Math.min(score, 2);
+        }
+        if (digits.length >= 3 && (c.cnpj ?? "").replace(/\D/g, "").includes(digits)) score = Math.min(score, 2);
+        return { c, score };
+      })
+      .filter((x) => x.score < 99)
+      .sort((a, b) => a.score - b.score || (a.c.trade_name || a.c.legal_name || "").localeCompare(b.c.trade_name || b.c.legal_name || ""))
+      .slice(0, 8)
+      .map((x) => x.c);
+  }, [companies, companyQuery]);
+
   function pickCompany(id: string) {
     setCompanyId(id);
     setContactId("");
@@ -243,7 +345,11 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
       return;
     }
     const c = companies.find((x) => x.id === id);
-    if (!c) return;
+    if (c) fillCompany(c);
+  }
+
+  function fillCompany(c: CompanyRow) {
+    setCompanyQuery(c.trade_name || c.legal_name || "");
     setLegalName(c.legal_name ?? "");
     setTradeName(c.trade_name ?? "");
     setDocument(c.cnpj ?? "");
@@ -271,10 +377,25 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
     const p = products.find((x) => x.id === productId);
     if (!p) return;
     updateItem(key, {
+      productId: p.id,
       description: p.description,
       ncm: p.ncm ?? "",
       unit_price: String(p.unit_price).replace(".", ","),
+      // A service has no stock to take from.
+      ...(p.kind === "product" ? {} : { deduct: false }),
     });
+  }
+
+  function clearProduct(key: number) {
+    updateItem(key, { productId: "", deduct: false });
+  }
+
+  function toggleDeduct(key: number, on: boolean) {
+    const it = items.find((x) => x.key === key);
+    const p = products.find((x) => x.id === it?.productId);
+    if (!p) return;
+    // The line must match the catalog item when it comes off the stock.
+    updateItem(key, on ? { deduct: true, description: p.description } : { deduct: false });
   }
 
   const parsed = items.map((it) => ({
@@ -313,6 +434,7 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
       number: num,
       company_id: companyId || null,
       contact_id: contactId || null,
+      deal_id: dealId || null,
       client_legal_name: legalName.trim() || null,
       client_trade_name: tradeName.trim() || null,
       client_document: document.trim() || null,
@@ -366,6 +488,8 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
       description: it.description.trim(),
       ncm: it.ncm.trim() || null,
       unit_price: p.unit_price,
+      product_id: it.productId || null,
+      deduct_stock: it.deduct && !!it.productId,
     }));
     const ins = await supabase.from("quote_items").insert(lines).select("*");
     setSaving(false);
@@ -373,8 +497,21 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
       toast.error(t("saveFailed"));
       return;
     }
+    const savedItems = ((ins.data ?? []) as QuoteItem[]).sort((a, b) => a.position - b.position);
+    if (savedQuote.deal_id) {
+      try {
+        await attachQuotePdfToDeal(savedQuote, savedItems, savedQuote.deal_id, {
+          userId: user?.id ?? null,
+          name: profile?.full_name || profile?.email || null,
+        });
+        toast.success(t("attachedToDeal"));
+      } catch (err) {
+        console.error("Attach quote PDF failed:", err);
+        toast.error(t("attachFailed"));
+      }
+    }
     onOpenChange(false);
-    onSaved(savedQuote, ((ins.data ?? []) as QuoteItem[]).sort((a, b) => a.position - b.position), download);
+    onSaved(savedQuote, savedItems, download);
   }
 
   const field = (label: string, node: React.ReactNode, className = "") => (
@@ -385,7 +522,7 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
   );
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !saving && onOpenChange(v)}>
+    <Dialog open={open} onOpenChange={(v) => !saving && onOpenChange(v)} disablePointerDismissal>
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-popover border-border text-popover-foreground sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="text-popover-foreground">
@@ -419,14 +556,47 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
             <h3 className="text-sm font-semibold text-foreground">{t("client")}</h3>
             {field(
               t("company"),
-              <select value={companyId} onChange={(e) => pickCompany(e.target.value)} className={SELECT_CLASS}>
-                <option value="">{t("noCompany")}</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.trade_name || c.legal_name}
-                  </option>
-                ))}
-              </select>,
+              <div className="relative">
+                <Input
+                  value={companyQuery}
+                  onChange={(e) => {
+                    setCompanyQuery(e.target.value);
+                    if (!e.target.value.trim() && companyId) pickCompany("");
+                  }}
+                  onFocus={() => setCompanyFocused(true)}
+                  onBlur={() => setCompanyFocused(false)}
+                  placeholder={t("companySearch")}
+                  autoComplete="off"
+                  className={INPUT_CLASS}
+                />
+                {companyFocused && companyQuery.trim() && (
+                  <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-lg">
+                    {suggestions.length === 0 ? (
+                      <li className="px-3 py-2 text-xs text-muted-foreground">{t("companyNoMatch")}</li>
+                    ) : (
+                      suggestions.map((c) => (
+                        <li key={c.id}>
+                          <button
+                            type="button"
+                            // mouseDown (not click) so the input keeps focus until the pick lands.
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              pickCompany(c.id);
+                              setCompanyFocused(false);
+                            }}
+                            className="flex w-full flex-col px-3 py-1.5 text-left text-sm hover:bg-muted"
+                          >
+                            <span className="text-foreground">{c.trade_name || c.legal_name}</span>
+                            {c.trade_name && c.legal_name && c.trade_name !== c.legal_name && (
+                              <span className="text-xs text-muted-foreground">{c.legal_name}</span>
+                            )}
+                          </button>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                )}
+              </div>,
             )}
             <div className="grid gap-3 sm:grid-cols-2">
               {field(t("legalName"), <Input value={legalName} onChange={(e) => setLegalName(e.target.value)} className={INPUT_CLASS} />)}
@@ -438,6 +608,17 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
               {field(t("city"), <Input value={city} onChange={(e) => setCity(e.target.value)} className={INPUT_CLASS} />)}
               {field(t("zip"), <Input value={zip} onChange={(e) => setZip(e.target.value)} className={INPUT_CLASS} />)}
             </div>
+            {field(
+              t("deal"),
+              <select value={dealId} onChange={(e) => setDealId(e.target.value)} className={SELECT_CLASS}>
+                <option value="">{t("noDeal")}</option>
+                {deals.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.title}
+                  </option>
+                ))}
+              </select>,
+            )}
             {contacts.length > 0 &&
               field(
                 t("pickContact"),
@@ -470,8 +651,10 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
                   <div key={it.key} className="space-y-2 rounded-lg border border-border p-3">
                     <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
                       <select
-                        value=""
-                        onChange={(e) => pickProduct(it.key, e.target.value)}
+                        value={it.productId}
+                        onChange={(e) =>
+                          e.target.value ? pickProduct(it.key, e.target.value) : clearProduct(it.key)
+                        }
                         className={SELECT_CLASS}
                       >
                         <option value="">{t("pickProduct")}</option>
@@ -497,8 +680,34 @@ export function QuoteForm({ open, onOpenChange, quote, onSaved }: QuoteFormProps
                       value={it.description}
                       onChange={(e) => updateItem(it.key, { description: e.target.value })}
                       placeholder={t("itemDescription")}
+                      disabled={it.deduct}
+                      title={it.deduct ? t("descriptionLocked") : undefined}
                       className={INPUT_CLASS}
                     />
+                    {(() => {
+                      const prod = products.find((x) => x.id === it.productId);
+                      const canDeduct = !!prod && prod.kind === "product";
+                      return (
+                        <label
+                          className={`flex flex-wrap items-center gap-2 text-sm ${
+                            canDeduct ? "text-foreground" : "text-muted-foreground"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={it.deduct}
+                            disabled={!canDeduct}
+                            onChange={(e) => toggleDeduct(it.key, e.target.checked)}
+                          />
+                          {t("deductStock")}
+                          {canDeduct && (
+                            <span className="text-xs text-muted-foreground">
+                              ({t("stockBalance", { qty: formatQuantity(prod.stock_qty) })})
+                            </span>
+                          )}
+                        </label>
+                      );
+                    })()}
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {field(
                         t("quantity"),
