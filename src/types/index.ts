@@ -804,3 +804,61 @@ export interface QuickReply {
   created_at: string;
   updated_at: string;
 }
+
+/** An item of the products/services catalog (migration 070). */
+export interface Product {
+  id: string;
+  account_id: string;
+  description: string;
+  kind: 'product' | 'service';
+  ncm: string | null;
+  unit_price: number;
+  unit: string;
+  active: boolean;
+  created_at: string;
+}
+
+export type QuoteStatus = 'draft' | 'sent' | 'approved' | 'rejected';
+
+/** A quote / orçamento (migration 070). Client and seller are snapshots. */
+export interface Quote {
+  id: string;
+  account_id: string;
+  number: number;
+  status: QuoteStatus;
+  company_id: string | null;
+  contact_id: string | null;
+  deal_id: string | null;
+  client_legal_name: string | null;
+  client_trade_name: string | null;
+  client_document: string | null;
+  client_address: string | null;
+  client_address_number: string | null;
+  client_district: string | null;
+  client_city: string | null;
+  client_zip: string | null;
+  contact_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  seller_name: string | null;
+  seller_phone: string | null;
+  issue_date: string;
+  valid_until: string | null;
+  delivery_time: string | null;
+  payment_terms: string | null;
+  payment_due: string | null;
+  notes: string | null;
+  total: number;
+  created_at: string;
+}
+
+export interface QuoteItem {
+  id: string;
+  quote_id: string;
+  account_id: string;
+  position: number;
+  quantity: number;
+  description: string;
+  ncm: string | null;
+  unit_price: number;
+}

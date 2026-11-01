@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { useTotalUnread } from "@/hooks/use-total-unread";
@@ -11,11 +11,14 @@ import {
   Bell,
   Bot,
   Building2,
+  ChevronDown,
   Crown,
+  FileText,
   GitBranch,
   LayoutDashboard,
   LogOut,
   MessageSquare,
+  Package,
   Radio,
   Settings,
   Shield,
@@ -90,18 +93,45 @@ interface NavItem {
   beta?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/inbox", labelKey: "inbox", icon: MessageSquare },
+// Notifications sit above the folders; everything else is grouped so the CRM
+// tools and the quote tools are kept apart.
+const standaloneItems: NavItem[] = [
   { href: "/notifications", labelKey: "notifications", icon: Bell },
-  { href: "/contacts", labelKey: "contacts", icon: Users },
-  { href: "/companies", labelKey: "companies", icon: Building2 },
-  { href: "/pipelines", labelKey: "pipelines", icon: GitBranch },
-  { href: "/broadcasts", labelKey: "broadcasts", icon: Radio },
-  { href: "/automations", labelKey: "automations", icon: Zap },
-  { href: "/flows", labelKey: "flows", icon: Workflow, beta: true },
-  { href: "/agents", labelKey: "aiAgents", icon: Bot },
 ];
+
+interface NavGroup {
+  key: string;
+  labelKey: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    key: "crm",
+    labelKey: "groupCrm",
+    items: [
+      { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+      { href: "/inbox", labelKey: "inbox", icon: MessageSquare },
+      { href: "/contacts", labelKey: "contacts", icon: Users },
+      { href: "/companies", labelKey: "companies", icon: Building2 },
+      { href: "/pipelines", labelKey: "pipelines", icon: GitBranch },
+      { href: "/broadcasts", labelKey: "broadcasts", icon: Radio },
+      { href: "/automations", labelKey: "automations", icon: Zap },
+      { href: "/flows", labelKey: "flows", icon: Workflow, beta: true },
+      { href: "/agents", labelKey: "aiAgents", icon: Bot },
+    ],
+  },
+  {
+    key: "quotes",
+    labelKey: "groupQuotes",
+    items: [
+      { href: "/quotes", labelKey: "quotes", icon: FileText },
+      { href: "/products", labelKey: "products", icon: Package },
+    ],
+  },
+];
+
+const GROUPS_STORAGE_KEY = "wacrm.nav.closedGroups";
 
 const bottomNavItems = [
   { href: "/settings", labelKey: "settings", icon: Settings },
@@ -160,6 +190,88 @@ export function Sidebar({ open = false, onClose, collapsed = false }: SidebarPro
     };
   }, [open, onClose]);
 
+  // Folders the agent has collapsed; remembered in this browser.
+  const [closedGroups, setClosedGroups] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(GROUPS_STORAGE_KEY);
+       
+      if (raw) setClosedGroups(JSON.parse(raw));
+    } catch {
+      // Storage blocked or corrupt: every folder starts open.
+    }
+  }, []);
+  const toggleGroup = (key: string) => {
+    setClosedGroups((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      try {
+        window.localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Not persisted; still works for this session.
+      }
+      return next;
+    });
+  };
+
+  const renderItem = (item: NavItem) => {
+      const isActive =
+        pathname === item.href ||
+        (item.href !== "/dashboard" && pathname.startsWith(item.href));
+
+      const showUnreadDot =
+        item.href === "/inbox" && totalUnread > 0 && !isActive;
+
+      // Unlike the inbox dot, the notifications count stays visible
+      // even while the page is active — it reflects unread state
+      // (cleared by marking notifications read), not "currently
+      // viewing this section".
+      const showNotificationBadge =
+        item.href === "/notifications" && unreadNotifications > 0;
+
+      return (
+        <li key={item.href}>
+          <Link
+            href={item.href}
+            className={cn(
+              // Taller on mobile so fingers can hit the row reliably (≥44px).
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors lg:py-2",
+              isActive
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
+          >
+            <item.icon className="h-4 w-4" />
+            <span className="flex-1">{t(item.labelKey as string)}</span>
+            {item.beta && (
+              <span
+                aria-label={t("beta")}
+                className="rounded-full border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-300"
+              >
+                {t("beta")}
+              </span>
+            )}
+            {showUnreadDot && (
+              <span
+                aria-label={t("unreadConversations", { count: totalUnread })}
+                className="relative flex h-2 w-2"
+              >
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+            )}
+            {showNotificationBadge && (
+              <span
+                aria-label={t("unreadNotifications", { count: unreadNotifications })}
+                className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
+              >
+                {unreadNotifications > 9 ? "9+" : unreadNotifications}
+              </span>
+            )}
+          </Link>
+        </li>
+      );
+  };
+
   return (
     <>
       {/* Backdrop — only exists on mobile and only when open. Clicking
@@ -213,65 +325,36 @@ export function Sidebar({ open = false, onClose, collapsed = false }: SidebarPro
         {/* Main navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           <ul className="flex flex-col gap-1">
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/dashboard" && pathname.startsWith(item.href));
-
-              const showUnreadDot =
-                item.href === "/inbox" && totalUnread > 0 && !isActive;
-
-              // Unlike the inbox dot, the notifications count stays visible
-              // even while the page is active — it reflects unread state
-              // (cleared by marking notifications read), not "currently
-              // viewing this section".
-              const showNotificationBadge =
-                item.href === "/notifications" && unreadNotifications > 0;
-
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      // Taller on mobile so fingers can hit the row reliably (≥44px).
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors lg:py-2",
-                      isActive
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                    )}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span className="flex-1">{t(item.labelKey as string)}</span>
-                    {item.beta && (
-                      <span
-                        aria-label={t("beta")}
-                        className="rounded-full border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-300"
-                      >
-                        {t("beta")}
-                      </span>
-                    )}
-                    {showUnreadDot && (
-                      <span
-                        aria-label={t("unreadConversations", { count: totalUnread })}
-                        className="relative flex h-2 w-2"
-                      >
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-                      </span>
-                    )}
-                    {showNotificationBadge && (
-                      <span
-                        aria-label={t("unreadNotifications", { count: unreadNotifications })}
-                        className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
-                      >
-                        {unreadNotifications > 9 ? "9+" : unreadNotifications}
-                      </span>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
+            {standaloneItems.map(renderItem)}
           </ul>
+
+          {navGroups.map((group) => {
+            const hasActive = group.items.some(
+              (item) =>
+                pathname === item.href ||
+                (item.href !== "/dashboard" && pathname.startsWith(item.href)),
+            );
+            // A folder holding the page you are on never hides it.
+            const isOpen = hasActive || !closedGroups[group.key];
+            return (
+              <div key={group.key} className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.key)}
+                  aria-expanded={isOpen}
+                  className="mb-1 flex w-full items-center justify-between rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                >
+                  {t(group.labelKey as string)}
+                  <ChevronDown
+                    className={cn("h-3.5 w-3.5 transition-transform", !isOpen && "-rotate-90")}
+                  />
+                </button>
+                {isOpen && (
+                  <ul className="flex flex-col gap-1">{group.items.map(renderItem)}</ul>
+                )}
+              </div>
+            );
+          })}
 
           <div className="my-4 border-t border-border" />
 
