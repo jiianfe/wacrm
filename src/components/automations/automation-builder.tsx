@@ -909,6 +909,26 @@ function TriggerCard({
                 </p>
               </div>
             )}
+            {type !== "time_based" && (
+              <div className="flex items-start justify-between gap-3 border-t border-border pt-3">
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-foreground">{t("oncePerDay")}</div>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{t("oncePerDayHint")}</p>
+                </div>
+                <Switch
+                  checked={Boolean(config.once_per_day)}
+                  onCheckedChange={(v) =>
+                    onConfigChange({
+                      ...config,
+                      once_per_day: !!v,
+                      once_per_day_timezone:
+                        (config.once_per_day_timezone as string | undefined) ?? browserTimeZone(),
+                    })
+                  }
+                  aria-label={t("oncePerDay")}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

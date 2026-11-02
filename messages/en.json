@@ -1398,6 +1398,8 @@
       },
       "trigger": "Trigger",
       "triggerType": "Trigger type",
+      "oncePerDay": "Send at most once a day per contact",
+      "oncePerDayHint": "If this automation already messaged this contact today, it won't send again until tomorrow. Useful for away messages.",
       "keywords": "Keywords",
       "keywordsHint": "Comma-separated list (e.g. hello, help, buy)",
       "replyIds": "Reply IDs",

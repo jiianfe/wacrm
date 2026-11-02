@@ -1398,6 +1398,8 @@
       },
       "trigger": "Gatilho",
       "triggerType": "Tipo de gatilho",
+      "oncePerDay": "Enviar no máximo 1 vez por dia por contato",
+      "oncePerDayHint": "Se a automação já enviou mensagem a este contato hoje, ela não envia de novo até amanhã. Útil para a mensagem de ausência.",
       "keywords": "Palavras-chave",
       "keywordsHint": "Lista separada por vírgulas (ex.: olá, ajuda, comprar)",
       "replyIds": "IDs de resposta",

@@ -27,6 +27,12 @@ import { isDeliverableUrl } from '@/lib/webhooks/ssrf'
 import { getT } from '@/lib/i18n/translate'
 import { isWithinTimeWindow } from './time-of-day'
 import { isWithinBusinessHours } from './business-hours'
+import {
+  logSentMessage,
+  oncePerDayEnabled,
+  oncePerDayTimeZone,
+  startOfDayInTimeZone,
+} from './once-per-day'
 
 /** Step errors land in automation_logs and are shown on the logs page. */
 const tErr = getT('LibErrors.engine')
@@ -139,6 +145,13 @@ export async function runAutomationsForTrigger(input: DispatchInput): Promise<vo
 
     for (const automation of automations as Automation[]) {
       if (!triggerMatches(automation, input.context)) continue
+      if (
+        input.contactId &&
+        oncePerDayEnabled(automation.trigger_config) &&
+        (await alreadySentToday(automation, input.contactId))
+      ) {
+        continue
+      }
       try {
         await executeAutomation(automation, input)
       } catch (err) {
@@ -417,6 +430,33 @@ export async function requeueStalledExecutions(now: Date = new Date()): Promise<
 // ------------------------------------------------------------
 // Internal execution
 // ------------------------------------------------------------
+
+/**
+ * For automations with "at most once per day per contact": has this
+ * automation already sent a message to this contact today (in the
+ * automation's chosen time zone)? Runs that sent nothing — e.g. the
+ * business-hours branch of an away message — don't count. On a lookup
+ * error we let the run go ahead rather than silently drop it.
+ */
+async function alreadySentToday(automation: Automation, contactId: string): Promise<boolean> {
+  const since = startOfDayInTimeZone(new Date(), oncePerDayTimeZone(automation.trigger_config))
+  const { data, error } = await supabaseAdmin()
+    .from('automation_logs')
+    .select('steps_executed')
+    .eq('automation_id', automation.id)
+    .eq('account_id', automation.account_id)
+    .eq('contact_id', contactId)
+    .gte('created_at', since.toISOString())
+    .order('created_at', { ascending: false })
+    .limit(50)
+  if (error) {
+    console.error('[automations] once-per-day lookup failed:', error)
+    return false
+  }
+  return (data ?? []).some((row) =>
+    logSentMessage(row.steps_executed as AutomationLogStepResult[] | null),
+  )
+}
 
 async function executeAutomation(automation: Automation, input: DispatchInput) {
   const db = supabaseAdmin()

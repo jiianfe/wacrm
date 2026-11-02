@@ -1398,6 +1398,8 @@
       },
       "trigger": "트리거",
       "triggerType": "트리거 유형",
+      "oncePerDay": "연락처당 하루 최대 1회 전송",
+      "oncePerDayHint": "이 자동화가 오늘 이미 이 연락처에 메시지를 보냈다면 내일까지 다시 보내지 않습니다. 부재 메시지에 유용합니다.",
       "keywords": "키워드",
       "keywordsHint": "쉼표로 구분된 목록 (예: hello, help, buy)",
       "replyIds": "응답 ID",
