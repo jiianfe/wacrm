@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { useTotalUnread } from "@/hooks/use-total-unread";
+import { useUnreadTitle } from "@/hooks/use-unread-title";
 import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import {
   Bell,
@@ -152,6 +153,7 @@ export function Sidebar({ open = false, onClose, collapsed = false }: SidebarPro
   const pathname = usePathname();
   const { profile, profileLoading, account, accountRole, signOut } = useAuth();
   const totalUnread = useTotalUnread();
+  useUnreadTitle(totalUnread);
   const unreadNotifications = useUnreadNotifications();
   // Only surface the account-name strip when it actually carries
   // information. A solo user's personal account is named after them
