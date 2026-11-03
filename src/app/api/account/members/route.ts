@@ -16,6 +16,7 @@ import { NextResponse } from "next/server";
 
 import { getCurrentAccount, toErrorResponse } from "@/lib/auth/account";
 import { canManageMembers, isAccountRole } from "@/lib/auth/roles";
+import { isPushRecipient } from "@/lib/push/recipients";
 import type { AccountMember } from "@/types";
 import { getT } from "@/lib/i18n/translate";
 
@@ -27,6 +28,7 @@ interface ProfileRow {
   email: string | null;
   avatar_url: string | null;
   account_role: string;
+  push_notify: boolean | null;
   created_at: string;
 }
 
@@ -38,7 +40,7 @@ export async function GET() {
     // the caller's, so this query is naturally account-scoped.
     const { data, error } = await ctx.supabase
       .from("profiles")
-      .select("user_id, full_name, email, avatar_url, account_role, created_at")
+      .select("user_id, full_name, email, avatar_url, account_role, push_notify, created_at")
       .eq("account_id", ctx.accountId)
       .order("created_at", { ascending: true });
 
@@ -64,6 +66,7 @@ export async function GET() {
           email: canSeeEmails ? row.email : null,
           avatar_url: row.avatar_url,
           role: row.account_role,
+          push_notify: isPushRecipient(row.push_notify, row.account_role),
           joined_at: row.created_at,
         },
       ];

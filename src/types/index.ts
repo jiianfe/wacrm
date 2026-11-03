@@ -74,6 +74,8 @@ export interface AccountMember {
   email: string | null;
   avatar_url: string | null;
   role: AccountRole;
+  /** Receives push alerts for new customer messages (resolved from role + admin choice). */
+  push_notify?: boolean;
   joined_at: string;
 }
 

@@ -23,6 +23,9 @@ import { resumeAwaitingReply, runAutomationsForTrigger } from '@/lib/automations
 import { dispatchInboundToFlows } from '@/lib/flows/engine'
 import { dispatchInboundToAiReply } from '@/lib/ai/auto-reply'
 import { dispatchWebhookEvent } from '@/lib/webhooks/deliver'
+import type { ContentType } from '@/types'
+import { pushForInboundMessage } from '@/lib/push/send'
+import { buildNotificationContent, pickContactDisplayName } from '@/lib/notifications/browser-notify'
 import {
   applyBroadcastRecipientStatus,
   flagBroadcastReply,
@@ -774,6 +777,29 @@ async function processMessage(
   // update above so the write can be gated on the row's CURRENT status in
   // SQL — see the helper for why that matters.
   await reopenClosedConversation(supabaseAdmin(), conversation)
+
+  // Web Push for the members an admin opted in. Never blocks or fails the
+  // webhook: Meta only needs the acknowledgement.
+  try {
+    const { title, body } = buildNotificationContent(
+      {
+        id: message.id,
+        conversation_id: conversation.id,
+        sender_type: 'customer',
+        content_type: contentType as ContentType,
+        content_text: contentText ?? undefined,
+      },
+      pickContactDisplayName(contactRecord),
+    )
+    await pushForInboundMessage(supabaseAdmin(), accountId, {
+      title,
+      body,
+      tag: conversation.id,
+      url: `/inbox?c=${conversation.id}`,
+    })
+  } catch (pushErr) {
+    console.error('[webhook] push skipped:', pushErr)
+  }
 
   // If this contact was a recent broadcast recipient, flag the reply
   // so the broadcast's `replied_count` advances (via the aggregate

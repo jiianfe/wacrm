@@ -50,6 +50,12 @@ export default function QuotesPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [fNumber, setFNumber] = useState('');
+  const [fCnpj, setFCnpj] = useState('');
+  const [fContact, setFContact] = useState('');
+  const [fFrom, setFFrom] = useState('');
+  const [fTo, setFTo] = useState('');
+  const [fStatus, setFStatus] = useState<'' | QuoteStatus>('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Quote | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Quote | null>(null);
@@ -80,17 +86,38 @@ export default function QuotesPage() {
     load();
   }, [load]);
 
+  const hasFilters = !!(fNumber || fCnpj || fContact || fFrom || fTo || fStatus);
+  const clearFilters = () => {
+    setFNumber('');
+    setFCnpj('');
+    setFContact('');
+    setFFrom('');
+    setFTo('');
+    setFStatus('');
+  };
+
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) return quotes;
-    return quotes.filter(
-      (q) =>
+    const cnpjDigits = fCnpj.replace(/\D/g, '');
+    const contactTerm = fContact.trim().toLowerCase();
+    const numberTerm = fNumber.replace(/\D/g, '');
+    return quotes.filter((q) => {
+      if (fStatus && q.status !== fStatus) return false;
+      if (numberTerm && !String(q.number).includes(numberTerm)) return false;
+      if (cnpjDigits && !(q.client_document ?? '').replace(/\D/g, '').includes(cnpjDigits)) return false;
+      if (contactTerm && !(q.contact_name ?? '').toLowerCase().includes(contactTerm)) return false;
+      // issue_date is a plain YYYY-MM-DD, so string comparison is a date comparison.
+      if (fFrom && q.issue_date < fFrom) return false;
+      if (fTo && q.issue_date > fTo) return false;
+      if (!term) return true;
+      return (
         String(q.number).includes(term) ||
         clientName(q).toLowerCase().includes(term) ||
         (q.client_legal_name ?? '').toLowerCase().includes(term) ||
-        (q.client_document ?? '').replace(/\D/g, '').includes(term.replace(/\D/g, '') || '\u0000'),
-    );
-  }, [quotes, search]);
+        (q.client_document ?? '').replace(/\D/g, '').includes(term.replace(/\D/g, '') || '\u0000')
+      );
+    });
+  }, [quotes, search, fNumber, fCnpj, fContact, fFrom, fTo, fStatus]);
 
   async function downloadPdf(quote: Quote, knownItems?: QuoteItem[]) {
     setBusyId(quote.id);
@@ -211,6 +238,61 @@ export default function QuotesPage() {
         >
           <Plus className="h-4 w-4" />
           {t('page.newQuote')}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 items-end gap-2 sm:grid-cols-4 lg:grid-cols-7">
+        <Input
+          value={fNumber}
+          onChange={(e) => setFNumber(e.target.value)}
+          inputMode="numeric"
+          placeholder={t('page.filterNumber')}
+          className="bg-muted text-foreground"
+        />
+        <Input
+          value={fCnpj}
+          onChange={(e) => setFCnpj(e.target.value)}
+          placeholder={t('page.filterCnpj')}
+          className="bg-muted text-foreground"
+        />
+        <Input
+          value={fContact}
+          onChange={(e) => setFContact(e.target.value)}
+          placeholder={t('page.filterContact')}
+          className="bg-muted text-foreground"
+        />
+        <select
+          value={fStatus}
+          onChange={(e) => setFStatus(e.target.value as '' | QuoteStatus)}
+          className="h-9 w-full rounded-md border border-border bg-muted px-2 text-sm text-foreground"
+        >
+          <option value="">{t('page.filterStatusAll')}</option>
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {t(`status.${s}`)}
+            </option>
+          ))}
+        </select>
+        <label className="space-y-0.5 text-[11px] text-muted-foreground">
+          {t('page.filterFrom')}
+          <Input
+            type="date"
+            value={fFrom}
+            onChange={(e) => setFFrom(e.target.value)}
+            className="bg-muted text-foreground"
+          />
+        </label>
+        <label className="space-y-0.5 text-[11px] text-muted-foreground">
+          {t('page.filterTo')}
+          <Input
+            type="date"
+            value={fTo}
+            onChange={(e) => setFTo(e.target.value)}
+            className="bg-muted text-foreground"
+          />
+        </label>
+        <Button type="button" variant="outline" onClick={clearFilters} disabled={!hasFilters}>
+          {t('page.filterClear')}
         </Button>
       </div>
 

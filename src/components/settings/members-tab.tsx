@@ -40,6 +40,7 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import {
   Tooltip,
   TooltipContent,
@@ -82,6 +83,8 @@ interface Member {
   email: string | null;
   avatar_url: string | null;
   role: AccountRole;
+  /** Receives push alerts for new customer messages. */
+  push_notify: boolean;
   joined_at: string;
 }
 
@@ -179,6 +182,25 @@ export function MembersTab() {
   useEffect(() => {
     void loadEverything();
   }, [loadEverything]);
+
+  async function togglePush(member: Member, next: boolean) {
+    setMembers((prev) =>
+      prev.map((m) => (m.user_id === member.user_id ? { ...m, push_notify: next } : m)),
+    );
+    try {
+      const res = await fetch(`/api/account/members/${member.user_id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ push_notify: next }),
+      });
+      if (!res.ok) throw new Error('failed');
+    } catch {
+      setMembers((prev) =>
+        prev.map((m) => (m.user_id === member.user_id ? { ...m, push_notify: !next } : m)),
+      );
+      toast.error(t('pushToggleFailed'));
+    }
+  }
 
   async function handleRoleChange(member: Member, nextRole: AccountRole) {
     if (member.role === nextRole) return;
@@ -410,6 +432,16 @@ export function MembersTab() {
                       inline. Items align to the start on mobile so the
                       role dropdown lines up under the avatar. */}
                   <div className="flex items-center gap-2 sm:gap-3">
+                    {canManageMembers && (
+                      <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Switch
+                          checked={member.push_notify}
+                          onCheckedChange={(v) => void togglePush(member, v)}
+                          aria-label={t('pushToggle')}
+                        />
+                        {t('pushToggle')}
+                      </label>
+                    )}
                     {/* Role display / editor. Inline Select is admin+
                         only AND not allowed on the owner row (owner
                         changes go through transfer, which lands later). */}

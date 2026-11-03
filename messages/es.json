@@ -1844,7 +1844,9 @@
       "removeDialogDesc": "¿Quitar a <bold>{name}</bold> de la cuenta? Se cerrará su sesión en esta cuenta y recibirá una cuenta personal nueva en su próximo inicio de sesión. Su acceso no se elimina.",
       "cancel": "Cancelar",
       "removing": "Quitando...",
-      "removeBtn": "Quitar miembro"
+      "removeBtn": "Quitar miembro",
+      "pushToggle": "Avisos push",
+      "pushToggleFailed": "No se pudo cambiar los avisos push"
     },
     "invite": {
       "inviteCreated": "Invitación creada",
@@ -2503,6 +2505,22 @@
         "internal": "Algo salió mal. Inténtalo de nuevo.",
         "tls": "El certificado del servidor de correo no es de confianza. Un antivirus o proxy de red puede estar interceptando la conexión (común en un PC con protección de correo activada). Prueba desde el sitio publicado o excluye el servidor de correo del análisis del antivirus."
       }
+    },
+    "pushNotifications": {
+      "title": "Avisos con la app cerrada",
+      "description": "Recibe los mensajes nuevos de clientes como notificación en el móvil o el ordenador, incluso con el CRM cerrado.",
+      "unsupported": "Este navegador no admite notificaciones push. En iPhone, instala primero el CRM en la pantalla de inicio (Compartir → Añadir a pantalla de inicio).",
+      "notConfigured": "Las notificaciones push aún no están configuradas en el servidor.",
+      "toggleLabel": "Recibir avisos en este dispositivo",
+      "toggleDesc": "Activa el aviso push solo en este dispositivo. Repite en cada móvil u ordenador.",
+      "adminHint": "Quién recibe los avisos lo define un administrador en la pestaña Miembros del equipo.",
+      "enabled": "Avisos activados en este dispositivo",
+      "disabled": "Avisos desactivados en este dispositivo",
+      "denied": "Permiso denegado. Permite las notificaciones del sitio en la configuración del navegador.",
+      "failed": "No se pudo completar. Inténtalo de nuevo.",
+      "sendTest": "Enviar aviso de prueba",
+      "testSent": "Aviso de prueba enviado",
+      "testNone": "Ningún dispositivo activo para recibir la prueba"
     }
   },
   "SignupPage": {
@@ -3409,7 +3427,14 @@
       "sendConfirm": "Enviar",
       "sendCaption": "¡Hola! Te envío el presupuesto n.º {number}.",
       "sent": "Presupuesto enviado",
-      "sendFailed": "No se pudo enviar el presupuesto"
+      "sendFailed": "No se pudo enviar el presupuesto",
+      "filterNumber": "N.º de presupuesto",
+      "filterCnpj": "CNPJ",
+      "filterContact": "Contacto",
+      "filterStatusAll": "Todos los estados",
+      "filterFrom": "Fecha desde",
+      "filterTo": "Fecha hasta",
+      "filterClear": "Limpiar filtros"
     },
     "status": {
       "draft": "Borrador",
@@ -3474,7 +3499,10 @@
       "deal": "Negocio (el PDF se adjuntará a la tarjeta)",
       "noDeal": "Sin negocio vinculado",
       "attachedToDeal": "PDF adjuntado al negocio",
-      "attachFailed": "El presupuesto se guardó, pero no se pudo adjuntar el PDF al negocio"
+      "attachFailed": "El presupuesto se guardó, pero no se pudo adjuntar el PDF al negocio",
+      "itemKind": "Tipo de ítem",
+      "kindProduct": "Producto",
+      "kindService": "Servicio"
     }
   }
 }

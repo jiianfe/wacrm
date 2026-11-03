@@ -1844,7 +1844,9 @@
       "removeDialogDesc": "Remover <bold>{name}</bold> da conta? A pessoa será desconectada desta conta e receberá uma nova conta pessoal no próximo login. O login dela não é excluído.",
       "cancel": "Cancelar",
       "removing": "Removendo...",
-      "removeBtn": "Remover membro"
+      "removeBtn": "Remover membro",
+      "pushToggle": "Avisos push",
+      "pushToggleFailed": "Não foi possível alterar os avisos push"
     },
     "invite": {
       "inviteCreated": "Convite criado",
@@ -2503,6 +2505,22 @@
         "internal": "Algo deu errado. Tente novamente.",
         "tls": "O certificado do servidor de e-mail não é confiável. Um antivírus ou proxy de rede pode estar interceptando a conexão (comum em PC com proteção de e-mail ligada). Tente pelo site publicado, ou exclua o servidor de e-mail da verificação do antivírus."
       }
+    },
+    "pushNotifications": {
+      "title": "Avisos com o app fechado",
+      "description": "Receba as mensagens novas dos clientes como notificação no celular ou no computador, mesmo com o CRM fechado.",
+      "unsupported": "Este navegador não suporta notificações push. No iPhone, instale o CRM na tela inicial primeiro (Compartilhar → Adicionar à Tela de Início).",
+      "notConfigured": "As notificações push ainda não foram configuradas no servidor.",
+      "toggleLabel": "Receber avisos neste dispositivo",
+      "toggleDesc": "Ativa o aviso push só neste aparelho. Repita em cada celular ou computador.",
+      "adminHint": "Quem recebe os avisos é definido pelo administrador, na aba Membros da equipe.",
+      "enabled": "Avisos ativados neste dispositivo",
+      "disabled": "Avisos desativados neste dispositivo",
+      "denied": "Permissão negada. Libere as notificações do site nas configurações do navegador.",
+      "failed": "Não foi possível concluir. Tente novamente.",
+      "sendTest": "Enviar aviso de teste",
+      "testSent": "Aviso de teste enviado",
+      "testNone": "Nenhum dispositivo ativo para receber o teste"
     }
   },
   "SignupPage": {
@@ -3409,7 +3427,14 @@
       "sendConfirm": "Enviar",
       "sendCaption": "Olá! Segue o orçamento nº {number}.",
       "sent": "Orçamento enviado",
-      "sendFailed": "Não foi possível enviar o orçamento"
+      "sendFailed": "Não foi possível enviar o orçamento",
+      "filterNumber": "Nº do orçamento",
+      "filterCnpj": "CNPJ",
+      "filterContact": "Contato",
+      "filterStatusAll": "Todas as situações",
+      "filterFrom": "Data de",
+      "filterTo": "Data até",
+      "filterClear": "Limpar filtros"
     },
     "status": {
       "draft": "Rascunho",
@@ -3474,7 +3499,10 @@
       "deal": "Negócio (o PDF será anexado ao cartão)",
       "noDeal": "Sem negócio vinculado",
       "attachedToDeal": "PDF anexado ao negócio",
-      "attachFailed": "O orçamento foi salvo, mas não consegui anexar o PDF ao negócio"
+      "attachFailed": "O orçamento foi salvo, mas não consegui anexar o PDF ao negócio",
+      "itemKind": "Tipo do item",
+      "kindProduct": "Produto",
+      "kindService": "Serviço"
     }
   }
 }

@@ -61,6 +61,8 @@ interface ItemDraft {
   description: string;
   ncm: string;
   unit_price: string;
+  /** Product or service: the catalog list only offers entries of this kind. */
+  kind: "product" | "service";
   /** Catalog product this line came from; "" for a free-text line. */
   productId: string;
   /** Take the quantity off the product's stock; the line then comes only from the catalog. */
@@ -100,6 +102,7 @@ const blankItem = (): ItemDraft => ({
   description: "",
   ncm: "",
   unit_price: "",
+  kind: "product",
   productId: "",
   deduct: false,
 });
@@ -215,6 +218,7 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
                 description: r.description,
                 ncm: r.ncm ?? "",
                 unit_price: String(r.unit_price).replace(".", ","),
+                kind: productList.find((x) => x.id === r.product_id)?.kind ?? "product",
                 productId: r.product_id ?? "",
                 deduct: r.deduct_stock,
               }))
@@ -261,6 +265,7 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
               description: prod ? prod.description : pi.description,
               ncm: prod?.ncm ?? "",
               unit_price: prod ? String(prod.unit_price).replace(".", ",") : "",
+              kind: prod?.kind ?? "product",
               productId: prod?.id ?? "",
               deduct: false,
             };
@@ -377,6 +382,7 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
     const p = products.find((x) => x.id === productId);
     if (!p) return;
     updateItem(key, {
+      kind: p.kind,
       productId: p.id,
       description: p.description,
       ncm: p.ncm ?? "",
@@ -384,6 +390,13 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
       // A service has no stock to take from.
       ...(p.kind === "product" ? {} : { deduct: false }),
     });
+  }
+
+  /** Changing between product and service drops a catalog pick of the other kind. */
+  function changeKind(key: number, kind: "product" | "service") {
+    const it = items.find((x) => x.key === key);
+    const keep = products.find((x) => x.id === it?.productId)?.kind === kind;
+    updateItem(key, keep ? { kind } : { kind, productId: "", deduct: false });
   }
 
   function clearProduct(key: number) {
@@ -649,7 +662,16 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
                     : 0;
                 return (
                   <div key={it.key} className="space-y-2 rounded-lg border border-border p-3">
-                    <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                    <div className="grid gap-2 sm:grid-cols-[9rem_1fr_auto]">
+                      <select
+                        value={it.kind}
+                        onChange={(e) => changeKind(it.key, e.target.value as "product" | "service")}
+                        aria-label={t("itemKind")}
+                        className={SELECT_CLASS}
+                      >
+                        <option value="product">{t("kindProduct")}</option>
+                        <option value="service">{t("kindService")}</option>
+                      </select>
                       <select
                         value={it.productId}
                         onChange={(e) =>
@@ -658,11 +680,13 @@ export function QuoteForm({ open, onOpenChange, quote, prefill, onSaved }: Quote
                         className={SELECT_CLASS}
                       >
                         <option value="">{t("pickProduct")}</option>
-                        {products.map((pr) => (
-                          <option key={pr.id} value={pr.id}>
-                            {pr.description} — {formatBRL(pr.unit_price)}
-                          </option>
-                        ))}
+                        {products
+                          .filter((pr) => pr.kind === it.kind)
+                          .map((pr) => (
+                            <option key={pr.id} value={pr.id}>
+                              {pr.description} — {formatBRL(pr.unit_price)}
+                            </option>
+                          ))}
                       </select>
                       <button
                         type="button"
