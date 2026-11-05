@@ -626,6 +626,26 @@
       "downloadHint": "메일함에서 첨부 파일 다운로드",
       "imagesBlocked": "보안을 위해 외부 이미지가 차단되었습니다.",
       "loadImages": "이미지 불러오기"
+    },
+    "emailComposer": {
+      "to": "받는 사람",
+      "toPlaceholder": "name@company.com (여러 개는 쉼표로 구분)",
+      "ccPlaceholder": "참조 (여러 개는 쉼표로 구분)",
+      "subject": "제목",
+      "bodyPlaceholder": "답장을 작성하세요…",
+      "attachFile": "파일 첨부",
+      "attachCrm": "CRM에서 첨부",
+      "noCrmDocs": "이 고객의 거래에 문서가 없습니다.",
+      "signature": "서명",
+      "send": "이메일 보내기",
+      "sent": "이메일을 보냈습니다.",
+      "sendFailed": "이메일을 보내지 못했습니다.",
+      "needRecipient": "받는 사람을 입력하세요.",
+      "needBody": "보내기 전에 메시지를 작성하세요.",
+      "tooManyFiles": "첨부는 최대 {max}개입니다.",
+      "tooBig": "첨부 파일이 {mb}MB를 넘습니다.",
+      "remove": "제거",
+      "readOnly": "현재 권한으로는 이메일을 읽기만 할 수 있습니다."
     }
   },
   "Contacts": {

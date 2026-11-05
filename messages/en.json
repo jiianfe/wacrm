@@ -626,6 +626,26 @@
       "downloadHint": "Download the attachment from the mailbox",
       "imagesBlocked": "Remote images are blocked for safety.",
       "loadImages": "Load images"
+    },
+    "emailComposer": {
+      "to": "To",
+      "toPlaceholder": "name@company.com (separate several with commas)",
+      "ccPlaceholder": "Cc (separate several with commas)",
+      "subject": "Subject",
+      "bodyPlaceholder": "Write your reply…",
+      "attachFile": "Attach file",
+      "attachCrm": "Attach from CRM",
+      "noCrmDocs": "No documents on this customer's deals.",
+      "signature": "Signature",
+      "send": "Send e-mail",
+      "sent": "E-mail sent.",
+      "sendFailed": "Could not send the e-mail.",
+      "needRecipient": "Enter the recipient.",
+      "needBody": "Write the message before sending.",
+      "tooManyFiles": "At most {max} attachments.",
+      "tooBig": "Attachments exceed {mb} MB.",
+      "remove": "Remove",
+      "readOnly": "Your role can read e-mails but not send them."
     }
   },
   "Contacts": {

@@ -626,6 +626,26 @@
       "downloadHint": "Baixar o anexo da caixa de e-mail",
       "imagesBlocked": "Imagens externas bloqueadas por segurança.",
       "loadImages": "Carregar imagens"
+    },
+    "emailComposer": {
+      "to": "Para",
+      "toPlaceholder": "nome@empresa.com (separe vários por vírgula)",
+      "ccPlaceholder": "Cc (separe vários por vírgula)",
+      "subject": "Assunto",
+      "bodyPlaceholder": "Escreva a resposta…",
+      "attachFile": "Anexar arquivo",
+      "attachCrm": "Anexar do CRM",
+      "noCrmDocs": "Nenhum documento nos negócios deste cliente.",
+      "signature": "Assinatura",
+      "send": "Enviar e-mail",
+      "sent": "E-mail enviado.",
+      "sendFailed": "Não foi possível enviar o e-mail.",
+      "needRecipient": "Informe o destinatário.",
+      "needBody": "Escreva a mensagem antes de enviar.",
+      "tooManyFiles": "No máximo {max} anexos.",
+      "tooBig": "Os anexos passam de {mb} MB.",
+      "remove": "Remover",
+      "readOnly": "Seu perfil só pode ler e-mails, não enviar."
     }
   },
   "Contacts": {

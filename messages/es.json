@@ -626,6 +626,26 @@
       "downloadHint": "Descargar el adjunto del buzón",
       "imagesBlocked": "Imágenes externas bloqueadas por seguridad.",
       "loadImages": "Cargar imágenes"
+    },
+    "emailComposer": {
+      "to": "Para",
+      "toPlaceholder": "nombre@empresa.com (separe varios con comas)",
+      "ccPlaceholder": "Cc (separe varios con comas)",
+      "subject": "Asunto",
+      "bodyPlaceholder": "Escribe la respuesta…",
+      "attachFile": "Adjuntar archivo",
+      "attachCrm": "Adjuntar del CRM",
+      "noCrmDocs": "No hay documentos en los negocios de este cliente.",
+      "signature": "Firma",
+      "send": "Enviar correo",
+      "sent": "Correo enviado.",
+      "sendFailed": "No se pudo enviar el correo.",
+      "needRecipient": "Indica el destinatario.",
+      "needBody": "Escribe el mensaje antes de enviar.",
+      "tooManyFiles": "Máximo {max} adjuntos.",
+      "tooBig": "Los adjuntos superan {mb} MB.",
+      "remove": "Quitar",
+      "readOnly": "Tu rol solo puede leer correos, no enviarlos."
     }
   },
   "Contacts": {

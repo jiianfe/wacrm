@@ -125,7 +125,18 @@ export function EmailReader({ message, open, onOpenChange }: EmailReaderProps) {
 
         {attachments.length > 0 && (
           <div className="flex flex-wrap gap-2 border-y border-border py-2">
-            {attachments.map((a) => (
+            {attachments.map((a) =>
+              message.sender_type === "agent" ? (
+                // A sent mail's files are not kept anywhere: show the names only.
+                <span
+                  key={a.index}
+                  className="inline-flex max-w-full items-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1 text-xs text-foreground"
+                >
+                  <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
+                  <span className="truncate">{a.filename}</span>
+                  <span className="shrink-0 text-muted-foreground">{formatSize(a.size)}</span>
+                </span>
+              ) : (
               <a
                 key={a.index}
                 href={`/api/email/attachment?message=${encodeURIComponent(message.id)}&index=${a.index}`}
@@ -138,7 +149,8 @@ export function EmailReader({ message, open, onOpenChange }: EmailReaderProps) {
                 <span className="shrink-0 text-muted-foreground">{formatSize(a.size)}</span>
                 <Download className="size-3.5 shrink-0 text-muted-foreground" />
               </a>
-            ))}
+              ),
+            )}
           </div>
         )}
 

@@ -89,7 +89,7 @@ const nextConfig = {
   // Harmless outside Docker: `next start` keeps working as before.
   output: "standalone",
   // Node-only mail libraries: load them at runtime instead of bundling.
-  serverExternalPackages: ["imapflow", "mailparser"],
+  serverExternalPackages: ["imapflow", "mailparser", "nodemailer"],
   experimental: {
     turbopackPluginRuntimeStrategy: "workerThreads",
   },

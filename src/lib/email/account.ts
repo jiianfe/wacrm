@@ -1,4 +1,5 @@
 import { ImapFlow } from 'imapflow'
+import nodemailer from 'nodemailer'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import { decrypt } from '@/lib/whatsapp/encryption'
@@ -115,6 +116,20 @@ export async function imapClientForAccount(row: EmailAccountRow): Promise<ImapFl
     secure: row.imap_secure,
     username: row.username,
     password: decrypt(row.password_encrypted),
+  })
+}
+
+/** An SMTP transport for the account's outgoing server (timeouts keep a dead server from hanging a request). */
+export async function smtpTransportForAccount(row: EmailAccountRow) {
+  await assertPublicHost(row.smtp_host)
+  return nodemailer.createTransport({
+    host: row.smtp_host,
+    port: row.smtp_port,
+    secure: row.smtp_secure,
+    auth: { user: row.username, pass: decrypt(row.password_encrypted) },
+    connectionTimeout: 15_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 60_000,
   })
 }
 

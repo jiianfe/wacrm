@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./message-bubble";
+import { EmailComposer } from "./email-composer";
 import { MessageActions } from "./message-actions";
 import { MediaLightbox } from "./media-lightbox";
 import { collectMediaGallery } from "@/lib/media/gallery";
@@ -1369,13 +1370,16 @@ export function MessageThread({
           </div>
         )}
 
-      {/* Composer. The e-mail view has none yet: replies there come later,
-          and a message typed here would go out on WhatsApp. */}
+      {/* Composer. The e-mail view has its own, which sends through the
+          mailbox; the WhatsApp composer would send on WhatsApp. */}
       {channelFilter === "email" ? (
-        <div className="flex shrink-0 items-center gap-2 border-t border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
-          <Mail className="h-4 w-4 shrink-0" />
-          {t("emailViewNotice")}
-        </div>
+        <EmailComposer
+          conversationId={conversation.id}
+          contactId={contact?.id ?? null}
+          contactEmail={contact?.email ?? null}
+          messages={messages}
+          onSent={onNewMessage}
+        />
       ) : (
         <>
         <div className="flex shrink-0 items-center justify-end gap-2 border-t border-border px-4 py-1.5">
