@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const COUNT_PREFIX = /^\(\d+\)\s*/;
+const COUNT_PREFIX = /^\(\d+\+?\)\s*/;
 
 /**
  * Shows the unread-conversation count in the browser tab title, e.g.
@@ -12,8 +12,8 @@ const COUNT_PREFIX = /^\(\d+\)\s*/;
 export function useUnreadTitle(count: number): void {
   useEffect(() => {
     const apply = () => {
-      const base = document.title.replace(COUNT_PREFIX, "");
-      const next = count > 0 ? `(${count > 99 ? "99+" : count}) ${base}` : base;
+      const base = document.title.replace(COUNT_PREFIX, "").trim();
+      const next = count > 0 ? `(${count > 99 ? "99+" : count}) ${base}`.trim() : base;
       if (document.title !== next) document.title = next;
     };
     apply();
