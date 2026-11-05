@@ -5,6 +5,7 @@ import type { ParsedMail } from 'mailparser'
 import { isUniqueViolation } from '@/lib/contacts/dedupe'
 import { reopenClosedConversation } from '@/lib/conversations/reopen'
 import { findOrCreateConversationRow } from '@/lib/whatsapp/resolve-conversation'
+import { sanitizeEmailHtml, type InlineImage } from './html'
 
 const MAX_BODY_CHARS = 20_000
 const MAX_SUBJECT_CHARS = 300
@@ -57,9 +58,12 @@ export async function ingestInboundEmail(
     ownerUserId: string
     mailboxAddress: string
     parsed: ParsedMail
+    /** Mailbox position, kept so an attachment can be fetched on demand. */
+    uid?: number
+    uidValidity?: number
   },
 ): Promise<InboundEmailResult> {
-  const { accountId, ownerUserId, mailboxAddress, parsed } = input
+  const { accountId, ownerUserId, mailboxAddress, parsed, uid, uidValidity } = input
 
   const sender = parsed.from?.value?.[0]
   const fromAddress = sender?.address?.trim().toLowerCase()
@@ -125,10 +129,31 @@ export async function ingestInboundEmail(
   const now = Date.now()
   // A bogus Date header must not push the message into the future.
   const sentAt = parsed.date && parsed.date.getTime() <= now ? parsed.date : new Date(now)
-  const toList = (Array.isArray(parsed.to) ? parsed.to : parsed.to ? [parsed.to] : [])
-    .flatMap((t) => t.value.map((v) => v.address))
-    .filter(Boolean)
-    .join(', ')
+  const addresses = (field: ParsedMail['to']) =>
+    (Array.isArray(field) ? field : field ? [field] : [])
+      .flatMap((t) => t.value.map((v) => v.address))
+      .filter(Boolean)
+      .join(', ')
+  const toList = addresses(parsed.to)
+  const ccList = addresses(parsed.cc)
+
+  // The formatted version of the mail, sanitized, plus the files' names. The
+  // files themselves are not stored: they are fetched from the mailbox when
+  // someone clicks them.
+  const inlineImages: InlineImage[] = parsed.attachments
+    .filter((a) => a.contentId && a.related)
+    .map((a) => ({ contentId: a.contentId as string, contentType: a.contentType, content: a.content }))
+  const html = typeof parsed.html === 'string' && parsed.html.trim() ? sanitizeEmailHtml(parsed.html, inlineImages) : ''
+  const attachments = parsed.attachments
+    .map((a, index) => ({
+      index,
+      filename: clip(a.filename || 'anexo', 200),
+      contentType: a.contentType,
+      size: a.size,
+      related: a.related,
+    }))
+    .filter((a) => !a.related)
+    .map(({ index, filename, contentType, size }) => ({ index, filename, contentType, size }))
 
   const { data: insertedRows, error: msgError } = await db
     .from('messages')
@@ -144,13 +169,27 @@ export async function ingestInboundEmail(
         channel: 'email',
         email_subject: subject || null,
         email_from: fromAddress,
+        email_from_name: sender?.name?.trim() || null,
         email_to: toList || null,
+        email_cc: ccList || null,
+        email_attachments: attachments.length ? attachments : null,
+        email_has_html: html.length > 0,
+        email_uid: uid ?? null,
+        email_uid_validity: uidValidity ?? null,
       },
       { onConflict: 'conversation_id,message_id', ignoreDuplicates: true },
     )
     .select('id')
   if (msgError) throw msgError
   if (!insertedRows || insertedRows.length === 0) return { inserted: false }
+  if (html) {
+    const { error: bodyError } = await db
+      .from('email_message_bodies')
+      .insert({ message_id: insertedRows[0].id, account_id: accountId, html })
+    // The text body is already saved; a missing HTML copy only means the
+    // reader falls back to plain text.
+    if (bodyError) console.error('[email-inbound] html body not saved:', bodyError.message)
+  }
 
   const preview = subject || body.slice(0, 80) || fromAddress
   await db.rpc('bump_conversation_on_inbound', {

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { cn } from "@/lib/utils";
 import { splitBold } from "@/lib/whatsapp-bold";
 import type {
@@ -27,6 +29,7 @@ import {
 import { format } from "date-fns";
 import { ReplyQuote } from "./reply-quote";
 import { MessageReactions } from "./message-reactions";
+import { EmailReader } from "./email-reader";
 import {
   MediaAudioBubble,
   MediaDocumentBubble,
@@ -385,6 +388,7 @@ export function MessageBubble({
   onOpenMedia,
 }: MessageBubbleProps) {
   const t = useTranslations("Inbox.bubble");
+  const [emailReaderOpen, setEmailReaderOpen] = useState(false);
 
   const isAgent = message.sender_type === "agent" || message.sender_type === "bot";
   const time = format(new Date(message.created_at), "HH:mm");
@@ -426,8 +430,36 @@ export function MessageBubble({
               </p>
             )}
             {message.email_from && (
-              <p className="truncate text-[11px] opacity-70">{message.email_from}</p>
+              <p className="truncate text-[11px] opacity-70">
+                {message.email_from_name
+                  ? `${message.email_from_name} <${message.email_from}>`
+                  : message.email_from}
+              </p>
             )}
+            {message.email_to && (
+              <p className="truncate text-[11px] opacity-70">
+                {t("emailTo")}: {message.email_to}
+              </p>
+            )}
+            {message.email_cc && (
+              <p className="truncate text-[11px] opacity-70">
+                {t("emailCc")}: {message.email_cc}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={() => setEmailReaderOpen(true)}
+              className="mt-1 inline-flex items-center gap-1 rounded-md border border-current/25 px-2 py-0.5 text-[11px] font-medium hover:bg-current/10"
+            >
+              <Mail className="h-3 w-3" />
+              {t("openEmail")}
+              {message.email_attachments?.length ? ` · ${message.email_attachments.length} 📎` : ""}
+            </button>
+            <EmailReader
+              message={message}
+              open={emailReaderOpen}
+              onOpenChange={setEmailReaderOpen}
+            />
           </div>
         )}
         <MessageContent

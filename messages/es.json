@@ -477,7 +477,10 @@
       "viewImage": "Ver imagen",
       "expandVideo": "Ampliar video",
       "imageAlt": "Imagen compartida",
-      "emailBadge": "Correo"
+      "emailBadge": "Correo",
+      "emailTo": "Para",
+      "emailCc": "Cc",
+      "openEmail": "Abrir correo completo"
     },
     "mediaViewer": {
       "counter": "{index} de {total}",
@@ -612,6 +615,17 @@
       "noItems": "La IA no encontró ítems pedidos en la conversación. Complétalo manualmente.",
       "saved": "Presupuesto {number} guardado",
       "pdfFailed": "No se pudo generar el PDF"
+    },
+    "emailReader": {
+      "noSubject": "(sin asunto)",
+      "description": "Lectura completa del correo",
+      "from": "De",
+      "to": "Para",
+      "cc": "Cc",
+      "date": "Fecha",
+      "downloadHint": "Descargar el adjunto del buzón",
+      "imagesBlocked": "Imágenes externas bloqueadas por seguridad.",
+      "loadImages": "Cargar imágenes"
     }
   },
   "Contacts": {

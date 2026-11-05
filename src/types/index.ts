@@ -266,7 +266,12 @@ export interface Message {
   channel?: 'whatsapp' | 'email';
   email_subject?: string | null;
   email_from?: string | null;
+  email_from_name?: string | null;
   email_to?: string | null;
+  email_cc?: string | null;
+  /** Names/sizes only; the files stay in the mailbox (migration 073). */
+  email_attachments?: { index: number; filename: string; contentType: string; size: number }[] | null;
+  email_has_html?: boolean;
   reply_to_message_id?: string;
   /**
    * Only set when `content_type === 'interactive'` — the stable id of

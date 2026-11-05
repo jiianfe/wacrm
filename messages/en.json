@@ -477,7 +477,10 @@
       "viewImage": "View image",
       "expandVideo": "Expand video",
       "imageAlt": "Shared image",
-      "emailBadge": "E-mail"
+      "emailBadge": "E-mail",
+      "emailTo": "To",
+      "emailCc": "Cc",
+      "openEmail": "Open full e-mail"
     },
     "mediaViewer": {
       "counter": "{index} of {total}",
@@ -612,6 +615,17 @@
       "noItems": "The AI found no requested items in the conversation. Fill it in manually.",
       "saved": "Quote {number} saved",
       "pdfFailed": "Could not generate the PDF"
+    },
+    "emailReader": {
+      "noSubject": "(no subject)",
+      "description": "Full e-mail view",
+      "from": "From",
+      "to": "To",
+      "cc": "Cc",
+      "date": "Date",
+      "downloadHint": "Download the attachment from the mailbox",
+      "imagesBlocked": "Remote images are blocked for safety.",
+      "loadImages": "Load images"
     }
   },
   "Contacts": {

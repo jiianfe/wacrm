@@ -113,6 +113,8 @@ export async function syncEmailAccount(
               ownerUserId,
               mailboxAddress: row.address,
               parsed,
+              uid,
+              uidValidity: uidValidity ?? undefined,
             })
             if (result.inserted) imported += 1
           }

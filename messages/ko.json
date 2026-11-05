@@ -477,7 +477,10 @@
       "viewImage": "이미지 보기",
       "expandVideo": "동영상 확대",
       "imageAlt": "공유된 이미지",
-      "emailBadge": "이메일"
+      "emailBadge": "이메일",
+      "emailTo": "받는 사람",
+      "emailCc": "참조",
+      "openEmail": "전체 이메일 열기"
     },
     "mediaViewer": {
       "counter": "{total}개 중 {index}번째",
@@ -612,6 +615,17 @@
       "noItems": "AI가 대화에서 요청된 항목을 찾지 못했습니다. 직접 입력하세요.",
       "saved": "견적서 {number} 저장됨",
       "pdfFailed": "PDF를 만들지 못했습니다"
+    },
+    "emailReader": {
+      "noSubject": "(제목 없음)",
+      "description": "이메일 전체 보기",
+      "from": "보낸 사람",
+      "to": "받는 사람",
+      "cc": "참조",
+      "date": "날짜",
+      "downloadHint": "메일함에서 첨부 파일 다운로드",
+      "imagesBlocked": "보안을 위해 외부 이미지가 차단되었습니다.",
+      "loadImages": "이미지 불러오기"
     }
   },
   "Contacts": {
