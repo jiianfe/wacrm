@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 
-import { headerSafe, parseAddressList, realMessageId, replySubject } from './compose'
+import {
+  escapeHtml,
+  fillSignature,
+  headerSafe,
+  htmlToText,
+  parseAddressList,
+  realMessageId,
+  replySubject,
+  textToHtml,
+} from './compose'
 
 describe('parseAddressList', () => {
   it('splits, trims, de-duplicates and reports invalid entries', () => {
@@ -41,5 +50,20 @@ describe('headerSafe', () => {
   it('removes line breaks and cuts the length', () => {
     expect(headerSafe('a\nb')).toBe('a b')
     expect(headerSafe('x'.repeat(500)).length).toBe(300)
+  })
+})
+
+describe('signature helpers', () => {
+  it('escapes and converts typed text to html', () => {
+    expect(escapeHtml('<b>&"')).toBe('&lt;b&gt;&amp;&quot;')
+    expect(textToHtml('a <b>\nc')).toBe('a &lt;b&gt;<br>c')
+  })
+  it('fills the sender name, escaped', () => {
+    expect(fillSignature('<p>{{nome}} / {{ NOME }}</p>', 'Ana <x>')).toBe('<p>Ana &lt;x&gt; / Ana &lt;x&gt;</p>')
+    expect(fillSignature('<p>{{nome}}</p>', null)).toBe('<p></p>')
+  })
+  it('makes a plain-text version', () => {
+    const text = htmlToText('<div><b>Ana</b><br>Ultratec &amp; Cia</div><p><a href="https://x.com/a">Site</a></p>')
+    expect(text).toBe('Ana\nUltratec & Cia\nSite (https://x.com/a)')
   })
 })

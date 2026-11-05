@@ -24,6 +24,8 @@ export interface EmailAccountRow {
   last_synced_at: string | null
   last_error: string | null
   sync_started_at: string | null
+  /** Sanitized HTML signature (migration 074). */
+  signature_html?: string | null
 }
 
 /** What the browser may see: everything except the password. */

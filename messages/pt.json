@@ -2527,7 +2527,7 @@
       "cronTitle": "Sincronização automática",
       "cronDesc": "A Caixa de entrada busca e-mails novos sozinha enquanto está aberta. Para sincronizar também quando ninguém estiver online, crie uma tarefa agendada no painel da Hostinger (Avançado, Cron Jobs) rodando a cada 5 minutos:",
       "cronNote": "Troque YOUR_SECRET pelo EMAIL_CRON_SECRET (ou AUTOMATION_CRON_SECRET) definido no ambiente do servidor.",
-      "receiveOnlyNote": "Por enquanto os e-mails só são recebidos. A resposta por e-mail vem na próxima fase.",
+      "receiveOnlyNote": "Os e-mails recebidos aparecem na aba E-mail do inbox, onde você também responde.",
       "errors": {
         "auth": "O servidor de e-mail recusou o login. Confira o endereço e a senha.",
         "connect": "Não foi possível acessar o servidor de e-mail. Confira o servidor e a porta.",
@@ -2538,6 +2538,34 @@
         "password_required": "Informe a senha da caixa de e-mail.",
         "internal": "Algo deu errado. Tente novamente.",
         "tls": "O certificado do servidor de e-mail não é confiável. Um antivírus ou proxy de rede pode estar interceptando a conexão (comum em PC com proteção de e-mail ligada). Tente pelo site publicado, ou exclua o servidor de e-mail da verificação do antivírus."
+      },
+      "signature": {
+        "title": "Assinatura de e-mail",
+        "intro": "Aparece no fim das respostas enviadas pelo CRM. Use {{nome}} para colocar o nome de quem está enviando.",
+        "toolbar": "Formatação",
+        "bold": "Negrito",
+        "italic": "Itálico",
+        "underline": "Sublinhado",
+        "size": "Tamanho",
+        "color": "Cor",
+        "link": "Inserir link",
+        "clear": "Limpar formatação",
+        "insertName": "Nome do remetente",
+        "nameHint": "Insere {{nome}}, trocado pelo nome de quem envia",
+        "linkPrompt": "Endereço do link (site, e-mail ou telefone):",
+        "hint": "A assinatura vai no fim de cada resposta quando a opção \"Assinatura\" estiver marcada na caixa de resposta. Imagens por endereço da internet funcionam; imagens coladas não.",
+        "save": "Salvar assinatura",
+        "saving": "Salvando…",
+        "saved": "Assinatura salva.",
+        "saveFailed": "Não foi possível salvar a assinatura.",
+        "tooLong": "A assinatura ficou grande demais.",
+        "needMailbox": "Conecte a caixa de e-mail antes de criar a assinatura.",
+        "sizes": {
+          "small": "Pequeno",
+          "normal": "Normal",
+          "large": "Grande",
+          "huge": "Muito grande"
+        }
       }
     },
     "pushNotifications": {

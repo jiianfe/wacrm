@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SettingsPanelHead } from "./settings-panel-head";
+import { EmailSignature } from "./email-signature";
 
 /**
  * Company mailbox (IMAP in). Admin-only: it holds a password, which only
@@ -427,6 +428,8 @@ export function EmailSettings() {
               {saving ? t("saving") : account ? t("update") : t("connect")}
             </Button>
           </form>
+
+          {account && <EmailSignature />}
 
           <Card>
             <CardHeader>

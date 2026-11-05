@@ -9,9 +9,12 @@ import {
   MAX_ATTACHMENT_BYTES,
   MAX_BODY_LENGTH,
   MAX_RECIPIENTS,
+  fillSignature,
   headerSafe,
+  htmlToText,
   parseAddressList,
   realMessageId,
+  textToHtml,
 } from '@/lib/email/compose'
 
 export const maxDuration = 60
@@ -161,10 +164,21 @@ export async function POST(request: Request) {
     // ---- body (+ optional signature) ----
     const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle()
     const senderName = (profile as { full_name: string | null } | null)?.full_name?.trim() || null
-    const body =
-      text('signature') === '1'
-        ? `${rawBody}\n\n-- \n${senderName ? `${senderName}\n` : ''}Ultratec Extintores`
-        : rawBody
+    // With a formatted signature configured the mail goes out as HTML (plus a
+    // plain-text twin); without one it stays plain text with a short signature.
+    const wantSignature = text('signature') === '1'
+    const signatureHtml =
+      wantSignature && account.signature_html ? fillSignature(account.signature_html, senderName) : ''
+    let body = rawBody
+    let html: string | null = null
+    if (signatureHtml) {
+      html =
+        `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1a1a1a">${textToHtml(rawBody)}` +
+        `<br><br>-- <br>${signatureHtml}</div>`
+      body = `${rawBody}\n\n-- \n${htmlToText(signatureHtml)}`
+    } else if (wantSignature) {
+      body = `${rawBody}\n\n-- \n${senderName ? `${senderName}\n` : ''}Ultratec Extintores`
+    }
 
     // ---- send ----
     const transport = await smtpTransportForAccount(account)
@@ -176,6 +190,7 @@ export async function POST(request: Request) {
         cc: cc.valid.length ? cc.valid : undefined,
         subject,
         text: body,
+        ...(html ? { html } : {}),
         ...(parentId ? { inReplyTo: parentId, references: parentId } : {}),
         attachments: attachments.map((a) => ({
           filename: a.filename,
@@ -224,13 +239,21 @@ export async function POST(request: Request) {
               size: a.content.length,
             }))
           : null,
-        email_has_html: false,
+        email_has_html: !!html,
       })
       .select()
       .single()
     if (saveError || !saved) {
       console.error('[email-send] sent but not saved:', saveError?.message)
       return fail('O e-mail foi enviado, mas não consegui registrá-lo na conversa.', 500, 'sent_not_saved')
+    }
+
+    if (html) {
+      // Kept so the reader shows the mail as it went out; the text body is already saved.
+      const { error: bodyError } = await supabaseAdmin()
+        .from('email_message_bodies')
+        .insert({ message_id: (saved as { id: string }).id, account_id: accountId, html })
+      if (bodyError) console.error('[email-send] html body not saved:', bodyError.message)
     }
 
     await supabase

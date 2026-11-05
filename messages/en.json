@@ -2527,7 +2527,7 @@
       "cronTitle": "Automatic sync",
       "cronDesc": "The Inbox pulls new e-mail by itself while it is open. To also sync when nobody is online, create a cron job in the Hostinger panel (Advanced, Cron Jobs) that runs every 5 minutes:",
       "cronNote": "Replace YOUR_SECRET with the EMAIL_CRON_SECRET (or AUTOMATION_CRON_SECRET) set in the server environment.",
-      "receiveOnlyNote": "For now e-mails are received only. Replying by e-mail comes in the next phase.",
+      "receiveOnlyNote": "Received e-mails appear in the inbox E-mail tab, where you can also reply.",
       "errors": {
         "auth": "The mail server rejected the login. Check the e-mail address and password.",
         "connect": "Could not reach the mail server. Check the server and port.",
@@ -2538,6 +2538,34 @@
         "password_required": "Enter the mailbox password.",
         "internal": "Something went wrong. Try again.",
         "tls": "The mail server certificate is not trusted. An antivirus or network proxy may be intercepting the connection (common on a PC with mail protection turned on). Try from the hosted site, or exclude the mail server from the antivirus scan."
+      },
+      "signature": {
+        "title": "E-mail signature",
+        "intro": "Added at the end of replies sent from the CRM. Use {{nome}} to insert the sender's name.",
+        "toolbar": "Formatting",
+        "bold": "Bold",
+        "italic": "Italic",
+        "underline": "Underline",
+        "size": "Size",
+        "color": "Color",
+        "link": "Insert link",
+        "clear": "Clear formatting",
+        "insertName": "Sender name",
+        "nameHint": "Inserts {{nome}}, replaced by the sender's name",
+        "linkPrompt": "Link address (website, e-mail or phone):",
+        "hint": "The signature goes at the end of each reply when \"Signature\" is ticked in the reply box. Images by web address work; pasted images do not.",
+        "save": "Save signature",
+        "saving": "Saving…",
+        "saved": "Signature saved.",
+        "saveFailed": "Could not save the signature.",
+        "tooLong": "The signature is too large.",
+        "needMailbox": "Connect the mailbox before creating a signature.",
+        "sizes": {
+          "small": "Small",
+          "normal": "Normal",
+          "large": "Large",
+          "huge": "Huge"
+        }
       }
     },
     "pushNotifications": {

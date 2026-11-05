@@ -2527,7 +2527,7 @@
       "cronTitle": "Sincronización automática",
       "cronDesc": "La Bandeja de entrada busca correos nuevos sola mientras está abierta. Para sincronizar también cuando nadie esté conectado, crea una tarea programada en el panel de Hostinger (Avanzado, Cron Jobs) cada 5 minutos:",
       "cronNote": "Reemplaza YOUR_SECRET por el EMAIL_CRON_SECRET (o AUTOMATION_CRON_SECRET) definido en el entorno del servidor.",
-      "receiveOnlyNote": "Por ahora los correos solo se reciben. La respuesta por correo llega en la próxima fase.",
+      "receiveOnlyNote": "Los correos recibidos aparecen en la pestaña Correo del inbox, donde también puedes responder.",
       "errors": {
         "auth": "El servidor de correo rechazó el inicio de sesión. Revisa la dirección y la contraseña.",
         "connect": "No se pudo acceder al servidor de correo. Revisa el servidor y el puerto.",
@@ -2538,6 +2538,34 @@
         "password_required": "Indica la contraseña del buzón.",
         "internal": "Algo salió mal. Inténtalo de nuevo.",
         "tls": "El certificado del servidor de correo no es de confianza. Un antivirus o proxy de red puede estar interceptando la conexión (común en un PC con protección de correo activada). Prueba desde el sitio publicado o excluye el servidor de correo del análisis del antivirus."
+      },
+      "signature": {
+        "title": "Firma de correo",
+        "intro": "Se añade al final de las respuestas enviadas desde el CRM. Usa {{nome}} para insertar el nombre de quien envía.",
+        "toolbar": "Formato",
+        "bold": "Negrita",
+        "italic": "Cursiva",
+        "underline": "Subrayado",
+        "size": "Tamaño",
+        "color": "Color",
+        "link": "Insertar enlace",
+        "clear": "Quitar formato",
+        "insertName": "Nombre del remitente",
+        "nameHint": "Inserta {{nome}}, reemplazado por el nombre de quien envía",
+        "linkPrompt": "Dirección del enlace (sitio, correo o teléfono):",
+        "hint": "La firma va al final de cada respuesta cuando \"Firma\" está marcada en la caja de respuesta. Las imágenes por dirección web funcionan; las pegadas no.",
+        "save": "Guardar firma",
+        "saving": "Guardando…",
+        "saved": "Firma guardada.",
+        "saveFailed": "No se pudo guardar la firma.",
+        "tooLong": "La firma es demasiado grande.",
+        "needMailbox": "Conecta el buzón antes de crear una firma.",
+        "sizes": {
+          "small": "Pequeño",
+          "normal": "Normal",
+          "large": "Grande",
+          "huge": "Muy grande"
+        }
       }
     },
     "pushNotifications": {
