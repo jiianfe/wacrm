@@ -25,12 +25,23 @@ interface CrmDocument {
 }
 
 interface EmailComposerProps {
-  conversationId: string;
+  /** The conversation being answered; null writes a new e-mail (the first recipient decides the contact). */
+  conversationId: string | null;
   contactId: string | null;
   contactEmail: string | null;
   /** The conversation's messages, used to prefill the recipient and subject. */
   messages: Message[];
-  onSent: (message: Message) => void;
+  onSent: (message: Message, conversationId: string | null) => void;
+  /** New-mail starting values (recipient, subject, text, files such as a quote PDF). */
+  initial?: { to?: string; subject?: string; body?: string; files?: File[] };
+  /** Called with the box's height-neutral layout when shown inside a dialog. */
+  embedded?: boolean;
+}
+
+interface ContactOption {
+  id: string;
+  name: string | null;
+  email: string;
 }
 
 const SIGNATURE_KEY = "wacrm.emailSignature.";
@@ -45,6 +56,8 @@ export function EmailComposer({
   contactEmail,
   messages,
   onSent,
+  initial,
+  embedded = false,
 }: EmailComposerProps) {
   const t = useTranslations("Inbox.emailComposer");
   const { user } = useAuth();
@@ -58,13 +71,17 @@ export function EmailComposer({
     return null;
   }, [messages]);
 
-  const touched = useRef({ to: false, subject: false });
-  const [to, setTo] = useState(lastReceived?.email_from || contactEmail || "");
+  const touched = useRef({ to: !!initial?.to, subject: initial?.subject !== undefined });
+  const isNew = conversationId === null;
+  const [to, setTo] = useState(initial?.to ?? (lastReceived?.email_from || contactEmail || ""));
   const [cc, setCc] = useState("");
   const [showCc, setShowCc] = useState(false);
-  const [subject, setSubject] = useState(replySubject(lastReceived?.email_subject));
-  const [body, setBody] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
+  const [subject, setSubject] = useState(
+    initial?.subject ?? (isNew ? "" : replySubject(lastReceived?.email_subject)),
+  );
+  const [body, setBody] = useState(initial?.body ?? "");
+  const [files, setFiles] = useState<File[]>(initial?.files ?? []);
+  const [contactOptions, setContactOptions] = useState<ContactOption[]>([]);
   const [crmDocs, setCrmDocs] = useState<CrmDocument[]>([]);
   const [chosenDocs, setChosenDocs] = useState<string[]>([]);
   const [docsOpen, setDocsOpen] = useState(false);
@@ -78,9 +95,35 @@ export function EmailComposer({
   const lastFrom = lastReceived?.email_from;
   const lastSubject = lastReceived?.email_subject;
   useEffect(() => {
+    if (isNew) return;
     if (!touched.current.to) setTo(lastFrom || contactEmail || "");
     if (!touched.current.subject) setSubject(replySubject(lastSubject));
-  }, [lastId, lastFrom, lastSubject, contactEmail]);
+  }, [isNew, lastId, lastFrom, lastSubject, contactEmail]);
+
+  // A new e-mail offers the contacts that have an address.
+  useEffect(() => {
+    if (!isNew) return;
+    let cancelled = false;
+    createClient()
+      .from("contacts")
+      .select("id, name, email")
+      .not("email", "is", null)
+      .neq("email", "")
+      .order("name")
+      .limit(500)
+      .then(({ data }) => {
+        if (!cancelled) setContactOptions((data ?? []) as ContactOption[]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isNew]);
+
+  // The contact whose documents can be attached: the conversation's, or the one the typed address belongs to.
+  const firstTo = to.split(/[,;]/)[0]?.trim().toLowerCase() ?? "";
+  const effectiveContactId = isNew
+    ? (contactId ?? contactOptions.find((c) => c.email.toLowerCase() === firstTo)?.id ?? null)
+    : contactId;
 
   // The preference is per person and lives in this browser.
   useEffect(() => {
@@ -103,11 +146,14 @@ export function EmailComposer({
 
   // Documents attached to this customer's deals (quotes, invoices, boletos).
   useEffect(() => {
-    if (!contactId) return;
+    if (!effectiveContactId) {
+      setCrmDocs([]);
+      return;
+    }
     let cancelled = false;
     const supabase = createClient();
     (async () => {
-      const { data: deals } = await supabase.from("deals").select("id").eq("contact_id", contactId);
+      const { data: deals } = await supabase.from("deals").select("id").eq("contact_id", effectiveContactId);
       const ids = ((deals ?? []) as { id: string }[]).map((d) => d.id);
       if (!ids.length) return;
       const { data: docs } = await supabase
@@ -121,7 +167,7 @@ export function EmailComposer({
     return () => {
       cancelled = true;
     };
-  }, [contactId]);
+  }, [effectiveContactId]);
 
   const chosenCrm = crmDocs.filter((d) => chosenDocs.includes(d.id));
   const attachmentCount = files.length + chosenCrm.length;
@@ -149,14 +195,14 @@ export function EmailComposer({
     setSending(true);
     try {
       const form = new FormData();
-      form.set("conversation_id", conversationId);
+      if (conversationId) form.set("conversation_id", conversationId);
       form.set("to", to);
       form.set("cc", cc);
       form.set("subject", subject);
       form.set("body", body);
       form.set("signature", signature ? "1" : "0");
       if (lastReceived) form.set("reply_to_message_id", lastReceived.id);
-      form.set("crm_attachment_ids", JSON.stringify(chosenDocs));
+      form.set("crm_attachment_ids", JSON.stringify(chosenCrm.map((d) => d.id)));
       for (const f of files) form.append("files", f, f.name);
 
       const res = await fetch("/api/email/send", { method: "POST", body: form });
@@ -165,7 +211,7 @@ export function EmailComposer({
         toast.error(payload?.error || t("sendFailed"));
         return;
       }
-      onSent(payload.message as Message);
+      onSent(payload.message as Message, (payload.conversation_id as string | undefined) ?? conversationId);
       toast.success(t("sent"));
       setBody("");
       setCc("");
@@ -176,7 +222,7 @@ export function EmailComposer({
     } finally {
       setSending(false);
     }
-  }, [sending, to, cc, subject, body, signature, files, chosenDocs, totalBytes, conversationId, lastReceived, onSent, t]);
+  }, [sending, to, cc, subject, body, signature, files, chosenCrm, totalBytes, conversationId, lastReceived, onSent, t]);
 
   if (!canSend) {
     return (
@@ -189,7 +235,22 @@ export function EmailComposer({
   const field = "w-full min-w-0 bg-transparent px-1 py-1 text-sm outline-none placeholder:text-muted-foreground";
 
   return (
-    <div className="shrink-0 space-y-1.5 border-t border-border bg-background px-4 py-3">
+    <div
+      className={
+        embedded
+          ? "space-y-1.5"
+          : "shrink-0 space-y-1.5 border-t border-border bg-background px-4 py-3"
+      }
+    >
+      {isNew && (
+        <datalist id="email-contacts">
+          {contactOptions.map((c) => (
+            <option key={c.id} value={c.email}>
+              {c.name ?? ""}
+            </option>
+          ))}
+        </datalist>
+      )}
       <div className="flex items-center gap-2 border-b border-border/60">
         <label className="w-14 shrink-0 text-xs text-muted-foreground" htmlFor="email-to">
           {t("to")}
@@ -197,6 +258,7 @@ export function EmailComposer({
         <input
           id="email-to"
           className={field}
+          list={isNew ? "email-contacts" : undefined}
           value={to}
           onChange={(e) => {
             touched.current.to = true;

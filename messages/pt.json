@@ -363,7 +363,8 @@
       "channelAll": "Todos",
       "channelWhatsapp": "WhatsApp",
       "channelEmail": "E-mail",
-      "notRegistered": "Não cadastrado"
+      "notRegistered": "Não cadastrado",
+      "newEmail": "Novo e-mail"
     },
     "messageThread": {
       "backToConversations": "Voltar às conversas",
@@ -645,7 +646,9 @@
       "tooManyFiles": "No máximo {max} anexos.",
       "tooBig": "Os anexos passam de {mb} MB.",
       "remove": "Remover",
-      "readOnly": "Seu perfil só pode ler e-mails, não enviar."
+      "readOnly": "Seu perfil só pode ler e-mails, não enviar.",
+      "newTitle": "Novo e-mail",
+      "newDescription": "Escolha um contato da lista ou digite um endereço. O e-mail só é enviado quando você clicar em Enviar."
     }
   },
   "Contacts": {
@@ -3496,7 +3499,11 @@
       "filterStatusAll": "Todas as situações",
       "filterFrom": "Data de",
       "filterTo": "Data até",
-      "filterClear": "Limpar filtros"
+      "filterClear": "Limpar filtros",
+      "sendEmail": "Enviar por e-mail",
+      "sendNoEmail": "O contato deste orçamento não tem e-mail.",
+      "emailSubject": "Orçamento {number} - Ultratec Extintores",
+      "emailBody": "Olá {name}, tudo bem?\n\nSegue em anexo o orçamento nº {number}.\n\nQualquer dúvida, estou à disposição."
     },
     "status": {
       "draft": "Rascunho",

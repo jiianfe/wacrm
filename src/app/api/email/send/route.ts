@@ -4,6 +4,7 @@ import { requireRole, toErrorResponse } from '@/lib/auth/account'
 import { checkRateLimit, rateLimitResponse, RATE_LIMITS } from '@/lib/rate-limit'
 import { supabaseAdmin } from '@/lib/automations/admin-client'
 import { loadEmailAccount, smtpTransportForAccount } from '@/lib/email/account'
+import { resolveConversationForAddress } from '@/lib/email/recipient'
 import {
   MAX_ATTACHMENTS,
   MAX_ATTACHMENT_BYTES,
@@ -53,10 +54,9 @@ export async function POST(request: Request) {
       return typeof v === 'string' ? v : ''
     }
 
-    const conversationId = text('conversation_id')
+    let conversationId = text('conversation_id')
     const subject = headerSafe(text('subject'))
     const rawBody = text('body').replace(/\r\n/g, '\n').trim()
-    if (!conversationId) return fail('conversation required', 400)
     if (!rawBody) return fail('Escreva a mensagem antes de enviar.', 400, 'empty_body')
     if (rawBody.length > MAX_BODY_LENGTH) return fail('Mensagem longa demais.', 400, 'body_too_long')
 
@@ -70,18 +70,29 @@ export async function POST(request: Request) {
       return fail('Destinatários demais.', 400, 'too_many_recipients')
     }
 
-    // RLS limits this to the caller's account.
-    const { data: conversation } = await supabase
-      .from('conversations')
-      .select('id, contact_id')
-      .eq('id', conversationId)
-      .eq('account_id', accountId)
-      .maybeSingle()
-    if (!conversation) return fail('conversation not found', 404)
-    const contactId = (conversation as { contact_id: string | null }).contact_id
+    // A reply names its conversation. A new e-mail does not: the first
+    // recipient decides which contact (and conversation) it belongs to.
+    let contactId: string | null = null
+    if (conversationId) {
+      // RLS limits this to the caller's account.
+      const { data: conversation } = await supabase
+        .from('conversations')
+        .select('id, contact_id')
+        .eq('id', conversationId)
+        .eq('account_id', accountId)
+        .maybeSingle()
+      if (!conversation) return fail('conversation not found', 404)
+      contactId = (conversation as { contact_id: string | null }).contact_id
+    }
 
     const account = await loadEmailAccount(supabaseAdmin(), accountId)
     if (!account || !account.enabled) return fail('Caixa de e-mail não configurada.', 404, 'no_mailbox')
+
+    if (!conversationId) {
+      const resolved = await resolveConversationForAddress(supabaseAdmin(), accountId, userId, to.valid[0])
+      conversationId = resolved.conversationId
+      contactId = resolved.contactId
+    }
 
     // ---- threading: answer a specific received mail, or the latest one ----
     const replyTo = text('reply_to_message_id')
@@ -261,7 +272,7 @@ export async function POST(request: Request) {
       .update({ last_message_text: `✉ ${subject || body.slice(0, 80)}`, last_message_at: sentAt, updated_at: sentAt })
       .eq('id', conversationId)
 
-    return NextResponse.json({ message: saved })
+    return NextResponse.json({ message: saved, conversation_id: conversationId })
   } catch (err) {
     return toErrorResponse(err)
   }

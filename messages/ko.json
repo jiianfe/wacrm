@@ -363,7 +363,8 @@
       "channelAll": "전체",
       "channelWhatsapp": "WhatsApp",
       "channelEmail": "이메일",
-      "notRegistered": "미등록"
+      "notRegistered": "미등록",
+      "newEmail": "새 이메일"
     },
     "messageThread": {
       "backToConversations": "대화 목록으로 돌아가기",
@@ -645,7 +646,9 @@
       "tooManyFiles": "첨부는 최대 {max}개입니다.",
       "tooBig": "첨부 파일이 {mb}MB를 넘습니다.",
       "remove": "제거",
-      "readOnly": "현재 권한으로는 이메일을 읽기만 할 수 있습니다."
+      "readOnly": "현재 권한으로는 이메일을 읽기만 할 수 있습니다.",
+      "newTitle": "새 이메일",
+      "newDescription": "목록에서 연락처를 고르거나 주소를 입력하세요. 보내기를 누를 때만 이메일이 발송됩니다."
     }
   },
   "Contacts": {
@@ -3496,7 +3499,11 @@
       "filterStatusAll": "모든 상태",
       "filterFrom": "시작일",
       "filterTo": "종료일",
-      "filterClear": "필터 초기화"
+      "filterClear": "필터 초기화",
+      "sendEmail": "이메일로 보내기",
+      "sendNoEmail": "이 견적서의 연락처에 이메일이 없습니다.",
+      "emailSubject": "견적서 {number} - Ultratec Extintores",
+      "emailBody": "안녕하세요 {name}님,\n\n견적서 {number}번을 첨부합니다.\n\n궁금한 점이 있으면 언제든 문의해 주세요."
     },
     "status": {
       "draft": "초안",

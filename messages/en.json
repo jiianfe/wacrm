@@ -363,7 +363,8 @@
       "channelAll": "All",
       "channelWhatsapp": "WhatsApp",
       "channelEmail": "E-mail",
-      "notRegistered": "Not registered"
+      "notRegistered": "Not registered",
+      "newEmail": "New e-mail"
     },
     "messageThread": {
       "backToConversations": "Back to conversations",
@@ -645,7 +646,9 @@
       "tooManyFiles": "At most {max} attachments.",
       "tooBig": "Attachments exceed {mb} MB.",
       "remove": "Remove",
-      "readOnly": "Your role can read e-mails but not send them."
+      "readOnly": "Your role can read e-mails but not send them.",
+      "newTitle": "New e-mail",
+      "newDescription": "Pick a contact from the list or type an address. The e-mail is only sent when you click Send."
     }
   },
   "Contacts": {
@@ -3496,7 +3499,11 @@
       "filterStatusAll": "All statuses",
       "filterFrom": "Date from",
       "filterTo": "Date to",
-      "filterClear": "Clear filters"
+      "filterClear": "Clear filters",
+      "sendEmail": "Send by e-mail",
+      "sendNoEmail": "This quote's contact has no e-mail address.",
+      "emailSubject": "Quote {number} - Ultratec Extintores",
+      "emailBody": "Hello {name},\n\nPlease find quote no. {number} attached.\n\nFeel free to ask if you have any questions."
     },
     "status": {
       "draft": "Draft",

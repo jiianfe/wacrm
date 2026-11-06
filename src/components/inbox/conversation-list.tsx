@@ -12,7 +12,7 @@ import { applyInboxFilter, type InboxFilter } from "@/lib/inbox/inbox-filters";
 import { matchesChannel, type ChannelFilter } from "@/lib/inbox/channel-filter";
 import { cn } from "@/lib/utils";
 import type { Conversation, ConversationStatus, Tag } from "@/types";
-import { Search, ChevronDown, X } from "lucide-react";
+import { Search, ChevronDown, X, PenSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { NewEmailDialog } from "./new-email-dialog";
 
 interface ConversationListProps {
   activeConversationId: string | null;
@@ -75,6 +76,7 @@ export function ConversationList({
   ], [t]);
 
   const [search, setSearch] = useState("");
+  const [newEmailOpen, setNewEmailOpen] = useState(false);
   const [filter, setFilter] = useState<InboxFilter>(initialFilter);
   const [now, setNow] = useState(() => Date.now());
 
@@ -275,6 +277,17 @@ export function ConversationList({
             </button>
           ))}
         </div>
+        {channelFilter !== "whatsapp" && (
+          <button
+            type="button"
+            onClick={() => setNewEmailOpen(true)}
+            className="flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1.5 text-xs font-medium text-foreground hover:bg-muted/70"
+          >
+            <PenSquare className="h-3.5 w-3.5" />
+            {t("newEmail")}
+          </button>
+        )}
+        <NewEmailDialog open={newEmailOpen} onOpenChange={setNewEmailOpen} />
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input

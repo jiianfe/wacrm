@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { FileDown, FileText, Loader2, Pencil, Plus, Search, Send, Trash2 } from 'lucide-react';
+import { FileDown, FileText, Loader2, Mail, Pencil, Plus, Search, Send, Trash2 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
 import { useCan } from '@/hooks/use-can';
-import { downloadQuotePdf, sendQuotePdfViaWhatsApp } from '@/lib/quotes/download';
+import { downloadQuotePdf, renderQuotePdf, sendQuotePdfViaWhatsApp } from '@/lib/quotes/download';
+import { NewEmailDialog } from '@/components/inbox/new-email-dialog';
 import { formatBRL, formatShortDate } from '@/lib/quotes/format';
 import type { Quote, QuoteItem, QuoteStatus } from '@/types';
 import { QuoteForm } from '@/components/quotes/quote-form';
@@ -68,6 +69,10 @@ export default function QuotesPage() {
     contactId: string;
   } | null>(null);
   const [sending, setSending] = useState(false);
+  const [emailDraft, setEmailDraft] = useState<{
+    contactId: string;
+    initial: { to: string; subject: string; body: string; files: File[] };
+  } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -163,6 +168,49 @@ export default function QuotesPage() {
       phone: contact.phone,
       contactId: contact.id,
     });
+  }
+
+  /** Builds the quote PDF and opens a ready-to-edit e-mail to the quote's contact; nothing is sent until the agent clicks Send. */
+  async function askEmail(quote: Quote) {
+    if (!quote.contact_id) {
+      toast.error(t('page.sendNoContact'));
+      return;
+    }
+    setBusyId(quote.id);
+    try {
+      const { data: contact } = await supabase
+        .from('contacts')
+        .select('id, name, email')
+        .eq('id', quote.contact_id)
+        .maybeSingle();
+      const c = contact as { id: string; name: string | null; email: string | null } | null;
+      if (!c?.email) {
+        toast.error(t('page.sendNoEmail'));
+        return;
+      }
+      const { data: itemRows, error } = await supabase
+        .from('quote_items')
+        .select('*')
+        .eq('quote_id', quote.id)
+        .order('position');
+      if (error) throw error;
+      const { bytes, fileName } = await renderQuotePdf(quote, (itemRows ?? []) as QuoteItem[]);
+      const file = new File([bytes as BlobPart], fileName, { type: 'application/pdf' });
+      setEmailDraft({
+        contactId: c.id,
+        initial: {
+          to: c.email,
+          subject: t('page.emailSubject', { number: quote.number }),
+          body: t('page.emailBody', { name: c.name || quote.contact_name || '', number: quote.number }),
+          files: [file],
+        },
+      });
+    } catch (err) {
+      console.error('Quote e-mail draft failed:', err);
+      toast.error(t('page.pdfFailed'));
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function confirmSend() {
@@ -361,6 +409,16 @@ export default function QuotesPage() {
                       </button>
                       <button
                         type="button"
+                        onClick={() => askEmail(q)}
+                        disabled={!canEdit || busyId === q.id}
+                        aria-label={t('page.sendEmail')}
+                        title={t('page.sendEmail')}
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                      >
+                        <Mail className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => askSend(q)}
                         disabled={!canEdit}
                         aria-label={t('page.sendWhatsapp')}
@@ -411,6 +469,12 @@ export default function QuotesPage() {
         }}
       />
 
+      <NewEmailDialog
+        open={!!emailDraft}
+        onOpenChange={(v) => !v && setEmailDraft(null)}
+        initial={emailDraft?.initial}
+        contactId={emailDraft?.contactId ?? null}
+      />
       <Dialog open={!!sendTarget} onOpenChange={(v) => !sending && !v && setSendTarget(null)}>
         <DialogContent className="bg-popover border-border text-popover-foreground sm:max-w-sm">
           <DialogHeader>
