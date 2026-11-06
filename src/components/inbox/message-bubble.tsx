@@ -20,6 +20,7 @@ import {
   CornerDownLeft,
   Sparkles,
   Reply,
+  ReplyAll,
   ExternalLink,
   Phone,
   Copy,
@@ -57,6 +58,8 @@ interface MessageBubbleProps {
    * stays inline and non-clickable.
    */
   onOpenMedia?: (messageId: string) => void;
+  /** Reply / Reply all on a received e-mail (e-mail view only). */
+  onEmailReply?: (message: Message, all: boolean) => void;
 }
 
 /**
@@ -386,6 +389,7 @@ export function MessageBubble({
   reactions,
   onToggleReaction,
   onOpenMedia,
+  onEmailReply,
 }: MessageBubbleProps) {
   const t = useTranslations("Inbox.bubble");
   const [emailReaderOpen, setEmailReaderOpen] = useState(false);
@@ -446,15 +450,37 @@ export function MessageBubble({
                 {t("emailCc")}: {message.email_cc}
               </p>
             )}
-            <button
-              type="button"
-              onClick={() => setEmailReaderOpen(true)}
-              className="mt-1 inline-flex items-center gap-1 rounded-md border border-current/25 px-2 py-0.5 text-[11px] font-medium hover:bg-current/10"
-            >
-              <Mail className="h-3 w-3" />
-              {t("openEmail")}
-              {message.email_attachments?.length ? ` · ${message.email_attachments.length} 📎` : ""}
-            </button>
+            <div className="mt-1 flex flex-wrap gap-1">
+              <button
+                type="button"
+                onClick={() => setEmailReaderOpen(true)}
+                className="inline-flex items-center gap-1 rounded-md border border-current/25 px-2 py-0.5 text-[11px] font-medium hover:bg-current/10"
+              >
+                <Mail className="h-3 w-3" />
+                {t("openEmail")}
+                {message.email_attachments?.length ? ` · ${message.email_attachments.length} 📎` : ""}
+              </button>
+              {onEmailReply && message.sender_type === "customer" && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => onEmailReply(message, false)}
+                    className="inline-flex items-center gap-1 rounded-md border border-current/25 px-2 py-0.5 text-[11px] font-medium hover:bg-current/10"
+                  >
+                    <Reply className="h-3 w-3" />
+                    {t("emailReply")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onEmailReply(message, true)}
+                    className="inline-flex items-center gap-1 rounded-md border border-current/25 px-2 py-0.5 text-[11px] font-medium hover:bg-current/10"
+                  >
+                    <ReplyAll className="h-3 w-3" />
+                    {t("emailReplyAll")}
+                  </button>
+                </>
+              )}
+            </div>
             <EmailReader
               message={message}
               open={emailReaderOpen}

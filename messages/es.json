@@ -481,7 +481,9 @@
       "emailBadge": "Correo",
       "emailTo": "Para",
       "emailCc": "Cc",
-      "openEmail": "Abrir correo completo"
+      "openEmail": "Abrir correo completo",
+      "emailReply": "Responder",
+      "emailReplyAll": "Responder a todos"
     },
     "mediaViewer": {
       "counter": "{index} de {total}",

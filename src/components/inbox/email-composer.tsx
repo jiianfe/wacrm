@@ -12,6 +12,7 @@ import { formatBytes } from "@/lib/deal-documents";
 import {
   MAX_ATTACHMENTS,
   MAX_ATTACHMENT_BYTES,
+  replyRecipients,
   replySubject,
 } from "@/lib/email/compose";
 import type { Message } from "@/types";
@@ -36,6 +37,8 @@ interface EmailComposerProps {
   initial?: { to?: string; subject?: string; body?: string; files?: File[] };
   /** Called with the box's height-neutral layout when shown inside a dialog. */
   embedded?: boolean;
+  /** A click on Reply / Reply all of a received mail; a new `id` fills the box again. */
+  replyRequest?: { id: number; message: Message; all: boolean } | null;
 }
 
 interface ContactOption {
@@ -58,6 +61,7 @@ export function EmailComposer({
   onSent,
   initial,
   embedded = false,
+  replyRequest,
 }: EmailComposerProps) {
   const t = useTranslations("Inbox.emailComposer");
   const { user } = useAuth();
@@ -82,6 +86,47 @@ export function EmailComposer({
   const [body, setBody] = useState(initial?.body ?? "");
   const [files, setFiles] = useState<File[]>(initial?.files ?? []);
   const [contactOptions, setContactOptions] = useState<ContactOption[]>([]);
+  // The received mail being answered; the latest one unless the agent picked another.
+  const [replyToId, setReplyToId] = useState<string | null>(null);
+  const [ownAddress, setOwnAddress] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+
+  // Our own mailbox address, to leave it out of "reply to all".
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/email/mailbox", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { address?: string } | null) => {
+        if (!cancelled) setOwnAddress(d?.address ?? null);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Reply / Reply all on a received mail fills recipients, copy and subject.
+  const requestId = replyRequest?.id;
+  useEffect(() => {
+    if (!replyRequest) return;
+    const m = replyRequest.message;
+    const r = replyRecipients({
+      from: m.email_from,
+      to: m.email_to,
+      cc: m.email_cc,
+      own: ownAddress,
+      all: replyRequest.all,
+    });
+    touched.current = { to: true, subject: true };
+    setTo(r.to || m.email_from || "");
+    setCc(r.cc);
+    setShowCc(!!r.cc);
+    setSubject(replySubject(m.email_subject));
+    setReplyToId(m.id);
+    requestAnimationFrame(() => bodyRef.current?.focus());
+    // Only a new click (id) should refill the box; the address arriving later must not wipe edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestId]);
   const [crmDocs, setCrmDocs] = useState<CrmDocument[]>([]);
   const [chosenDocs, setChosenDocs] = useState<string[]>([]);
   const [docsOpen, setDocsOpen] = useState(false);
@@ -201,7 +246,8 @@ export function EmailComposer({
       form.set("subject", subject);
       form.set("body", body);
       form.set("signature", signature ? "1" : "0");
-      if (lastReceived) form.set("reply_to_message_id", lastReceived.id);
+      const answering = replyToId ?? lastReceived?.id;
+      if (answering) form.set("reply_to_message_id", answering);
       form.set("crm_attachment_ids", JSON.stringify(chosenCrm.map((d) => d.id)));
       for (const f of files) form.append("files", f, f.name);
 
@@ -222,7 +268,7 @@ export function EmailComposer({
     } finally {
       setSending(false);
     }
-  }, [sending, to, cc, subject, body, signature, files, chosenCrm, totalBytes, conversationId, lastReceived, onSent, t]);
+  }, [sending, to, cc, subject, body, signature, files, chosenCrm, totalBytes, conversationId, lastReceived, replyToId, onSent, t]);
 
   if (!canSend) {
     return (
@@ -309,6 +355,7 @@ export function EmailComposer({
       </div>
 
       <textarea
+        ref={bodyRef}
         value={body}
         onChange={(e) => setBody(e.target.value)}
         rows={5}

@@ -90,3 +90,30 @@ export function htmlToText(html: string): string {
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 }
+
+/**
+ * Recipients of a reply to a received mail. "Reply" goes to the sender only;
+ * "reply to all" also copies everyone else on the original To and Cc, minus
+ * our own mailbox address and the sender.
+ */
+export function replyRecipients(input: {
+  from: string | null | undefined
+  to: string | null | undefined
+  cc: string | null | undefined
+  own: string | null | undefined
+  all: boolean
+}): { to: string; cc: string } {
+  const own = (input.own ?? '').trim().toLowerCase()
+  const sender = parseAddressList(input.from).valid[0] ?? ''
+  const skip = new Set([own, sender.toLowerCase()].filter(Boolean))
+  const cc: string[] = []
+  if (input.all) {
+    for (const address of [...parseAddressList(input.to).valid, ...parseAddressList(input.cc).valid]) {
+      const key = address.toLowerCase()
+      if (skip.has(key)) continue
+      skip.add(key)
+      cc.push(address)
+    }
+  }
+  return { to: sender, cc: cc.join(', ') }
+}

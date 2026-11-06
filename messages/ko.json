@@ -481,7 +481,9 @@
       "emailBadge": "이메일",
       "emailTo": "받는 사람",
       "emailCc": "참조",
-      "openEmail": "전체 이메일 열기"
+      "openEmail": "전체 이메일 열기",
+      "emailReply": "답장",
+      "emailReplyAll": "전체 답장"
     },
     "mediaViewer": {
       "counter": "{total}개 중 {index}번째",

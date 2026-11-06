@@ -7,6 +7,7 @@ import {
   htmlToText,
   parseAddressList,
   realMessageId,
+  replyRecipients,
   replySubject,
   textToHtml,
 } from './compose'
@@ -65,5 +66,26 @@ describe('signature helpers', () => {
   it('makes a plain-text version', () => {
     const text = htmlToText('<div><b>Ana</b><br>Ultratec &amp; Cia</div><p><a href="https://x.com/a">Site</a></p>')
     expect(text).toBe('Ana\nUltratec & Cia\nSite (https://x.com/a)')
+  })
+})
+
+describe('replyRecipients', () => {
+  const base = {
+    from: 'Ana <ana@cliente.com>',
+    to: 'contato@ultratec.com, bia@cliente.com',
+    cc: 'caio@cliente.com, ANA@cliente.com',
+    own: 'Contato@Ultratec.com',
+  }
+  it('replies to the sender only', () => {
+    expect(replyRecipients({ ...base, all: false })).toEqual({ to: 'ana@cliente.com', cc: '' })
+  })
+  it('reply all copies the others, without us, the sender or duplicates', () => {
+    expect(replyRecipients({ ...base, all: true })).toEqual({
+      to: 'ana@cliente.com',
+      cc: 'bia@cliente.com, caio@cliente.com',
+    })
+  })
+  it('copes with missing fields', () => {
+    expect(replyRecipients({ from: null, to: null, cc: null, own: null, all: true })).toEqual({ to: '', cc: '' })
   })
 })

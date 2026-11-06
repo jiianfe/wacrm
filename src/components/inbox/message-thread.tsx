@@ -215,6 +215,10 @@ export function MessageThread({
   const { user, profile } = useAuth();
   const [signatureOn, setSignatureOn] = useState(false);
   const [insertRequest, setInsertRequest] = useState<{ id: number; text: string } | null>(null);
+  const [emailReply, setEmailReply] = useState<{ id: number; message: Message; all: boolean } | null>(null);
+  const handleEmailReply = useCallback((message: Message, all: boolean) => {
+    setEmailReply((prev) => ({ id: (prev?.id ?? 0) + 1, message, all }));
+  }, []);
   useEffect(() => {
     // localStorage is only readable in the browser, so load it after mount.
     setSignatureOn(readSignaturePref(user?.id));
@@ -1322,6 +1326,7 @@ export function MessageThread({
                           reactions={msgReactions}
                           onToggleReaction={handlePillToggle}
                           onOpenMedia={handleMediaChange}
+                          onEmailReply={channelFilter === "email" ? handleEmailReply : undefined}
                         />
                       </MessageActions>
                     );
@@ -1374,6 +1379,8 @@ export function MessageThread({
           mailbox; the WhatsApp composer would send on WhatsApp. */}
       {channelFilter === "email" ? (
         <EmailComposer
+          key={conversation.id}
+          replyRequest={emailReply}
           conversationId={conversation.id}
           contactId={contact?.id ?? null}
           contactEmail={contact?.email ?? null}
