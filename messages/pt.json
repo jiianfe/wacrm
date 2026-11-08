@@ -3751,7 +3751,26 @@
       "save": "Salvar",
       "cancel": "Cancelar",
       "saved": "Tarefa salva.",
-      "saveFailed": "Não foi possível salvar a tarefa."
+      "saveFailed": "Não foi possível salvar a tarefa.",
+      "dependsOn": "Depende de (só conclui depois dessas)",
+      "addDependency": "Adicionar dependência…",
+      "noDependencyOptions": "Nenhuma outra tarefa aberta",
+      "removeDependency": "Remover dependência",
+      "dependsHint": "A tarefa fica bloqueada até todas as dependências serem concluídas."
+    },
+    "blockedBy": "Aguardando: {names}",
+    "unlocks": "Libera {count, plural, =1 {1 tarefa} other {# tarefas}}",
+    "blockedToast": "Conclua antes: {names}. Ou remova a dependência na edição.",
+    "view": {
+      "label": "Visualização",
+      "list": "Lista",
+      "calendar": "Calendário"
+    },
+    "calendar": {
+      "prev": "Mês anterior",
+      "next": "Próximo mês",
+      "more": "+{count} mais",
+      "day": "Tarefas em {date}"
     }
   }
 }

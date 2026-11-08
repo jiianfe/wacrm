@@ -3751,7 +3751,26 @@
       "save": "Save",
       "cancel": "Cancel",
       "saved": "Task saved.",
-      "saveFailed": "Could not save the task."
+      "saveFailed": "Could not save the task.",
+      "dependsOn": "Depends on (can only finish after these)",
+      "addDependency": "Add dependency…",
+      "noDependencyOptions": "No other open tasks",
+      "removeDependency": "Remove dependency",
+      "dependsHint": "The task stays blocked until all its dependencies are done."
+    },
+    "blockedBy": "Waiting for: {names}",
+    "unlocks": "Unlocks {count, plural, =1 {1 task} other {# tasks}}",
+    "blockedToast": "Finish first: {names}. Or remove the dependency when editing.",
+    "view": {
+      "label": "View",
+      "list": "List",
+      "calendar": "Calendar"
+    },
+    "calendar": {
+      "prev": "Previous month",
+      "next": "Next month",
+      "more": "+{count} more",
+      "day": "Tasks on {date}"
     }
   }
 }

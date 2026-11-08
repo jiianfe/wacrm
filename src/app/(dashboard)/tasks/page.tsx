@@ -3,7 +3,23 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Building2, Check, GitBranch, Loader2, Pencil, Plus, Search, Trash2, User, X } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  GitBranch,
+  List,
+  Loader2,
+  Lock,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  User,
+  X,
+} from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,9 +28,13 @@ import {
   compareTasks,
   formatTaskDate,
   localDateString,
+  monthGrid,
+  openBlockers,
   TASK_PRIORITIES,
   taskBucket,
+  tasksOnDay,
   type TaskBucket,
+  type TaskEdge,
   type TaskPriority,
 } from "@/lib/deal-tasks";
 import type { DealTask } from "@/types";
@@ -62,9 +82,16 @@ export default function TasksPage() {
   const [search, setSearch] = useState("");
   const [dialog, setDialog] = useState<{ open: boolean; editing: TaskRow | null }>({ open: false, editing: null });
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [edges, setEdges] = useState<TaskEdge[]>([]);
+  const [view, setView] = useState<"list" | "calendar">("list");
+  const [cursor, setCursor] = useState(() => {
+    const [y, m] = today.split("-").map(Number);
+    return { year: y, month: m - 1 };
+  });
+  const [selectedDay, setSelectedDay] = useState(today);
 
   const load = useCallback(async () => {
-    const [tasksRes, peopleRes] = await Promise.all([
+    const [tasksRes, peopleRes, edgesRes] = await Promise.all([
       supabase
         .from("deal_tasks")
         .select(
@@ -73,7 +100,9 @@ export default function TasksPage() {
         .order("end_date", { ascending: true })
         .limit(1000),
       supabase.from("profiles").select("id, full_name, email").order("full_name"),
+      supabase.from("task_dependencies").select("task_id, depends_on_id").limit(5000),
     ]);
+    setEdges((edgesRes.data ?? []) as TaskEdge[]);
     if (tasksRes.error) toast.error(t("loadFailed"));
     setTasks((tasksRes.data ?? []) as unknown as TaskRow[]);
     setPeople(
@@ -127,7 +156,30 @@ export default function TasksPage() {
     [scoped, tab, today],
   );
 
+  const byId = useMemo(() => new Map((tasks ?? []).map((x) => [x.id, x])), [tasks]);
+
+  const listTasks = useMemo(
+    () => (view === "calendar" ? tasksOnDay(scoped, selectedDay).sort(compareTasks) : visible),
+    [view, scoped, selectedDay, visible],
+  );
+  const grid = useMemo(() => monthGrid(cursor.year, cursor.month), [cursor]);
+  const monthLabel = new Date(cursor.year, cursor.month, 1).toLocaleDateString(locale, {
+    month: "long",
+    year: "numeric",
+  });
+  function shiftMonth(delta: number) {
+    setCursor((c) => {
+      const d = new Date(c.year, c.month + delta, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    });
+  }
+
   async function toggleDone(task: TaskRow) {
+    if (!task.completed_at) {
+      // A task cannot be finished while something it waits for is still open.
+      const waiting = openBlockers(task.id, edges, byId);
+      if (waiting.length) return toast.error(t("blockedToast", { names: waiting.map((w) => w.title).join(", ") }));
+    }
     const completed_at = task.completed_at ? null : new Date().toISOString();
     const { error } = await supabase.from("deal_tasks").update({ completed_at }).eq("id", task.id);
     if (error) return toast.error(t("toggleFailed"));
@@ -156,12 +208,31 @@ export default function TasksPage() {
           <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
-        {canWrite && (
-          <Button type="button" onClick={() => setDialog({ open: true, editing: null })}>
-            <Plus className="size-4" />
-            {t("new")}
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <div className="inline-flex overflow-hidden rounded-md border border-border" role="group" aria-label={t("view.label")}>
+            {(["list", "calendar"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={view === v}
+                onClick={() => setView(v)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium",
+                  view === v ? "bg-primary/10 text-primary" : "bg-muted text-foreground hover:bg-muted/70",
+                )}
+              >
+                {v === "list" ? <List className="size-4" /> : <CalendarDays className="size-4" />}
+                {t(`view.${v}`)}
+              </button>
+            ))}
+          </div>
+          {canWrite && (
+            <Button type="button" onClick={() => setDialog({ open: true, editing: null })}>
+              <Plus className="size-4" />
+              {t("new")}
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -199,7 +270,71 @@ export default function TasksPage() {
         </select>
       </div>
 
-      <div className="flex flex-wrap gap-1.5" role="tablist">
+      {view === "calendar" && (
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <Button type="button" variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label={t("calendar.prev")}>
+              <ChevronLeft className="size-4" />
+            </Button>
+            <span className="text-sm font-semibold capitalize text-foreground">{monthLabel}</span>
+            <Button type="button" variant="ghost" size="icon-sm" onClick={() => shiftMonth(1)} aria-label={t("calendar.next")}>
+              <ChevronRight className="size-4" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-border bg-border text-xs">
+            {grid[0].map((d) => (
+              <div key={d} className="bg-muted px-1 py-1 text-center font-medium text-muted-foreground">
+                {new Date(`${d}T12:00:00`).toLocaleDateString(locale, { weekday: "short" })}
+              </div>
+            ))}
+            {grid.flat().map((day) => {
+              const inMonth = Number(day.slice(5, 7)) - 1 === cursor.month;
+              const items = tasksOnDay(scoped, day).sort(compareTasks);
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => setSelectedDay(day)}
+                  className={cn(
+                    "flex min-h-20 flex-col items-stretch gap-0.5 bg-card p-1 text-left align-top hover:bg-muted/50",
+                    !inMonth && "opacity-45",
+                    selectedDay === day && "ring-2 ring-inset ring-primary",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "self-end text-[11px]",
+                      day === today ? "rounded-full bg-primary px-1.5 font-semibold text-primary-foreground" : "text-muted-foreground",
+                    )}
+                  >
+                    {Number(day.slice(8))}
+                  </span>
+                  {items.slice(0, 3).map((x) => (
+                    <span
+                      key={x.id}
+                      className={cn(
+                        "truncate rounded px-1 py-0.5 text-[10px] leading-tight",
+                        BUCKET_STYLE[taskBucket(x, today)],
+                        x.completed_at && "line-through opacity-60",
+                      )}
+                    >
+                      {x.title}
+                    </span>
+                  ))}
+                  {items.length > 3 && (
+                    <span className="px-1 text-[10px] text-muted-foreground">{t("calendar.more", { count: items.length - 3 })}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-xs font-medium text-muted-foreground">
+            {t("calendar.day", { date: formatTaskDate(selectedDay, locale) })}
+          </p>
+        </div>
+      )}
+
+      <div className={cn("flex flex-wrap gap-1.5", view === "calendar" && "hidden")} role="tablist">
         {TABS.map((k) => (
           <button
             key={k}
@@ -219,14 +354,16 @@ export default function TasksPage() {
         ))}
       </div>
 
-      {visible.length === 0 ? (
+      {listTasks.length === 0 ? (
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           {t("empty")}
         </div>
       ) : (
         <ul className="space-y-2">
-          {visible.map((task) => {
+          {listTasks.map((task) => {
             const bucket = taskBucket(task, today);
+            const blockers = openBlockers(task.id, edges, byId);
+            const unlocks = edges.filter((e) => e.depends_on_id === task.id).length;
             const person = task.assigned_to ? nameOf.get(task.assigned_to) : null;
             const company = task.company?.trade_name || task.company?.legal_name;
             return (
@@ -270,6 +407,13 @@ export default function TasksPage() {
                         {t(`priority.${task.priority}`)}
                       </span>
                     )}
+                    {blockers.length > 0 && !task.completed_at && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 font-medium text-amber-400">
+                        <Lock className="size-3" />
+                        {t("blockedBy", { names: blockers.map((b) => b.title).join(", ") })}
+                      </span>
+                    )}
+                    {unlocks > 0 && !task.completed_at && <span>{t("unlocks", { count: unlocks })}</span>}
                     <span>
                       {formatTaskDate(task.start_date, locale)} → {formatTaskDate(task.end_date, locale)}
                     </span>

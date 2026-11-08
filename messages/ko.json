@@ -3751,7 +3751,26 @@
       "save": "저장",
       "cancel": "취소",
       "saved": "작업을 저장했습니다.",
-      "saveFailed": "작업을 저장하지 못했습니다."
+      "saveFailed": "작업을 저장하지 못했습니다.",
+      "dependsOn": "선행 작업 (이 작업들이 끝나야 완료 가능)",
+      "addDependency": "종속성 추가…",
+      "noDependencyOptions": "다른 진행 중 작업 없음",
+      "removeDependency": "종속성 제거",
+      "dependsHint": "모든 선행 작업이 완료될 때까지 이 작업은 잠깁니다."
+    },
+    "blockedBy": "대기 중: {names}",
+    "unlocks": "{count}개 작업 해제",
+    "blockedToast": "먼저 완료하세요: {names}. 또는 편집에서 종속성을 제거하세요.",
+    "view": {
+      "label": "보기",
+      "list": "목록",
+      "calendar": "캘린더"
+    },
+    "calendar": {
+      "prev": "이전 달",
+      "next": "다음 달",
+      "more": "+{count}개 더",
+      "day": "{date}의 작업"
     }
   }
 }

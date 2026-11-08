@@ -124,6 +124,68 @@ export function compareTasks(a: SortableTask, b: SortableTask): number {
   return byPriority || a.title.localeCompare(b.title);
 }
 
+export interface TaskEdge {
+  task_id: string;
+  depends_on_id: string;
+}
+
+/** The prerequisites of `taskId` that are still open (what blocks it). */
+export function openBlockers<T extends { id: string; completed_at: string | null }>(
+  taskId: string,
+  edges: TaskEdge[],
+  byId: Map<string, T>,
+): T[] {
+  const out: T[] = [];
+  for (const e of edges) {
+    if (e.task_id !== taskId) continue;
+    const dep = byId.get(e.depends_on_id);
+    if (dep && !dep.completed_at) out.push(dep);
+  }
+  return out;
+}
+
+/** True when making `taskId` wait for `dependsOnId` would close a loop. */
+export function wouldCycle(taskId: string, dependsOnId: string, edges: TaskEdge[]): boolean {
+  if (taskId === dependsOnId) return true;
+  const seen = new Set<string>();
+  const stack = [dependsOnId];
+  while (stack.length) {
+    const cur = stack.pop() as string;
+    if (cur === taskId) return true;
+    if (seen.has(cur)) continue;
+    seen.add(cur);
+    for (const e of edges) if (e.task_id === cur) stack.push(e.depends_on_id);
+  }
+  return false;
+}
+
+/**
+ * Month grid for a calendar: whole weeks (Sunday first) covering the month,
+ * as `YYYY-MM-DD` strings. `month` is 0-11.
+ */
+export function monthGrid(year: number, month: number): string[][] {
+  const first = new Date(year, month, 1);
+  const start = new Date(year, month, 1 - first.getDay());
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const weekCount = Math.ceil((first.getDay() + daysInMonth) / 7);
+  const weeks: string[][] = [];
+  const cursor = new Date(start);
+  for (let w = 0; w < weekCount; w++) {
+    const week: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      week.push(localDateString(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    weeks.push(week);
+  }
+  return weeks;
+}
+
+/** Tasks whose period (start..end, inclusive) covers `date`. */
+export function tasksOnDay<T extends { start_date: string; end_date: string }>(tasks: T[], date: string): T[] {
+  return tasks.filter((x) => x.start_date <= date && date <= x.end_date);
+}
+
 /** Format a `YYYY-MM-DD` date for display without any time-zone shift. */
 export function formatTaskDate(date: string, locale: string): string {
   const [y, m, d] = date.split('-').map(Number);

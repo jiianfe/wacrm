@@ -3,11 +3,17 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { localDateString, TASK_PRIORITIES, type TaskPriority } from "@/lib/deal-tasks";
+import {
+  localDateString,
+  TASK_PRIORITIES,
+  wouldCycle,
+  type TaskEdge,
+  type TaskPriority,
+} from "@/lib/deal-tasks";
 import type { DealTask } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +39,13 @@ interface TaskDialogProps {
   /** When given, edits this task instead of creating one. */
   editing?: DealTask | null;
   prefill?: TaskPrefill;
+}
+
+interface Candidate {
+  id: string;
+  title: string;
+  end_date: string;
+  completed_at: string | null;
 }
 
 interface Option {
@@ -61,6 +74,12 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
   const [contactId, setContactId] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [saving, setSaving] = useState(false);
+  // Tasks this one waits for: all open tasks to pick from, the current choice,
+  // and what is already saved (to know what to add or remove on save).
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [deps, setDeps] = useState<string[]>([]);
+  const [savedDeps, setSavedDeps] = useState<string[]>([]);
+  const [edges, setEdges] = useState<TaskEdge[]>([]);
 
   const profileId = profile?.id;
   useEffect(() => {
@@ -83,12 +102,26 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
     let cancelled = false;
     const supabase = createClient();
     (async () => {
-      const [p, c, co] = await Promise.all([
+      const [p, c, co, tk, ed] = await Promise.all([
         supabase.from("profiles").select("id, full_name, email").order("full_name"),
         supabase.from("contacts").select("id, name, phone, email").order("name").limit(1000),
         supabase.from("companies").select("id, legal_name, trade_name").order("legal_name").limit(1000),
+        supabase
+          .from("deal_tasks")
+          .select("id, title, end_date, completed_at")
+          .order("end_date", { ascending: false })
+          .limit(500),
+        supabase.from("task_dependencies").select("task_id, depends_on_id").limit(5000),
       ]);
       if (cancelled) return;
+      setCandidates(
+        ((tk.data ?? []) as Candidate[]).filter((x) => x.id !== editing?.id),
+      );
+      const all = (ed.data ?? []) as TaskEdge[];
+      setEdges(all);
+      const mine = editing ? all.filter((e) => e.task_id === editing.id).map((e) => e.depends_on_id) : [];
+      setDeps(mine);
+      setSavedDeps(mine);
       setPeople(
         ((p.data ?? []) as { id: string; full_name: string | null; email: string }[]).map((x) => ({
           id: x.id,
@@ -111,7 +144,14 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
     return () => {
       cancelled = true;
     };
-  }, [open]);
+    // editing is read once per opening; the dialog reloads when it reopens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editing?.id]);
+
+  // Prerequisites that would close a loop (a task that already waits for this one).
+  const pickable = candidates.filter(
+    (c) => !c.completed_at && !deps.includes(c.id) && !(editing && wouldCycle(editing.id, c.id, edges)),
+  );
 
   async function save() {
     if (!title.trim()) return toast.error(t("form.titleRequired"));
@@ -131,6 +171,7 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
         contact_id: contactId || null,
         company_id: companyId || null,
       };
+      let taskId: string;
       if (editing) {
         // Changing the date makes a fresh reminder possible again.
         const { error } = await supabase
@@ -138,13 +179,36 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
           .update({ ...fields, ...(end !== editing.end_date ? { reminded_on: null } : {}) })
           .eq("id", editing.id);
         if (error) throw error;
+        taskId = editing.id;
       } else {
-        const { error } = await supabase.from("deal_tasks").insert({
-          ...fields,
-          deal_id: prefill?.deal_id ?? null,
-          account_id: accountId,
-          user_id: user?.id ?? null,
-        });
+        const { data, error } = await supabase
+          .from("deal_tasks")
+          .insert({
+            ...fields,
+            deal_id: prefill?.deal_id ?? null,
+            account_id: accountId,
+            user_id: user?.id ?? null,
+          })
+          .select("id")
+          .single();
+        if (error || !data) throw error ?? new Error("no row");
+        taskId = (data as { id: string }).id;
+      }
+
+      const removed = savedDeps.filter((id) => !deps.includes(id));
+      const added = deps.filter((id) => !savedDeps.includes(id));
+      if (removed.length) {
+        const { error } = await supabase
+          .from("task_dependencies")
+          .delete()
+          .eq("task_id", taskId)
+          .in("depends_on_id", removed);
+        if (error) throw error;
+      }
+      if (added.length) {
+        const { error } = await supabase
+          .from("task_dependencies")
+          .insert(added.map((depends_on_id) => ({ task_id: taskId, depends_on_id, account_id: accountId })));
         if (error) throw error;
       }
       toast.success(t("form.saved"));
@@ -241,6 +305,46 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
               ))}
             </select>
           </label>
+          <div className="grid gap-1.5 text-xs text-muted-foreground sm:col-span-2">
+            {t("form.dependsOn")}
+            {deps.length > 0 && (
+              <ul className="flex flex-wrap gap-1.5">
+                {deps.map((id) => {
+                  const c = candidates.find((x) => x.id === id);
+                  return (
+                    <li
+                      key={id}
+                      className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-foreground"
+                    >
+                      <span className="max-w-56 truncate">{c?.title ?? id.slice(0, 8)}</span>
+                      <button
+                        type="button"
+                        aria-label={t("form.removeDependency")}
+                        onClick={() => setDeps((d) => d.filter((x) => x !== id))}
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            <select
+              className={FIELD}
+              value=""
+              onChange={(e) => e.target.value && setDeps((d) => [...d, e.target.value])}
+              disabled={pickable.length === 0}
+            >
+              <option value="">{pickable.length ? t("form.addDependency") : t("form.noDependencyOptions")}</option>
+              {pickable.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+            <span>{t("form.dependsHint")}</span>
+          </div>
         </div>
 
         <DialogFooter>

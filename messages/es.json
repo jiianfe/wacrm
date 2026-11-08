@@ -3751,7 +3751,26 @@
       "save": "Guardar",
       "cancel": "Cancelar",
       "saved": "Tarea guardada.",
-      "saveFailed": "No se pudo guardar la tarea."
+      "saveFailed": "No se pudo guardar la tarea.",
+      "dependsOn": "Depende de (solo se termina después de estas)",
+      "addDependency": "Añadir dependencia…",
+      "noDependencyOptions": "No hay otras tareas abiertas",
+      "removeDependency": "Quitar dependencia",
+      "dependsHint": "La tarea queda bloqueada hasta que todas sus dependencias estén hechas."
+    },
+    "blockedBy": "Esperando: {names}",
+    "unlocks": "Libera {count, plural, =1 {1 tarea} other {# tareas}}",
+    "blockedToast": "Termina primero: {names}. O quita la dependencia al editar.",
+    "view": {
+      "label": "Vista",
+      "list": "Lista",
+      "calendar": "Calendario"
+    },
+    "calendar": {
+      "prev": "Mes anterior",
+      "next": "Mes siguiente",
+      "more": "+{count} más",
+      "day": "Tareas el {date}"
     }
   }
 }
