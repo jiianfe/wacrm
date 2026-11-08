@@ -7,7 +7,7 @@ import { FileDown, FileText, Loader2, Mail, Pencil, Plus, Search, Send, Trash2, 
 
 import { createClient } from '@/lib/supabase/client';
 import { useCan } from '@/hooks/use-can';
-import { downloadQuotePdf, renderQuotePdf, sendQuotePdfViaWhatsApp } from '@/lib/quotes/download';
+import { downloadQuotePdf, pickQuotePdfHandle, renderQuotePdf, sendQuotePdfViaWhatsApp, type PdfSaveHandle } from '@/lib/quotes/download';
 import { NewEmailDialog } from '@/components/inbox/new-email-dialog';
 import { ReceivableDialog, type ReceivablePrefill } from '@/components/finance/receivable-dialog';
 import { formatBRL, formatShortDate } from '@/lib/quotes/format';
@@ -127,6 +127,13 @@ export default function QuotesPage() {
   }, [quotes, search, fNumber, fCnpj, fContact, fFrom, fTo, fStatus]);
 
   async function downloadPdf(quote: Quote, knownItems?: QuoteItem[]) {
+    // Ask where to save first: the dialog needs the click that started this.
+    let handle: PdfSaveHandle | null = null;
+    try {
+      handle = await pickQuotePdfHandle(quote);
+    } catch {
+      return; // cancelled
+    }
     setBusyId(quote.id);
     try {
       let items = knownItems;
@@ -139,7 +146,7 @@ export default function QuotesPage() {
         if (error) throw error;
         items = (data ?? []) as QuoteItem[];
       }
-      await downloadQuotePdf(quote, items);
+      await downloadQuotePdf(quote, items, handle);
     } catch (err) {
       console.error('Quote PDF failed:', err);
       toast.error(t('page.pdfFailed'));

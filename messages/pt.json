@@ -48,7 +48,8 @@
     "quotes": "Orçamentos",
     "products": "Produtos e serviços",
     "groupFinance": "Financeiro",
-    "finance": "Financeiro"
+    "finance": "Financeiro",
+    "tasks": "Tarefas"
   },
   "Header": {
     "dashboard": "Painel",
@@ -71,7 +72,8 @@
     "showMenu": "Mostrar menu",
     "quotes": "Orçamentos",
     "products": "Produtos e serviços",
-    "finance": "Financeiro"
+    "finance": "Financeiro",
+    "tasks": "Tarefas"
   },
   "ModeToggle": {
     "switchMode": "Mudar para o modo {mode}"
@@ -3690,6 +3692,66 @@
       "title": "Cobranças",
       "none": "Nenhuma cobrança neste negócio.",
       "add": "Nova cobrança"
+    }
+  },
+  "Tasks": {
+    "title": "Tarefas",
+    "subtitle": "Tudo o que precisa ser feito, em negócios ou avulso.",
+    "new": "Nova tarefa",
+    "search": "Buscar tarefa, cliente ou negócio",
+    "assignee": "Responsável",
+    "mine": "Minhas tarefas",
+    "everyone": "Todos",
+    "unassigned": "Sem responsável",
+    "allPriorities": "Todas as prioridades",
+    "empty": "Nenhuma tarefa por aqui.",
+    "loadFailed": "Não foi possível carregar as tarefas.",
+    "toggleFailed": "Não foi possível atualizar a tarefa.",
+    "deleteFailed": "Não foi possível excluir a tarefa.",
+    "markDone": "Marcar como concluída",
+    "markOpen": "Reabrir tarefa",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "confirmDelete": "Excluir?",
+    "cancel": "Cancelar",
+    "tab": {
+      "open": "Abertas",
+      "overdue": "Atrasadas",
+      "today": "Hoje",
+      "later": "Próximas",
+      "done": "Concluídas"
+    },
+    "bucket": {
+      "overdue": "Atrasada · {date}",
+      "today": "Vence hoje",
+      "later": "Prazo {date}",
+      "done": "Concluída"
+    },
+    "priority": {
+      "high": "Alta",
+      "normal": "Normal",
+      "low": "Baixa"
+    },
+    "form": {
+      "titleNew": "Nova tarefa",
+      "titleEdit": "Editar tarefa",
+      "name": "Tarefa",
+      "details": "Detalhes",
+      "start": "Início",
+      "end": "Prazo final",
+      "priority": "Prioridade",
+      "assignee": "Responsável",
+      "noAssignee": "Sem responsável",
+      "contact": "Contato",
+      "noContact": "Nenhum",
+      "company": "Empresa",
+      "noCompany": "Nenhuma",
+      "titleRequired": "Informe o nome da tarefa.",
+      "datesInvalid": "O prazo final não pode ser antes do início.",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "saved": "Tarefa salva.",
+      "saveFailed": "Não foi possível salvar a tarefa."
     }
   }
 }

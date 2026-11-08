@@ -48,7 +48,8 @@
     "quotes": "견적서",
     "products": "제품 및 서비스",
     "groupFinance": "재무",
-    "finance": "재무"
+    "finance": "재무",
+    "tasks": "작업"
   },
   "Header": {
     "dashboard": "대시보드",
@@ -71,7 +72,8 @@
     "showMenu": "메뉴 표시",
     "quotes": "견적서",
     "products": "제품 및 서비스",
-    "finance": "재무"
+    "finance": "재무",
+    "tasks": "작업"
   },
   "ModeToggle": {
     "switchMode": "{mode} 모드로 전환"
@@ -3690,6 +3692,66 @@
       "title": "청구",
       "none": "이 거래에는 청구가 없습니다.",
       "add": "새 청구"
+    }
+  },
+  "Tasks": {
+    "title": "작업",
+    "subtitle": "거래 또는 단독으로 해야 할 모든 일.",
+    "new": "새 작업",
+    "search": "작업, 고객 또는 거래 검색",
+    "assignee": "담당자",
+    "mine": "내 작업",
+    "everyone": "전체",
+    "unassigned": "담당자 없음",
+    "allPriorities": "모든 우선순위",
+    "empty": "작업이 없습니다.",
+    "loadFailed": "작업을 불러오지 못했습니다.",
+    "toggleFailed": "작업을 업데이트하지 못했습니다.",
+    "deleteFailed": "작업을 삭제하지 못했습니다.",
+    "markDone": "완료로 표시",
+    "markOpen": "작업 다시 열기",
+    "edit": "편집",
+    "delete": "삭제",
+    "confirmDelete": "삭제할까요?",
+    "cancel": "취소",
+    "tab": {
+      "open": "진행 중",
+      "overdue": "지연",
+      "today": "오늘",
+      "later": "예정",
+      "done": "완료"
+    },
+    "bucket": {
+      "overdue": "지연 · {date}",
+      "today": "오늘 마감",
+      "later": "마감 {date}",
+      "done": "완료"
+    },
+    "priority": {
+      "high": "높음",
+      "normal": "보통",
+      "low": "낮음"
+    },
+    "form": {
+      "titleNew": "새 작업",
+      "titleEdit": "작업 편집",
+      "name": "작업",
+      "details": "세부 정보",
+      "start": "시작",
+      "end": "마감일",
+      "priority": "우선순위",
+      "assignee": "담당자",
+      "noAssignee": "담당자 없음",
+      "contact": "연락처",
+      "noContact": "없음",
+      "company": "회사",
+      "noCompany": "없음",
+      "titleRequired": "작업 이름을 입력하세요.",
+      "datesInvalid": "마감일은 시작일보다 빠를 수 없습니다.",
+      "save": "저장",
+      "cancel": "취소",
+      "saved": "작업을 저장했습니다.",
+      "saveFailed": "작업을 저장하지 못했습니다."
     }
   }
 }

@@ -48,7 +48,8 @@
     "quotes": "Presupuestos",
     "products": "Productos y servicios",
     "groupFinance": "Finanzas",
-    "finance": "Finanzas"
+    "finance": "Finanzas",
+    "tasks": "Tareas"
   },
   "Header": {
     "dashboard": "Panel",
@@ -71,7 +72,8 @@
     "showMenu": "Mostrar menú",
     "quotes": "Presupuestos",
     "products": "Productos y servicios",
-    "finance": "Finanzas"
+    "finance": "Finanzas",
+    "tasks": "Tareas"
   },
   "ModeToggle": {
     "switchMode": "Cambiar al modo {mode}"
@@ -3690,6 +3692,66 @@
       "title": "Cobros",
       "none": "No hay cobros en este negocio.",
       "add": "Nuevo cobro"
+    }
+  },
+  "Tasks": {
+    "title": "Tareas",
+    "subtitle": "Todo lo que hay que hacer, en negocios o suelto.",
+    "new": "Nueva tarea",
+    "search": "Buscar tarea, cliente o negocio",
+    "assignee": "Responsable",
+    "mine": "Mis tareas",
+    "everyone": "Todos",
+    "unassigned": "Sin responsable",
+    "allPriorities": "Todas las prioridades",
+    "empty": "No hay tareas aquí.",
+    "loadFailed": "No se pudieron cargar las tareas.",
+    "toggleFailed": "No se pudo actualizar la tarea.",
+    "deleteFailed": "No se pudo eliminar la tarea.",
+    "markDone": "Marcar como hecha",
+    "markOpen": "Reabrir tarea",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar?",
+    "cancel": "Cancelar",
+    "tab": {
+      "open": "Abiertas",
+      "overdue": "Atrasadas",
+      "today": "Hoy",
+      "later": "Próximas",
+      "done": "Hechas"
+    },
+    "bucket": {
+      "overdue": "Atrasada · {date}",
+      "today": "Vence hoy",
+      "later": "Plazo {date}",
+      "done": "Hecha"
+    },
+    "priority": {
+      "high": "Alta",
+      "normal": "Normal",
+      "low": "Baja"
+    },
+    "form": {
+      "titleNew": "Nueva tarea",
+      "titleEdit": "Editar tarea",
+      "name": "Tarea",
+      "details": "Detalles",
+      "start": "Inicio",
+      "end": "Plazo final",
+      "priority": "Prioridad",
+      "assignee": "Responsable",
+      "noAssignee": "Sin responsable",
+      "contact": "Contacto",
+      "noContact": "Ninguno",
+      "company": "Empresa",
+      "noCompany": "Ninguna",
+      "titleRequired": "Indica el nombre de la tarea.",
+      "datesInvalid": "El plazo final no puede ser anterior al inicio.",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saved": "Tarea guardada.",
+      "saveFailed": "No se pudo guardar la tarea."
     }
   }
 }

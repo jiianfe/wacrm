@@ -4,6 +4,7 @@ import { requireRole, toErrorResponse } from '@/lib/auth/account'
 import { supabaseAdmin } from '@/lib/automations/admin-client'
 import { loadEmailAccount, type EmailAccountRow } from '@/lib/email/account'
 import { syncEmailAccount } from '@/lib/email/sync'
+import { runTaskReminders } from '@/lib/tasks/reminders'
 
 // E-mail sync triggers.
 //
@@ -45,7 +46,15 @@ export async function GET(request: Request) {
     accounts += 1
     if (result.status === 'ok') imported += result.imported
   }
-  return NextResponse.json({ accounts, imported })
+  // This job already runs every few minutes, so it also sends the task
+  // reminders (at most once a day per task); a failure here never hurts the sync.
+  let reminded = 0
+  try {
+    reminded = await runTaskReminders(db)
+  } catch (err) {
+    console.error('[tasks] reminders failed:', err)
+  }
+  return NextResponse.json({ accounts, imported, reminded })
 }
 
 export async function POST(request: Request) {

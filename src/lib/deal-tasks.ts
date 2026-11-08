@@ -90,6 +90,40 @@ export function summarizeTasks(tasks: TaskDates[] | null | undefined, today: str
   return summary;
 }
 
+export type TaskPriority = 'high' | 'normal' | 'low';
+export const TASK_PRIORITIES: TaskPriority[] = ['high', 'normal', 'low'];
+
+const PRIORITY_RANK: Record<TaskPriority, number> = { high: 0, normal: 1, low: 2 };
+
+/**
+ * Which tab of the Tasks page a task belongs to (open tasks only differ by
+ * their end date): overdue < today, due today, later; done when completed.
+ */
+export type TaskBucket = 'overdue' | 'today' | 'later' | 'done';
+
+export function taskBucket(task: Pick<TaskDates, 'end_date' | 'completed_at'>, today: string): TaskBucket {
+  if (task.completed_at) return 'done';
+  if (task.end_date < today) return 'overdue';
+  if (task.end_date === today) return 'today';
+  return 'later';
+}
+
+export interface SortableTask extends TaskDates {
+  priority: TaskPriority;
+  title: string;
+}
+
+/** Open tasks first, soonest end date first, then priority; done tasks last (newest first). */
+export function compareTasks(a: SortableTask, b: SortableTask): number {
+  const aDone = !!a.completed_at;
+  const bDone = !!b.completed_at;
+  if (aDone !== bDone) return aDone ? 1 : -1;
+  if (aDone && bDone) return (b.completed_at as string).localeCompare(a.completed_at as string);
+  if (a.end_date !== b.end_date) return a.end_date.localeCompare(b.end_date);
+  const byPriority = (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1);
+  return byPriority || a.title.localeCompare(b.title);
+}
+
 /** Format a `YYYY-MM-DD` date for display without any time-zone shift. */
 export function formatTaskDate(date: string, locale: string): string {
   const [y, m, d] = date.split('-').map(Number);

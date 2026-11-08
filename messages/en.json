@@ -48,7 +48,8 @@
     "quotes": "Quotes",
     "products": "Products & services",
     "groupFinance": "Finance",
-    "finance": "Finance"
+    "finance": "Finance",
+    "tasks": "Tasks"
   },
   "Header": {
     "dashboard": "Dashboard",
@@ -71,7 +72,8 @@
     "showMenu": "Show menu",
     "quotes": "Quotes",
     "products": "Products & services",
-    "finance": "Finance"
+    "finance": "Finance",
+    "tasks": "Tasks"
   },
   "ModeToggle": {
     "switchMode": "Switch to {mode} mode"
@@ -3690,6 +3692,66 @@
       "title": "Receivables",
       "none": "No receivables on this deal.",
       "add": "New receivable"
+    }
+  },
+  "Tasks": {
+    "title": "Tasks",
+    "subtitle": "Everything that needs doing, on deals or stand-alone.",
+    "new": "New task",
+    "search": "Search task, customer or deal",
+    "assignee": "Assignee",
+    "mine": "My tasks",
+    "everyone": "Everyone",
+    "unassigned": "Unassigned",
+    "allPriorities": "All priorities",
+    "empty": "No tasks here.",
+    "loadFailed": "Could not load tasks.",
+    "toggleFailed": "Could not update the task.",
+    "deleteFailed": "Could not delete the task.",
+    "markDone": "Mark as done",
+    "markOpen": "Reopen task",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete?",
+    "cancel": "Cancel",
+    "tab": {
+      "open": "Open",
+      "overdue": "Overdue",
+      "today": "Today",
+      "later": "Upcoming",
+      "done": "Done"
+    },
+    "bucket": {
+      "overdue": "Overdue · {date}",
+      "today": "Due today",
+      "later": "Due {date}",
+      "done": "Done"
+    },
+    "priority": {
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "form": {
+      "titleNew": "New task",
+      "titleEdit": "Edit task",
+      "name": "Task",
+      "details": "Details",
+      "start": "Start",
+      "end": "Due date",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "noAssignee": "Unassigned",
+      "contact": "Contact",
+      "noContact": "None",
+      "company": "Company",
+      "noCompany": "None",
+      "titleRequired": "Enter the task name.",
+      "datesInvalid": "The due date cannot be before the start.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Task saved.",
+      "saveFailed": "Could not save the task."
     }
   }
 }

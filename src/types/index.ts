@@ -212,7 +212,7 @@ export interface Conversation {
 // Notifications (migration 027)
 // ============================================================
 
-export type NotificationType = 'conversation_assigned';
+export type NotificationType = 'conversation_assigned' | 'task_due';
 
 export interface Notification {
   id: string;
@@ -222,6 +222,8 @@ export interface Notification {
   type: NotificationType;
   conversation_id?: string;
   contact_id?: string;
+  /** Set on task reminders (type 'task_due'). */
+  task_id?: string;
   /** Who triggered it. Null when an automation/system assigned it. */
   actor_user_id?: string;
   title: string;
@@ -447,7 +449,11 @@ export interface Deal {
 /** A task on a deal (migration 069). Dates are plain `YYYY-MM-DD`. */
 export interface DealTask {
   id: string;
-  deal_id: string;
+  /** Null for a stand-alone task (migration 076). */
+  deal_id: string | null;
+  contact_id: string | null;
+  company_id: string | null;
+  priority: 'high' | 'normal' | 'low';
   user_id: string | null;
   assigned_to: string | null;
   title: string;

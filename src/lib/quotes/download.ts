@@ -31,9 +31,53 @@ export async function renderQuotePdf(
 
 const asPdfBlob = (bytes: Uint8Array) => new Blob([bytes as BlobPart], { type: 'application/pdf' })
 
-/** Builds the quote's PDF in the browser and saves it as "Orçamento NNNN - CLIENTE.pdf". */
-export async function downloadQuotePdf(quote: Quote, items: QuoteItem[]): Promise<void> {
+/** Minimal shape of the File System Access handle (Chromium browsers). */
+export interface PdfSaveHandle {
+  createWritable(): Promise<{ write(data: Blob): Promise<void>; close(): Promise<void> }>
+}
+
+export const quotePdfFileName = (quote: Quote) =>
+  quoteFileName(quote.number, quote.client_legal_name || quote.client_trade_name || quote.contact_name)
+
+/**
+ * Opens the browser's "Save as" dialog so the user picks the folder. Must run
+ * straight from the click, before any slow work. Returns null when the browser
+ * has no such dialog (the PDF then goes to the default Downloads folder), and
+ * throws an AbortError when the user cancels.
+ */
+export async function pickQuotePdfHandle(quote: Quote): Promise<PdfSaveHandle | null> {
+  const picker = (window as unknown as {
+    showSaveFilePicker?: (opts: object) => Promise<PdfSaveHandle>
+  }).showSaveFilePicker
+  if (!picker) return null
+  try {
+    return await picker.call(window, {
+      suggestedName: quotePdfFileName(quote),
+      id: 'quote-pdf', // the browser remembers the last folder used with this id
+      types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }],
+    })
+  } catch (err) {
+    if ((err as { name?: string })?.name === 'AbortError') throw err
+    return null // e.g. no recent click: fall back to a normal download
+  }
+}
+
+/**
+ * Builds the quote's PDF in the browser and saves it as "Orçamento NNNN - CLIENTE.pdf",
+ * into the chosen file when a handle is given, else as a normal download.
+ */
+export async function downloadQuotePdf(
+  quote: Quote,
+  items: QuoteItem[],
+  handle?: PdfSaveHandle | null,
+): Promise<void> {
   const { bytes, fileName } = await renderQuotePdf(quote, items)
+  if (handle) {
+    const writable = await handle.createWritable()
+    await writable.write(asPdfBlob(bytes))
+    await writable.close()
+    return
+  }
   const url = URL.createObjectURL(asPdfBlob(bytes))
   const a = document.createElement('a')
   a.href = url
