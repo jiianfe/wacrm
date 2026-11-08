@@ -3,12 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { FileDown, FileText, Loader2, Mail, Pencil, Plus, Search, Send, Trash2 } from 'lucide-react';
+import { FileDown, FileText, Loader2, Mail, Pencil, Plus, Search, Send, Trash2, Wallet } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
 import { useCan } from '@/hooks/use-can';
 import { downloadQuotePdf, renderQuotePdf, sendQuotePdfViaWhatsApp } from '@/lib/quotes/download';
 import { NewEmailDialog } from '@/components/inbox/new-email-dialog';
+import { ReceivableDialog, type ReceivablePrefill } from '@/components/finance/receivable-dialog';
 import { formatBRL, formatShortDate } from '@/lib/quotes/format';
 import type { Quote, QuoteItem, QuoteStatus } from '@/types';
 import { QuoteForm } from '@/components/quotes/quote-form';
@@ -69,6 +70,7 @@ export default function QuotesPage() {
     contactId: string;
   } | null>(null);
   const [sending, setSending] = useState(false);
+  const [receivableDraft, setReceivableDraft] = useState<ReceivablePrefill | null>(null);
   const [emailDraft, setEmailDraft] = useState<{
     contactId: string;
     initial: { to: string; subject: string; body: string; files: File[] };
@@ -409,6 +411,25 @@ export default function QuotesPage() {
                       </button>
                       <button
                         type="button"
+                        onClick={() =>
+                          setReceivableDraft({
+                            contact_id: q.contact_id,
+                            company_id: q.company_id,
+                            deal_id: q.deal_id,
+                            quote_id: q.id,
+                            description: t('page.receivableDescription', { number: q.number }),
+                            amount: Number(q.total),
+                          })
+                        }
+                        disabled={!canEdit}
+                        aria-label={t('page.createReceivable')}
+                        title={t('page.createReceivable')}
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                      >
+                        <Wallet className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => askEmail(q)}
                         disabled={!canEdit || busyId === q.id}
                         aria-label={t('page.sendEmail')}
@@ -469,6 +490,12 @@ export default function QuotesPage() {
         }}
       />
 
+      <ReceivableDialog
+        open={!!receivableDraft}
+        onOpenChange={(v) => !v && setReceivableDraft(null)}
+        prefill={receivableDraft ?? undefined}
+        onSaved={() => toast.success(t('page.receivableCreated'))}
+      />
       <NewEmailDialog
         open={!!emailDraft}
         onOpenChange={(v) => !v && setEmailDraft(null)}

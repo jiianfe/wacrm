@@ -16,6 +16,7 @@ import {
   Crown,
   FileText,
   GitBranch,
+  Wallet,
   LayoutDashboard,
   LogOut,
   MessageSquare,
@@ -104,6 +105,8 @@ interface NavGroup {
   key: string;
   labelKey: string;
   items: NavItem[];
+  /** Only administrators (and owners) see this group. */
+  adminOnly?: boolean;
 }
 
 const navGroups: NavGroup[] = [
@@ -129,6 +132,12 @@ const navGroups: NavGroup[] = [
       { href: "/quotes", labelKey: "quotes", icon: FileText },
       { href: "/products", labelKey: "products", icon: Package },
     ],
+  },
+  {
+    key: "finance",
+    labelKey: "groupFinance",
+    adminOnly: true,
+    items: [{ href: "/finance", labelKey: "finance", icon: Wallet }],
   },
 ];
 
@@ -330,7 +339,9 @@ export function Sidebar({ open = false, onClose, collapsed = false }: SidebarPro
             {standaloneItems.map(renderItem)}
           </ul>
 
-          {navGroups.map((group) => {
+          {navGroups
+            .filter((group) => !group.adminOnly || accountRole === "admin" || accountRole === "owner")
+            .map((group) => {
             const isOpen = !closedGroups[group.key];
             return (
               <div key={group.key} className="mt-4">

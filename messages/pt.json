@@ -46,7 +46,9 @@
     "groupCrm": "CRM",
     "groupQuotes": "Orçamento",
     "quotes": "Orçamentos",
-    "products": "Produtos e serviços"
+    "products": "Produtos e serviços",
+    "groupFinance": "Financeiro",
+    "finance": "Financeiro"
   },
   "Header": {
     "dashboard": "Painel",
@@ -68,7 +70,8 @@
     "hideMenu": "Ocultar menu",
     "showMenu": "Mostrar menu",
     "quotes": "Orçamentos",
-    "products": "Produtos e serviços"
+    "products": "Produtos e serviços",
+    "finance": "Financeiro"
   },
   "ModeToggle": {
     "switchMode": "Mudar para o modo {mode}"
@@ -3505,7 +3508,10 @@
       "sendEmail": "Enviar por e-mail",
       "sendNoEmail": "O contato deste orçamento não tem e-mail.",
       "emailSubject": "Orçamento {number} - Ultratec Extintores",
-      "emailBody": "Olá {name}, tudo bem?\n\nSegue em anexo o orçamento nº {number}.\n\nQualquer dúvida, estou à disposição."
+      "emailBody": "Olá {name}, tudo bem?\n\nSegue em anexo o orçamento nº {number}.\n\nQualquer dúvida, estou à disposição.",
+      "createReceivable": "Criar cobrança",
+      "receivableDescription": "Orçamento {number}",
+      "receivableCreated": "Cobrança criada. Ela aparece no Financeiro e no negócio."
     },
     "status": {
       "draft": "Rascunho",
@@ -3574,6 +3580,116 @@
       "itemKind": "Tipo do item",
       "kindProduct": "Produto",
       "kindService": "Serviço"
+    }
+  },
+  "Finance": {
+    "title": "Financeiro",
+    "subtitle": "Cobranças e recebimentos",
+    "newReceivable": "Nova cobrança",
+    "restricted": "Apenas administradores acessam o financeiro.",
+    "loadFailed": "Não foi possível carregar o financeiro.",
+    "cards": {
+      "dueWeek": "A receber em 7 dias",
+      "dueMonth": "A receber em 30 dias",
+      "overdue": "Em atraso",
+      "receivedMonth": "Recebido no mês",
+      "cashOnHand": "Dinheiro em caixa",
+      "count": "{count, plural, one {# cobrança} other {# cobranças}}",
+      "cashHint": "Recebido em dinheiro, ainda não depositado"
+    },
+    "filters": {
+      "search": "Buscar cliente ou descrição…",
+      "status": "Situação",
+      "pending": "Pendentes",
+      "all": "Todas",
+      "from": "Vencimento de",
+      "to": "até",
+      "clear": "Limpar filtros"
+    },
+    "table": {
+      "client": "Cliente",
+      "description": "Descrição",
+      "due": "Vencimento",
+      "amount": "Valor",
+      "paid": "Recebido",
+      "balance": "Saldo",
+      "status": "Situação",
+      "empty": "Nenhuma cobrança encontrada."
+    },
+    "status": {
+      "open": "A receber",
+      "partial": "Parcial",
+      "overdue": "Atrasada",
+      "paid": "Paga",
+      "cancelled": "Cancelada"
+    },
+    "method": {
+      "boleto": "Boleto",
+      "pix": "Pix",
+      "cash": "Dinheiro",
+      "other": "Outro"
+    },
+    "form": {
+      "titleNew": "Nova cobrança",
+      "titleEdit": "Editar cobrança",
+      "contact": "Contato",
+      "noContact": "Sem contato",
+      "company": "Empresa",
+      "noCompany": "Sem empresa",
+      "deal": "Negócio",
+      "noDeal": "Sem negócio",
+      "description": "Descrição",
+      "amount": "Valor (R$)",
+      "dueDate": "Vencimento",
+      "expected": "Forma de pagamento prevista",
+      "reference": "Número do boleto / referência",
+      "installments": "Parcelas",
+      "installmentsHint": "Uma cobrança por mês, a partir do vencimento. O valor é dividido entre as parcelas.",
+      "note": "Observação",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "saved": "Cobrança salva.",
+      "saveFailed": "Não foi possível salvar a cobrança.",
+      "needDescription": "Informe a descrição.",
+      "needAmount": "Informe um valor maior que zero.",
+      "needDue": "Informe o vencimento.",
+      "needCustomer": "Escolha o contato ou a empresa.",
+      "amountBelowPaid": "O valor não pode ficar abaixo do que já foi recebido."
+    },
+    "pay": {
+      "title": "Registrar recebimento",
+      "balance": "saldo {balance}",
+      "amount": "Valor recebido (R$)",
+      "method": "Forma de recebimento",
+      "date": "Data do recebimento",
+      "note": "Observação",
+      "cashHint": "O dinheiro fica no caixa até você marcar como depositado.",
+      "save": "Registrar",
+      "saved": "Recebimento registrado.",
+      "failed": "Não foi possível registrar o recebimento.",
+      "needAmount": "Informe um valor maior que zero.",
+      "needDate": "Informe a data.",
+      "exceeds": "O valor passa do saldo ({balance})."
+    },
+    "detail": {
+      "payments": "Recebimentos",
+      "noPayments": "Nenhum recebimento ainda.",
+      "register": "Registrar recebimento",
+      "edit": "Editar",
+      "cancelReceivable": "Cancelar cobrança",
+      "confirmCancel": "Confirmar cancelamento",
+      "reactivate": "Reativar",
+      "markDeposited": "Marcar como depositado",
+      "deposited": "Depositado em {date}",
+      "deletePayment": "Excluir recebimento",
+      "confirmDeletePayment": "Excluir",
+      "installment": "Parcela {no} de {total}",
+      "failed": "Não foi possível concluir a ação."
+    },
+    "deal": {
+      "title": "Cobranças",
+      "none": "Nenhuma cobrança neste negócio.",
+      "add": "Nova cobrança"
     }
   }
 }

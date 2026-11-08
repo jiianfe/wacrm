@@ -46,7 +46,9 @@
     "groupCrm": "CRM",
     "groupQuotes": "Quotes",
     "quotes": "Quotes",
-    "products": "Products & services"
+    "products": "Products & services",
+    "groupFinance": "Finance",
+    "finance": "Finance"
   },
   "Header": {
     "dashboard": "Dashboard",
@@ -68,7 +70,8 @@
     "hideMenu": "Hide menu",
     "showMenu": "Show menu",
     "quotes": "Quotes",
-    "products": "Products & services"
+    "products": "Products & services",
+    "finance": "Finance"
   },
   "ModeToggle": {
     "switchMode": "Switch to {mode} mode"
@@ -3505,7 +3508,10 @@
       "sendEmail": "Send by e-mail",
       "sendNoEmail": "This quote's contact has no e-mail address.",
       "emailSubject": "Quote {number} - Ultratec Extintores",
-      "emailBody": "Hello {name},\n\nPlease find quote no. {number} attached.\n\nFeel free to ask if you have any questions."
+      "emailBody": "Hello {name},\n\nPlease find quote no. {number} attached.\n\nFeel free to ask if you have any questions.",
+      "createReceivable": "Create receivable",
+      "receivableDescription": "Quote {number}",
+      "receivableCreated": "Receivable created. It shows in Finance and on the deal."
     },
     "status": {
       "draft": "Draft",
@@ -3574,6 +3580,116 @@
       "itemKind": "Item type",
       "kindProduct": "Product",
       "kindService": "Service"
+    }
+  },
+  "Finance": {
+    "title": "Finance",
+    "subtitle": "Receivables and payments received",
+    "newReceivable": "New receivable",
+    "restricted": "Only administrators can open Finance.",
+    "loadFailed": "Could not load Finance.",
+    "cards": {
+      "dueWeek": "Due in 7 days",
+      "dueMonth": "Due in 30 days",
+      "overdue": "Overdue",
+      "receivedMonth": "Received this month",
+      "cashOnHand": "Cash on hand",
+      "count": "{count, plural, one {# receivable} other {# receivables}}",
+      "cashHint": "Received in cash, not yet deposited"
+    },
+    "filters": {
+      "search": "Search customer or description…",
+      "status": "Status",
+      "pending": "Pending",
+      "all": "All",
+      "from": "Due from",
+      "to": "to",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "client": "Customer",
+      "description": "Description",
+      "due": "Due",
+      "amount": "Amount",
+      "paid": "Received",
+      "balance": "Balance",
+      "status": "Status",
+      "empty": "No receivables found."
+    },
+    "status": {
+      "open": "Open",
+      "partial": "Partial",
+      "overdue": "Overdue",
+      "paid": "Paid",
+      "cancelled": "Cancelled"
+    },
+    "method": {
+      "boleto": "Boleto",
+      "pix": "Pix",
+      "cash": "Cash",
+      "other": "Other"
+    },
+    "form": {
+      "titleNew": "New receivable",
+      "titleEdit": "Edit receivable",
+      "contact": "Contact",
+      "noContact": "No contact",
+      "company": "Company",
+      "noCompany": "No company",
+      "deal": "Deal",
+      "noDeal": "No deal",
+      "description": "Description",
+      "amount": "Amount (R$)",
+      "dueDate": "Due date",
+      "expected": "Expected payment method",
+      "reference": "Boleto number / reference",
+      "installments": "Instalments",
+      "installmentsHint": "One receivable per month from the due date. The amount is divided between them.",
+      "note": "Note",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Receivable saved.",
+      "saveFailed": "Could not save the receivable.",
+      "needDescription": "Enter a description.",
+      "needAmount": "Enter an amount above zero.",
+      "needDue": "Enter the due date.",
+      "needCustomer": "Pick the contact or the company.",
+      "amountBelowPaid": "The amount cannot be below what was already received."
+    },
+    "pay": {
+      "title": "Record payment",
+      "balance": "balance {balance}",
+      "amount": "Amount received (R$)",
+      "method": "Payment method",
+      "date": "Date received",
+      "note": "Note",
+      "cashHint": "Cash stays on hand until you mark it as deposited.",
+      "save": "Record",
+      "saved": "Payment recorded.",
+      "failed": "Could not record the payment.",
+      "needAmount": "Enter an amount above zero.",
+      "needDate": "Enter the date.",
+      "exceeds": "The amount is above the balance ({balance})."
+    },
+    "detail": {
+      "payments": "Payments",
+      "noPayments": "No payments yet.",
+      "register": "Record payment",
+      "edit": "Edit",
+      "cancelReceivable": "Cancel receivable",
+      "confirmCancel": "Confirm cancellation",
+      "reactivate": "Reactivate",
+      "markDeposited": "Mark as deposited",
+      "deposited": "Deposited on {date}",
+      "deletePayment": "Delete payment",
+      "confirmDeletePayment": "Delete",
+      "installment": "Instalment {no} of {total}",
+      "failed": "Could not complete the action."
+    },
+    "deal": {
+      "title": "Receivables",
+      "none": "No receivables on this deal.",
+      "add": "New receivable"
     }
   }
 }

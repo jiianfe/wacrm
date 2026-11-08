@@ -9,6 +9,7 @@ import { loadContactCompanyIds } from "@/lib/company-links";
 import { DealTasks } from "@/components/pipelines/deal-tasks";
 import { DealNotes } from "@/components/pipelines/deal-notes";
 import { DealAttachments } from "@/components/pipelines/deal-attachments";
+import { DealReceivables } from "@/components/finance/deal-receivables";
 import { useCompanies } from "@/hooks/use-companies";
 import { CompanySelect } from "@/components/companies/company-select";
 import type {
@@ -446,6 +447,7 @@ export function DealForm({
                 <DealTasks dealId={deal.id} onChanged={onSaved} />
                 <DealNotes dealId={deal.id} />
                 <DealAttachments dealId={deal.id} onChanged={onSaved} />
+                <DealReceivables dealId={deal.id} contactId={deal.contact_id} companyId={deal.company_id} />
               </>
             ) : (
               <div className="grid gap-2">
