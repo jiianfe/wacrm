@@ -3756,7 +3756,9 @@
       "addDependency": "종속성 추가…",
       "noDependencyOptions": "다른 진행 중 작업 없음",
       "removeDependency": "종속성 제거",
-      "dependsHint": "모든 선행 작업이 완료될 때까지 이 작업은 잠깁니다."
+      "dependsHint": "모든 선행 작업이 완료될 때까지 이 작업은 잠깁니다.",
+      "deal": "연결된 거래",
+      "noDeal": "없음 (단독 작업)"
     },
     "blockedBy": "대기 중: {names}",
     "unlocks": "{count}개 작업 해제",

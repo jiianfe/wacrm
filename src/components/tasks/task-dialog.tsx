@@ -41,6 +41,13 @@ interface TaskDialogProps {
   prefill?: TaskPrefill;
 }
 
+interface DealOption {
+  id: string;
+  title: string;
+  contact_id: string | null;
+  company_id: string | null;
+}
+
 interface Candidate {
   id: string;
   title: string;
@@ -74,6 +81,8 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
   const [contactId, setContactId] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deals, setDeals] = useState<DealOption[]>([]);
+  const [dealId, setDealId] = useState("");
   // Tasks this one waits for: all open tasks to pick from, the current choice,
   // and what is already saved (to know what to add or remove on save).
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -94,6 +103,7 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
     setAssignedTo(editing ? (editing.assigned_to ?? "") : (profileId ?? ""));
     setContactId(editing?.contact_id ?? prefill?.contact_id ?? "");
     setCompanyId(editing?.company_id ?? prefill?.company_id ?? "");
+    setDealId(editing?.deal_id ?? prefill?.deal_id ?? "");
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [open, editing, prefill, profileId]);
 
@@ -148,6 +158,35 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing?.id]);
 
+  // Deals to link the task to.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    createClient()
+      .from("deals")
+      .select("id, title, contact_id, company_id")
+      .order("created_at", { ascending: false })
+      .limit(1000)
+      .then(({ data }) => {
+        if (!cancelled) setDeals((data ?? []) as DealOption[]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
+  // With a customer chosen, offer that customer's deals (plus the one already picked).
+  const dealOptions = deals.filter((d) => !contactId || d.contact_id === contactId || d.id === dealId);
+
+  function pickDeal(id: string) {
+    setDealId(id);
+    const deal = deals.find((d) => d.id === id);
+    if (!deal) return;
+    // Fill the customer from the deal when still empty.
+    if (!contactId && deal.contact_id) setContactId(deal.contact_id);
+    if (!companyId && deal.company_id) setCompanyId(deal.company_id);
+  }
+
   // Prerequisites that would close a loop (a task that already waits for this one).
   const pickable = candidates.filter(
     (c) => !c.completed_at && !deps.includes(c.id) && !(editing && wouldCycle(editing.id, c.id, edges)),
@@ -170,6 +209,7 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
         assigned_to: assignedTo || null,
         contact_id: contactId || null,
         company_id: companyId || null,
+        deal_id: dealId || null,
       };
       let taskId: string;
       if (editing) {
@@ -185,7 +225,6 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
           .from("deal_tasks")
           .insert({
             ...fields,
-            deal_id: prefill?.deal_id ?? null,
             account_id: accountId,
             user_id: user?.id ?? null,
           })
@@ -301,6 +340,18 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
               {companies.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs text-muted-foreground sm:col-span-2">
+            {t("form.deal")}
+            <select className={FIELD} value={dealId} onChange={(e) => pickDeal(e.target.value)}>
+              <option value="">{t("form.noDeal")}</option>
+              {dealId && !deals.some((d) => d.id === dealId) && <option value={dealId}>{dealId.slice(0, 8)}…</option>}
+              {dealOptions.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.title}
                 </option>
               ))}
             </select>

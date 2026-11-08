@@ -3756,7 +3756,9 @@
       "addDependency": "Añadir dependencia…",
       "noDependencyOptions": "No hay otras tareas abiertas",
       "removeDependency": "Quitar dependencia",
-      "dependsHint": "La tarea queda bloqueada hasta que todas sus dependencias estén hechas."
+      "dependsHint": "La tarea queda bloqueada hasta que todas sus dependencias estén hechas.",
+      "deal": "Negocio vinculado",
+      "noDeal": "Ninguno (tarea suelta)"
     },
     "blockedBy": "Esperando: {names}",
     "unlocks": "Libera {count, plural, =1 {1 tarea} other {# tareas}}",

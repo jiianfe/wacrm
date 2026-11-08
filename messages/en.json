@@ -3756,7 +3756,9 @@
       "addDependency": "Add dependency…",
       "noDependencyOptions": "No other open tasks",
       "removeDependency": "Remove dependency",
-      "dependsHint": "The task stays blocked until all its dependencies are done."
+      "dependsHint": "The task stays blocked until all its dependencies are done.",
+      "deal": "Linked deal",
+      "noDeal": "None (stand-alone task)"
     },
     "blockedBy": "Waiting for: {names}",
     "unlocks": "Unlocks {count, plural, =1 {1 task} other {# tasks}}",
