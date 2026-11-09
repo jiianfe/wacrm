@@ -3773,6 +3773,39 @@
       "next": "Mes siguiente",
       "more": "+{count} más",
       "day": "Tareas el {date}"
+    },
+    "openDetails": "Abrir tarea (notas y archivos)",
+    "saveFirst": "Guarda la tarea para añadir notas y archivos.",
+    "notes": {
+      "title": "Notas",
+      "placeholder": "Escribe una nota…",
+      "add": "Añadir nota",
+      "empty": "Aún no hay notas.",
+      "loadFailed": "No se pudieron cargar las notas.",
+      "saveFailed": "No se pudo guardar la nota.",
+      "deleteFailed": "No se pudo eliminar la nota.",
+      "confirmDelete": "¿Eliminar?",
+      "cancel": "Cancelar",
+      "delete": "Eliminar nota"
+    },
+    "files": {
+      "title": "Archivos (documentos y fotos)",
+      "attach": "Adjuntar archivo",
+      "uploading": "Subiendo…",
+      "limits": "PDF, fotos, Word, Excel… hasta {max} cada uno",
+      "empty": "Sin archivos.",
+      "open": "Abrir",
+      "download": "Descargar",
+      "delete": "Eliminar archivo",
+      "confirmDelete": "¿Eliminar?",
+      "cancel": "Cancelar",
+      "loadFailed": "No se pudieron cargar los archivos.",
+      "tooLarge": "{name}: supera {max}.",
+      "typeNotAllowed": "{name}: tipo de archivo no permitido.",
+      "uploadFailed": "Error al subir {name}.",
+      "uploaded": "{count, plural, =1 {Archivo subido.} other {# archivos subidos.}}",
+      "downloadFailed": "No se pudo abrir el archivo.",
+      "deleteFailed": "No se pudo eliminar el archivo."
     }
   }
 }

@@ -3773,6 +3773,39 @@
       "next": "Next month",
       "more": "+{count} more",
       "day": "Tasks on {date}"
+    },
+    "openDetails": "Open task (notes and files)",
+    "saveFirst": "Save the task to add notes and files.",
+    "notes": {
+      "title": "Notes",
+      "placeholder": "Write a note…",
+      "add": "Add note",
+      "empty": "No notes yet.",
+      "loadFailed": "Could not load the notes.",
+      "saveFailed": "Could not save the note.",
+      "deleteFailed": "Could not delete the note.",
+      "confirmDelete": "Delete?",
+      "cancel": "Cancel",
+      "delete": "Delete note"
+    },
+    "files": {
+      "title": "Files (documents and photos)",
+      "attach": "Attach file",
+      "uploading": "Uploading…",
+      "limits": "PDF, photos, Word, Excel… up to {max} each",
+      "empty": "No files.",
+      "open": "Open",
+      "download": "Download",
+      "delete": "Delete file",
+      "confirmDelete": "Delete?",
+      "cancel": "Cancel",
+      "loadFailed": "Could not load the files.",
+      "tooLarge": "{name}: larger than {max}.",
+      "typeNotAllowed": "{name}: file type not allowed.",
+      "uploadFailed": "Failed to upload {name}.",
+      "uploaded": "{count, plural, =1 {File uploaded.} other {# files uploaded.}}",
+      "downloadFailed": "Could not open the file.",
+      "deleteFailed": "Could not delete the file."
     }
   }
 }

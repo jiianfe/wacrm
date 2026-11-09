@@ -13,6 +13,8 @@ import {
   List,
   Loader2,
   Lock,
+  MessageSquareText,
+  Paperclip,
   Pencil,
   Plus,
   Search,
@@ -46,6 +48,8 @@ type TaskRow = DealTask & {
   deal: { id: string; title: string } | null;
   contact: { id: string; name: string | null } | null;
   company: { id: string; legal_name: string | null; trade_name: string | null } | null;
+  notes: { count: number }[];
+  files: { count: number }[];
 };
 
 type Tab = "open" | TaskBucket;
@@ -95,7 +99,7 @@ export default function TasksPage() {
       supabase
         .from("deal_tasks")
         .select(
-          "*, deal:deals(id, title), contact:contacts(id, name), company:companies(id, legal_name, trade_name)",
+          "*, deal:deals(id, title), contact:contacts(id, name), company:companies(id, legal_name, trade_name), notes:task_notes(count), files:task_attachments(count)",
         )
         .order("end_date", { ascending: true })
         .limit(1000),
@@ -187,8 +191,12 @@ export default function TasksPage() {
   }
 
   async function remove(id: string) {
+    // The rows go with the task; the files in storage must be removed by hand.
+    const { data: files } = await supabase.from("task_attachments").select("storage_path").eq("task_id", id);
     const { error } = await supabase.from("deal_tasks").delete().eq("id", id);
     if (error) return toast.error(t("deleteFailed"));
+    const paths = ((files ?? []) as { storage_path: string }[]).map((f) => f.storage_path);
+    if (paths.length) await supabase.storage.from("deal-documents").remove(paths);
     setTasks((prev) => prev?.filter((x) => x.id !== id) ?? prev);
     setConfirmingId(null);
   }
@@ -387,14 +395,18 @@ export default function TasksPage() {
                   {task.completed_at && <Check className="size-3.5" />}
                 </button>
                 <div className="min-w-0 flex-1">
-                  <p
+                  <button
+                    type="button"
+                    disabled={!canWrite}
+                    onClick={() => setDialog({ open: true, editing: task })}
+                    title={t("openDetails")}
                     className={cn(
-                      "break-words text-sm font-medium",
+                      "block max-w-full break-words text-left text-sm font-medium enabled:hover:underline",
                       task.completed_at ? "text-muted-foreground line-through" : "text-foreground",
                     )}
                   >
                     {task.title}
-                  </p>
+                  </button>
                   {task.description && (
                     <p className="break-words text-xs text-muted-foreground">{task.description}</p>
                   )}
@@ -414,6 +426,18 @@ export default function TasksPage() {
                       </span>
                     )}
                     {unlocks > 0 && !task.completed_at && <span>{t("unlocks", { count: unlocks })}</span>}
+                    {(task.notes?.[0]?.count ?? 0) > 0 && (
+                      <span className="inline-flex items-center gap-1" title={t("notes.title")}>
+                        <MessageSquareText className="size-3" />
+                        {task.notes[0].count}
+                      </span>
+                    )}
+                    {(task.files?.[0]?.count ?? 0) > 0 && (
+                      <span className="inline-flex items-center gap-1" title={t("files.title")}>
+                        <Paperclip className="size-3" />
+                        {task.files[0].count}
+                      </span>
+                    )}
                     <span>
                       {formatTaskDate(task.start_date, locale)} → {formatTaskDate(task.end_date, locale)}
                     </span>
@@ -497,6 +521,7 @@ export default function TasksPage() {
         onOpenChange={(v) => setDialog((d) => ({ ...d, open: v }))}
         editing={dialog.editing}
         onSaved={load}
+        onChanged={load}
       />
     </div>
   );

@@ -3773,6 +3773,39 @@
       "next": "Próximo mês",
       "more": "+{count} mais",
       "day": "Tarefas em {date}"
+    },
+    "openDetails": "Abrir tarefa (notas e anexos)",
+    "saveFirst": "Salve a tarefa para poder adicionar notas e anexos.",
+    "notes": {
+      "title": "Notas",
+      "placeholder": "Escreva uma nota…",
+      "add": "Adicionar nota",
+      "empty": "Nenhuma nota ainda.",
+      "loadFailed": "Não foi possível carregar as notas.",
+      "saveFailed": "Não foi possível salvar a nota.",
+      "deleteFailed": "Não foi possível excluir a nota.",
+      "confirmDelete": "Excluir?",
+      "cancel": "Cancelar",
+      "delete": "Excluir nota"
+    },
+    "files": {
+      "title": "Anexos (documentos e fotos)",
+      "attach": "Anexar arquivo",
+      "uploading": "Enviando…",
+      "limits": "PDF, fotos, Word, Excel… até {max} cada",
+      "empty": "Nenhum anexo.",
+      "open": "Abrir",
+      "download": "Baixar",
+      "delete": "Excluir anexo",
+      "confirmDelete": "Excluir?",
+      "cancel": "Cancelar",
+      "loadFailed": "Não foi possível carregar os anexos.",
+      "tooLarge": "{name}: maior que {max}.",
+      "typeNotAllowed": "{name}: tipo de arquivo não permitido.",
+      "uploadFailed": "Falha ao enviar {name}.",
+      "uploaded": "{count, plural, =1 {Anexo enviado.} other {# anexos enviados.}}",
+      "downloadFailed": "Não foi possível abrir o arquivo.",
+      "deleteFailed": "Não foi possível excluir o anexo."
     }
   }
 }

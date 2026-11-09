@@ -492,6 +492,29 @@ export interface DealAttachment {
   created_at: string;
 }
 
+/** A dated note on a task (migration 078). Append-only. */
+export interface TaskNote {
+  id: string;
+  task_id: string;
+  user_id: string | null;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+}
+
+/** A file or photo on a task (migration 078); stored in `deal-documents`. */
+export interface TaskAttachment {
+  id: string;
+  task_id: string;
+  user_id: string | null;
+  author_name: string | null;
+  file_name: string;
+  storage_path: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  created_at: string;
+}
+
 /** A B2B customer account (migration 061). CNPJ is stored without
  *  punctuation; see `src/lib/br/documents.ts`. */
 export interface Company {

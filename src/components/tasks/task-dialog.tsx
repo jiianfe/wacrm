@@ -16,6 +16,8 @@ import {
 } from "@/lib/deal-tasks";
 import type { DealTask } from "@/types";
 import { Button } from "@/components/ui/button";
+import { TaskAttachments } from "./task-attachments";
+import { TaskNotes } from "./task-notes";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,8 @@ interface TaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved: () => void;
+  /** Called when notes or files change, so counters elsewhere can refresh. */
+  onChanged?: () => void;
   /** When given, edits this task instead of creating one. */
   editing?: DealTask | null;
   prefill?: TaskPrefill;
@@ -64,7 +68,7 @@ const FIELD =
   "w-full rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 /** Create or edit a task (stand-alone, or attached to a deal / customer). */
-export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: TaskDialogProps) {
+export function TaskDialog({ open, onOpenChange, onSaved, onChanged, editing, prefill }: TaskDialogProps) {
   const t = useTranslations("Tasks");
   const { user, accountId, profile } = useAuth();
 
@@ -397,6 +401,15 @@ export function TaskDialog({ open, onOpenChange, onSaved, editing, prefill }: Ta
             <span>{t("form.dependsHint")}</span>
           </div>
         </div>
+
+        {editing ? (
+          <div className="grid gap-4 border-t border-border pt-3">
+            <TaskNotes taskId={editing.id} onChanged={onChanged} />
+            <TaskAttachments taskId={editing.id} onChanged={onChanged} />
+          </div>
+        ) : (
+          <p className="border-t border-border pt-3 text-xs text-muted-foreground">{t("saveFirst")}</p>
+        )}
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={saving}>

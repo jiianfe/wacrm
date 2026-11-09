@@ -3773,6 +3773,39 @@
       "next": "다음 달",
       "more": "+{count}개 더",
       "day": "{date}의 작업"
+    },
+    "openDetails": "작업 열기 (메모 및 파일)",
+    "saveFirst": "메모와 파일을 추가하려면 먼저 작업을 저장하세요.",
+    "notes": {
+      "title": "메모",
+      "placeholder": "메모를 입력하세요…",
+      "add": "메모 추가",
+      "empty": "아직 메모가 없습니다.",
+      "loadFailed": "메모를 불러오지 못했습니다.",
+      "saveFailed": "메모를 저장하지 못했습니다.",
+      "deleteFailed": "메모를 삭제하지 못했습니다.",
+      "confirmDelete": "삭제할까요?",
+      "cancel": "취소",
+      "delete": "메모 삭제"
+    },
+    "files": {
+      "title": "파일 (문서 및 사진)",
+      "attach": "파일 첨부",
+      "uploading": "업로드 중…",
+      "limits": "PDF, 사진, Word, Excel… 각 {max}까지",
+      "empty": "파일이 없습니다.",
+      "open": "열기",
+      "download": "다운로드",
+      "delete": "파일 삭제",
+      "confirmDelete": "삭제할까요?",
+      "cancel": "취소",
+      "loadFailed": "파일을 불러오지 못했습니다.",
+      "tooLarge": "{name}: {max}보다 큽니다.",
+      "typeNotAllowed": "{name}: 허용되지 않는 파일 형식입니다.",
+      "uploadFailed": "{name} 업로드에 실패했습니다.",
+      "uploaded": "파일 {count}개를 업로드했습니다.",
+      "downloadFailed": "파일을 열 수 없습니다.",
+      "deleteFailed": "파일을 삭제하지 못했습니다."
     }
   }
 }
