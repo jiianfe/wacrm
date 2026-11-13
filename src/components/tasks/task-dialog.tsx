@@ -17,6 +17,7 @@ import {
 import type { DealTask } from "@/types";
 import { Button } from "@/components/ui/button";
 import { TaskAttachments } from "./task-attachments";
+import { TaskChecklist } from "./task-checklist";
 import { TaskNotes } from "./task-notes";
 import {
   Dialog,
@@ -404,6 +405,7 @@ export function TaskDialog({ open, onOpenChange, onSaved, onChanged, editing, pr
 
         {editing ? (
           <div className="grid gap-4 border-t border-border pt-3">
+            <TaskChecklist taskId={editing.id} onChanged={onChanged} />
             <TaskNotes taskId={editing.id} onChanged={onChanged} />
             <TaskAttachments taskId={editing.id} onChanged={onChanged} />
           </div>

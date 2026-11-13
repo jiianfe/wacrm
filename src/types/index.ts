@@ -502,6 +502,17 @@ export interface TaskNote {
   created_at: string;
 }
 
+/** A checkbox item on a task, e.g. a material to buy (migration 079). */
+export interface TaskChecklistItem {
+  id: string;
+  task_id: string;
+  label: string;
+  done: boolean;
+  done_at: string | null;
+  position: number;
+  created_at: string;
+}
+
 /** A file or photo on a task (migration 078); stored in `deal-documents`. */
 export interface TaskAttachment {
   id: string;

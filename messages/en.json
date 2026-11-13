@@ -3776,6 +3776,16 @@
     },
     "openDetails": "Open task (notes and files)",
     "saveFirst": "Save the task to add notes and files.",
+    "checklist": {
+      "title": "Checklist",
+      "placeholder": "Add item (e.g. 6 kg extinguisher)",
+      "add": "Add",
+      "empty": "No items yet.",
+      "loadFailed": "Could not load the list.",
+      "saveFailed": "Could not save the item.",
+      "deleteFailed": "Could not delete the item.",
+      "delete": "Delete item"
+    },
     "notes": {
       "title": "Notes",
       "placeholder": "Write a note…",

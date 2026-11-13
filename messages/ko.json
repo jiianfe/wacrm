@@ -3776,6 +3776,16 @@
     },
     "openDetails": "작업 열기 (메모 및 파일)",
     "saveFirst": "메모와 파일을 추가하려면 먼저 작업을 저장하세요.",
+    "checklist": {
+      "title": "체크리스트",
+      "placeholder": "항목 추가 (예: 소화기 6kg)",
+      "add": "추가",
+      "empty": "항목이 없습니다.",
+      "loadFailed": "목록을 불러올 수 없습니다.",
+      "saveFailed": "항목을 저장할 수 없습니다.",
+      "deleteFailed": "항목을 삭제할 수 없습니다.",
+      "delete": "항목 삭제"
+    },
     "notes": {
       "title": "메모",
       "placeholder": "메모를 입력하세요…",

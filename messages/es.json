@@ -3776,6 +3776,16 @@
     },
     "openDetails": "Abrir tarea (notas y archivos)",
     "saveFirst": "Guarda la tarea para añadir notas y archivos.",
+    "checklist": {
+      "title": "Lista de materiales / checklist",
+      "placeholder": "Agregar ítem (ej.: extintor 6 kg)",
+      "add": "Agregar",
+      "empty": "Aún no hay ítems.",
+      "loadFailed": "No se pudo cargar la lista.",
+      "saveFailed": "No se pudo guardar el ítem.",
+      "deleteFailed": "No se pudo eliminar el ítem.",
+      "delete": "Eliminar ítem"
+    },
     "notes": {
       "title": "Notas",
       "placeholder": "Escribe una nota…",
