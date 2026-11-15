@@ -45,6 +45,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var modeButton: Button
     private lateinit var switchButton: Button
     private lateinit var timerText: TextView
+    private lateinit var dimButton: Button
+    private lateinit var dimOverlay: View
+    private lateinit var dimDot: View
+    private var dimmed = false
 
     private var cameraProvider: ProcessCameraProvider? = null
     private var imageCapture: ImageCapture? = null
@@ -74,6 +78,30 @@ class MainActivity : AppCompatActivity() {
         modeButton = findViewById(R.id.modeButton)
         switchButton = findViewById(R.id.switchButton)
         timerText = findViewById(R.id.timer)
+
+        dimButton = findViewById(R.id.dimButton)
+        dimOverlay = findViewById(R.id.dimOverlay)
+        dimDot = findViewById(R.id.dimDot)
+
+        dimButton.setOnClickListener { setDimmed(true) }
+        // Segurar para sair evita sair sem querer com o suporte no peito.
+        dimOverlay.setOnLongClickListener {
+            setDimmed(false)
+            true
+        }
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : androidx.activity.OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (dimmed) {
+                        setDimmed(false)
+                    } else {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            },
+        )
 
         captureButton.setOnClickListener { onCaptureClicked() }
         modeButton.setOnClickListener { toggleMode() }
@@ -114,6 +142,27 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         // Finaliza a gravacao com seguranca se o app sair da tela.
         stopRecording()
+        setDimmed(false)
+    }
+
+    /**
+     * Tela escura: cobre a tela de preto e leva o brilho ao minimo para
+     * economizar bateria. A gravacao continua; a tela segue "acordada"
+     * (FLAG_KEEP_SCREEN_ON), senao o Android pausaria o app.
+     */
+    private fun setDimmed(on: Boolean) {
+        if (dimmed == on) return
+        dimmed = on
+        val attrs = window.attributes
+        attrs.screenBrightness = if (on) {
+            WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
+        } else {
+            WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        }
+        window.attributes = attrs
+        dimOverlay.visibility = if (on) View.VISIBLE else View.GONE
+        if (on) toast(getString(R.string.dim_hint))
+        updateUi()
     }
 
     private fun hasPermissions() = PERMISSIONS.all {
@@ -271,6 +320,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUi() {
         val recordingNow = recording != null
+        dimDot.visibility = if (dimmed && recordingNow) View.VISIBLE else View.GONE
         timerText.visibility = if (recordingNow) View.VISIBLE else View.GONE
         if (!recordingNow) timerText.text = "00:00"
         modeButton.isEnabled = !recordingNow

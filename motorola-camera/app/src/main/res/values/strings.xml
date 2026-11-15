@@ -3,6 +3,8 @@
     <string name="app_name">MotoCam</string>
     <string name="mode_video">Vídeo</string>
     <string name="mode_photo">Foto</string>
+    <string name="dim_screen">Tela escura</string>
+    <string name="dim_hint">Tela escura. Segure a tela para voltar.</string>
     <string name="switch_camera">Trocar câmera</string>
     <string name="permission_needed">Permita câmera e microfone para usar o app.</string>
     <string name="saved_video">Vídeo salvo</string>
