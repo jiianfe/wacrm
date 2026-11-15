@@ -21,4 +21,5 @@ na gravação.
   `Pictures/MotoCam`.
 - Para começar a gravar sozinho ao abrir, mude `AUTO_START_RECORDING` para
   `true` em `MainActivity.kt`.
+- Botão de volume (+ ou -) inicia e para a gravação (ou tira foto, no modo foto).
 - Android 10+ (minSdk 29).

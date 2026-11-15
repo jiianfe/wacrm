@@ -138,6 +138,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Botoes de volume (+ ou -) funcionam como o botao de gravar: comecam e
+     * param o video (ou tiram foto, no modo foto). Funciona com tela escura.
+     */
+    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent): Boolean {
+        if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP ||
+            keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN
+        ) {
+            if (event.repeatCount == 0 && cameraProvider != null) onCaptureClicked()
+            return true // consome o evento: nao muda o volume
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: android.view.KeyEvent): Boolean {
+        if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP ||
+            keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN
+        ) {
+            return true
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
     override fun onStop() {
         super.onStop()
         // Finaliza a gravacao com seguranca se o app sair da tela.
